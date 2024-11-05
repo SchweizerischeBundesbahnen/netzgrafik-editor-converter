@@ -1,4 +1,4 @@
-package ch.sbb.pfi.netzgrafikeditor.converter;
+package ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.model.NetworkGraphic;
 import com.fasterxml.jackson.databind.ObjectMapper;

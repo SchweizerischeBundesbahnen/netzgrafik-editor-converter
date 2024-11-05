@@ -1,6 +1,8 @@
-package ch.sbb.pfi.netzgrafikeditor.converter;
+package ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik;
 
+import ch.sbb.pfi.netzgrafikeditor.converter.TestData;
 import ch.sbb.pfi.netzgrafikeditor.converter.model.NetworkGraphic;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,8 +10,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class JsonDeserializerTest {
 
@@ -28,7 +28,7 @@ class JsonDeserializerTest {
         NetworkGraphic networkGraphic = deserializer.read(jsonString);
 
         System.out.println(networkGraphic);
-        assertNotNull(networkGraphic);
+        Assertions.assertNotNull(networkGraphic);
     }
 
     @Test
@@ -37,7 +37,7 @@ class JsonDeserializerTest {
 
         NetworkGraphic networkGraphic = deserializer.read(filePath);
 
-        assertNotNull(networkGraphic);
+        Assertions.assertNotNull(networkGraphic);
     }
 
     @Test
@@ -46,6 +46,6 @@ class JsonDeserializerTest {
 
         NetworkGraphic networkGraphic = deserializer.read(url);
 
-        assertNotNull(networkGraphic);
+        Assertions.assertNotNull(networkGraphic);
     }
 }

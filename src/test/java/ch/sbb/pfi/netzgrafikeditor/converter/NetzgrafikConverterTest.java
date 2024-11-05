@@ -1,5 +1,6 @@
 package ch.sbb.pfi.netzgrafikeditor.converter;
 
+import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonDeserializer;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.RouteDirection;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.SupplyBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +19,13 @@ import static org.mockito.Mockito.*;
 class NetzgrafikConverterTest {
 
     @Mock
+    private NetworkGraphicSource source;
+
+    @Mock
     private SupplyBuilder builder;
+
+    @Mock
+    private ConverterSink sink;
 
     @InjectMocks
     private NetzgrafikConverter converter;
@@ -33,25 +40,36 @@ class NetzgrafikConverterTest {
 
     @Test
     void convert_simple() throws IOException {
-        converter.read(TestData.SIMPLE.getPath());
+        when(source.load()).thenReturn(new JsonDeserializer().read(TestData.SIMPLE.getPath()));
 
-        verify(builder, times(1)).build();
+        converter.run();
+
+        verifyConversionSteps();
     }
 
     @Test
     void convert_cycle() throws IOException {
-        converter.read(TestData.CYCLE.getPath());
+        when(source.load()).thenReturn(new JsonDeserializer().read(TestData.CYCLE.getPath()));
 
-        verify(builder, times(1)).build();
+        converter.run();
+
+        verifyConversionSteps();
     }
 
     @Test
     void convert_conflictingTimes() throws IOException {
+        when(source.load()).thenReturn(new JsonDeserializer().read(TestData.CONFLICTING_TIMES.getPath()));
         when(builder.addRoutePass(anyString(), anyString())).thenReturn(builder);
 
-        converter.read(TestData.CONFLICTING_TIMES.getPath());
+        converter.run();
 
+        verifyConversionSteps();
+    }
+
+    private void verifyConversionSteps() throws IOException {
+        verify(source, times(1)).load();
         verify(builder, times(1)).build();
+        verify(sink, times(1)).save();
     }
 
 }

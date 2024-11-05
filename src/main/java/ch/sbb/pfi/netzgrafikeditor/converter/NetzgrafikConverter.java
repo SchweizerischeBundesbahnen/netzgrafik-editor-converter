@@ -1,6 +1,5 @@
 package ch.sbb.pfi.netzgrafikeditor.converter;
 
-import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonDeserializer;
 import ch.sbb.pfi.netzgrafikeditor.converter.model.DayTimeInterval;
 import ch.sbb.pfi.netzgrafikeditor.converter.model.Identifiable;
 import ch.sbb.pfi.netzgrafikeditor.converter.model.NetworkGraphic;
@@ -19,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -37,7 +35,9 @@ public class NetzgrafikConverter {
     private static final double OPERATION_DAY_START_TIME_SECONDS = 2 * 3600.;
     private static final double OPERATION_DAY_END_TIME_SECONDS = 23 * 3600.;
 
+    private final NetworkGraphicSource source;
     private final SupplyBuilder supplyBuilder;
+    private final ConverterSink sink;
 
     private Map<String, Integer> lineCounter;
     private Lookup lookup;
@@ -73,19 +73,21 @@ public class NetzgrafikConverter {
         return Duration.ofSeconds(Math.round(trainrunCategoryHaltezeit.getHaltezeit() * 60));
     }
 
-    void read(Path filePath) throws IOException {
-        log.info("Converting netzgrafik using {}", supplyBuilder.getClass().getSimpleName());
-        NetworkGraphic network = new JsonDeserializer().read(filePath);
+    void run() throws IOException {
+        log.info("Converting netzgrafik using source {}, supply builder {} and sink {}",
+                source.getClass().getSimpleName(), supplyBuilder.getClass().getSimpleName(),
+                sink.getClass().getSimpleName());
 
-        // remove spaces and dots
-        // TODO: Validate input in deserializer?
-        // network.getNodes().forEach(n -> n.set(n.getBetriebspunktName().replaceAll(" ", "_").replaceAll("\\.", "")));
-
-        lineCounter = new HashMap<>();
-        lookup = new Lookup(network);
-
+        initialize(source.load());
         addStops();
         addTrains();
+
+        sink.save();
+    }
+
+    private void initialize(NetworkGraphic network) {
+        lineCounter = new HashMap<>();
+        lookup = new Lookup(network);
     }
 
     /**
@@ -200,8 +202,10 @@ public class NetzgrafikConverter {
         List<DayTimeInterval> timeIntervals = lookup.times.get(train.getTrainrunTimeCategoryId()).getDayTimeIntervals();
         if (timeIntervals.isEmpty()) {
             // add interval for full day (in minutes)
-            timeIntervals.add(DayTimeInterval.builder().from((int) (Math.round(OPERATION_DAY_START_TIME_SECONDS / 60.)))
-                    .to(((int) Math.round(OPERATION_DAY_END_TIME_SECONDS / 60.))).build());
+            timeIntervals.add(DayTimeInterval.builder()
+                    .from((int) (Math.round(OPERATION_DAY_START_TIME_SECONDS / 60.)))
+                    .to(((int) Math.round(OPERATION_DAY_END_TIME_SECONDS / 60.)))
+                    .build());
         }
 
         // create departures in intervals for both directions
@@ -306,7 +310,10 @@ public class NetzgrafikConverter {
             this.nodes = listToHashMap(network.getNodes());
             this.ports = listToHashMap(
                     network.getNodes().stream().map(Node::getPorts).flatMap(List::stream).collect(Collectors.toList()));
-            this.transitions = listToHashMap(network.getNodes().stream().map(Node::getTransitions).flatMap(List::stream)
+            this.transitions = listToHashMap(network.getNodes()
+                    .stream()
+                    .map(Node::getTransitions)
+                    .flatMap(List::stream)
                     .collect(Collectors.toList()));
             this.trains = listToHashMap(network.getTrainruns());
             this.sections = listToHashMap(network.getTrainrunSections());
@@ -316,8 +323,8 @@ public class NetzgrafikConverter {
         }
 
         private <T extends Identifiable> Map<Integer, T> listToHashMap(List<T> list) {
-            return list.stream().collect(
-                    Collectors.toMap(Identifiable::getId, element -> element, (element, element2) -> element,
+            return list.stream()
+                    .collect(Collectors.toMap(Identifiable::getId, element -> element, (element, element2) -> element,
                             HashMap::new));
         }
 

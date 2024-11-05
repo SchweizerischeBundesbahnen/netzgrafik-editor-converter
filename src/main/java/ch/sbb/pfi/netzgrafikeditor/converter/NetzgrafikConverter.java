@@ -73,7 +73,7 @@ public class NetzgrafikConverter {
         return Duration.ofSeconds(Math.round(trainrunCategoryHaltezeit.getHaltezeit() * 60));
     }
 
-    void run() throws IOException {
+    public void run() throws IOException {
         log.info("Converting netzgrafik using source {}, supply builder {} and sink {}",
                 source.getClass().getSimpleName(), supplyBuilder.getClass().getSimpleName(),
                 sink.getClass().getSimpleName());

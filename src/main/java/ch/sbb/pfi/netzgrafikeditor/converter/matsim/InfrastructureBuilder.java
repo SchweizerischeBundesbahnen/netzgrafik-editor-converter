@@ -122,7 +122,7 @@ class InfrastructureBuilder {
             // check if segment was already added
             if (addedSegments.containsKey(segment.getSegmentId())) {
 
-                log.info("Track segment {} already added, skipping", segment.getSegmentId());
+                log.debug("Track segment {} already added, skipping", segment.getSegmentId());
                 linkIds.add(addedSegments.get(segment.getSegmentId()));
 
             } else { // segment is new, create link with nodes

@@ -11,11 +11,21 @@ import java.nio.file.Path;
 public class JsonFileReader implements NetworkGraphicSource {
 
     private final Path filePath;
+    private volatile NetworkGraphic networkGraphic; // ensure visibility across threads
 
     @Override
     public NetworkGraphic load() throws IOException {
 
-        return new JsonDeserializer().read(filePath);
+        // first check (without locking)
+        if (networkGraphic == null) {
+            synchronized (this) {
+                // second check (with locking)
+                if (networkGraphic == null) {
+                    networkGraphic = new JsonDeserializer().read(filePath);
+                }
+            }
+        }
 
+        return networkGraphic;
     }
 }

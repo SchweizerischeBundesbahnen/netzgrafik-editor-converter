@@ -32,6 +32,7 @@ public class TrainrunSection implements Identifiable {
 
     private Time targetDeparture;
 
+    // TODO: Move this into the converter, this should be read-only value object.
     public void swap() {
         int tmpId = sourceNodeId;
         Time tmpDeparture = sourceDeparture;

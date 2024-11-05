@@ -68,7 +68,8 @@ public class MatsimSupplyBuilder implements SupplyBuilder {
 
         VehicleTypeInfo vehicleTypeInfo = vehicleTypeInfos.get(vehicleTypeId);
         if (vehicleTypeInfo == null) {
-            vehicleTypeInfos.put(vehicleTypeId, rollingStockRepository.getVehicleType(vehicleTypeId));
+            vehicleTypeInfo = rollingStockRepository.getVehicleType(vehicleTypeId);
+            vehicleTypeInfos.put(vehicleTypeId, vehicleTypeInfo);
         }
 
         StopFacilityInfo originStop = stopFacilityInfos.get(originStopId);

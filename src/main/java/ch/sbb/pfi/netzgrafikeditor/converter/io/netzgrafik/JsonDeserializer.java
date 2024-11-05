@@ -1,4 +1,4 @@
-package ch.sbb.pfi.netzgrafikeditor.converter;
+package ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.model.NetworkGraphic;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +24,10 @@ public class JsonDeserializer {
      */
     public NetworkGraphic read(String jsonString) throws IOException {
         log.info("Reading netzgrafik from JSON string");
+
+        // TODO: Validate input in deserializer? Remove spaces and dots?
+        // network.getNodes().forEach(n -> n.set(n.getBetriebspunktName().replaceAll(" ", "_").replaceAll("\\.", "")));
+
         return objectMapper.readValue(jsonString, NetworkGraphic.class);
     }
 

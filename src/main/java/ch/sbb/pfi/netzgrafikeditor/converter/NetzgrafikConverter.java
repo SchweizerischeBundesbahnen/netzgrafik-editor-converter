@@ -1,5 +1,6 @@
 package ch.sbb.pfi.netzgrafikeditor.converter;
 
+import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonDeserializer;
 import ch.sbb.pfi.netzgrafikeditor.converter.model.DayTimeInterval;
 import ch.sbb.pfi.netzgrafikeditor.converter.model.Identifiable;
 import ch.sbb.pfi.netzgrafikeditor.converter.model.NetworkGraphic;

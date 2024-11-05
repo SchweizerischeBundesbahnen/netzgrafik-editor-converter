@@ -9,7 +9,6 @@ import ch.sbb.pfi.netzgrafikeditor.converter.supply.impl.NoRollingStockRepositor
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.impl.NoVehicleCircuitsPlanner;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.scenario.ScenarioUtils;
@@ -17,31 +16,49 @@ import org.matsim.core.scenario.ScenarioUtils;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 public class NetzgrafikConverterIT {
 
+    public static final String OUTPUT_ROOT = "integration-test/output/";
+    public static final Path OUTPUT_PATH = Path.of(
+            OUTPUT_ROOT + NetzgrafikConverterIT.class.getCanonicalName().replace(".", "/"));
+
     private Scenario scenario;
-    private NetworkGraphicSource source;
-    private SupplyBuilder builder;
-    private ConverterSink sink;
     private NetzgrafikConverter converter;
 
-    @TempDir
-    private Path tempDir;
-
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() {
         scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
-        source = new JsonFileReader(TestData.SIMPLE.getPath());
-        builder = new MatsimSupplyBuilder(scenario, new NoInfrastructureRepository(source.load()),
-                new NoRollingStockRepository(), new NoVehicleCircuitsPlanner());
-        sink = new TransitScheduleXmlWriter(scenario, tempDir, "test.");
-        converter = new NetzgrafikConverter(source, builder, sink);
     }
 
     @Test
     void convert_simple() throws IOException {
+        configureConverter(TestData.SIMPLE);
         converter.run();
+        assertNotNull(scenario);
     }
 
+    @Test
+    void convert_cycle() throws IOException {
+        configureConverter(TestData.CYCLE);
+        converter.run();
+        assertNotNull(scenario);
+    }
 
+    @Test
+    void convert_conflictingTimes() throws IOException {
+        configureConverter(TestData.CONFLICTING_TIMES);
+        converter.run();
+        assertNotNull(scenario);
+    }
+
+    private void configureConverter(TestData testData) throws IOException {
+        NetworkGraphicSource source = new JsonFileReader(testData.getPath());
+        SupplyBuilder builder = new MatsimSupplyBuilder(scenario, new NoInfrastructureRepository(source.load()),
+                new NoRollingStockRepository(), new NoVehicleCircuitsPlanner());
+        ConverterSink sink = new TransitScheduleXmlWriter(scenario, OUTPUT_PATH, testData.name().toLowerCase() + ".");
+
+        converter = new NetzgrafikConverter(source, builder, sink);
+    }
 }

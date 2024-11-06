@@ -32,9 +32,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class NetzgrafikConverter {
 
-    private static final double OPERATION_DAY_START_TIME_SECONDS = 2 * 3600.;
-    private static final double OPERATION_DAY_END_TIME_SECONDS = 23 * 3600.;
-
+    private final NetzgrafikConverterConfig config;
     private final NetworkGraphicSource source;
     private final SupplyBuilder supplyBuilder;
     private final ConverterSink sink;
@@ -145,12 +143,7 @@ public class NetzgrafikConverter {
 
         // get vehicle type info from train category and create line id
         String vehicleType = lookup.categories.get(train.getCategoryId()).getShortName();
-        int count = lineCounter.getOrDefault(vehicleType, 0);
-        int id = train.getId();
-        String name = train.getName().trim();
-        String lineId = String.format("%s_%s-%s_%s_%s", vehicleType, nodes.getFirst().getBetriebspunktName(),
-                nodes.getLast().getBetriebspunktName(), id, name);
-        lineCounter.put(vehicleType, ++count);
+        String lineId = createTransitLineId(nodes, vehicleType);
 
         // create route stops, rail links and travel times
         String fachCategory = lookup.categories.get(train.getCategoryId()).getFachCategory();
@@ -182,9 +175,9 @@ public class NetzgrafikConverter {
 
                 if (!dwellTime.equals(dwellTimeFromCategory)) {
                     log.warn(
-                            "Trainrun {} has mismatch in dwell time at Stop {} for category {}: expected {}, but found {}.",
+                            "Trainrun {} has mismatch in dwell time at Stop {} for category {}: expected {}s, but found {}s.",
                             lookup.trains.get(train.getId()).getName(), targetNode.getBetriebspunktName(), fachCategory,
-                            dwellTimeFromCategory, dwellTime);
+                            dwellTimeFromCategory.toSeconds(), dwellTime.toSeconds());
                 }
 
                 supplyBuilder.addRouteStop(lineId, targetNode.getBetriebspunktName(), travelTime, dwellTime);
@@ -203,8 +196,8 @@ public class NetzgrafikConverter {
         if (timeIntervals.isEmpty()) {
             // add interval for full day (in minutes)
             timeIntervals.add(DayTimeInterval.builder()
-                    .from((int) (Math.round(OPERATION_DAY_START_TIME_SECONDS / 60.)))
-                    .to(((int) Math.round(OPERATION_DAY_END_TIME_SECONDS / 60.)))
+                    .from((int) (Math.round(config.getServiceDayStart().toSecondOfDay() / 60.)))
+                    .to(((int) Math.round(config.getServiceDayEnd().toSecondOfDay() / 60.)))
                     .build());
         }
 
@@ -215,6 +208,24 @@ public class NetzgrafikConverter {
             departures.forEach(departure -> supplyBuilder.addDeparture(lineId, direction, departure));
         }
 
+    }
+
+    private String createTransitLineId(List<Node> nodes, String vehicleType) {
+        // create id from vehicle type with origin and destination, ignore the train name from nge
+        String lineId = String.format("%s_%s_%s", vehicleType, nodes.getFirst().getBetriebspunktName(),
+                nodes.getLast().getBetriebspunktName());
+
+        // check if line id is already existing
+        int count = lineCounter.getOrDefault(lineId, 0);
+        if (count > 0) {
+            lineCounter.put(lineId, ++count);
+            log.info("Line with id {} is already existing, adding counter {} to id", lineId, count);
+            lineId = String.format("%s_%d", lineId, count);
+        } else {
+            lineCounter.put(lineId, 1);
+        }
+
+        return lineId;
     }
 
     private Duration getDwellTimeFromSections(TrainrunSection currentSection, TrainrunSection nextSection) {

@@ -143,7 +143,7 @@ public class NetzgrafikConverter {
 
         // get vehicle type info from train category and create line id
         String vehicleType = lookup.categories.get(train.getCategoryId()).getShortName();
-        String lineId = createTransitLineId(nodes, vehicleType);
+        String lineId = createTransitLineId(train, nodes, vehicleType);
 
         // create route stops, rail links and travel times
         String fachCategory = lookup.categories.get(train.getCategoryId()).getFachCategory();
@@ -175,9 +175,9 @@ public class NetzgrafikConverter {
 
                 if (!dwellTime.equals(dwellTimeFromCategory)) {
                     log.warn(
-                            "Trainrun {} has mismatch in dwell time at Stop {} for category {}: expected {}s, but found {}s.",
-                            lookup.trains.get(train.getId()).getName(), targetNode.getBetriebspunktName(), fachCategory,
-                            dwellTimeFromCategory.toSeconds(), dwellTime.toSeconds());
+                            "Trainrun {} (lineId: {}) has mismatch in dwell time at Stop {} for category {}: expected {}s, but found {}s.",
+                            lookup.trains.get(train.getId()).getName(), lineId, targetNode.getBetriebspunktName(),
+                            fachCategory, dwellTimeFromCategory.toSeconds(), dwellTime.toSeconds());
                 }
 
                 supplyBuilder.addRouteStop(lineId, targetNode.getBetriebspunktName(), travelTime, dwellTime);
@@ -210,10 +210,17 @@ public class NetzgrafikConverter {
 
     }
 
-    private String createTransitLineId(List<Node> nodes, String vehicleType) {
-        // create id from vehicle type with origin and destination, ignore the train name from nge
-        String lineId = String.format("%s_%s_%s", vehicleType, nodes.getFirst().getBetriebspunktName(),
-                nodes.getLast().getBetriebspunktName());
+    private String createTransitLineId(Trainrun train, List<Node> nodes, String vehicleType) {
+
+        // check if option is set to use train name; also avoid name if it is empty (optional field in nge)
+        String lineId;
+        if (config.isUseTrainNames() && !train.getName().isBlank()) {
+            lineId = train.getName();
+        } else {
+            // create id from vehicle type with origin and destination, ignore the train name from nge
+            lineId = String.format("%s_%s_%s", vehicleType, nodes.getFirst().getBetriebspunktName(),
+                    nodes.getLast().getBetriebspunktName());
+        }
 
         // check if line id is already existing
         int count = lineCounter.getOrDefault(lineId, 0);

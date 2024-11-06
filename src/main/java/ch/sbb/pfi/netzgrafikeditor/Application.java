@@ -3,6 +3,7 @@ package ch.sbb.pfi.netzgrafikeditor;
 import ch.sbb.pfi.netzgrafikeditor.converter.ConverterSink;
 import ch.sbb.pfi.netzgrafikeditor.converter.NetworkGraphicSource;
 import ch.sbb.pfi.netzgrafikeditor.converter.NetzgrafikConverter;
+import ch.sbb.pfi.netzgrafikeditor.converter.NetzgrafikConverterConfig;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.matsim.TransitScheduleXmlWriter;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonFileReader;
 import ch.sbb.pfi.netzgrafikeditor.converter.matsim.MatsimSupplyBuilder;
@@ -57,7 +58,8 @@ public class Application implements CommandLineRunner {
                     .substring(0, baseFilename.lastIndexOf('.'));
             ConverterSink sink = new TransitScheduleXmlWriter(scenario, outputPath, filenameWithoutExtension + ".");
 
-            NetzgrafikConverter converter = new NetzgrafikConverter(source, builder, sink);
+            NetzgrafikConverter converter = new NetzgrafikConverter(NetzgrafikConverterConfig.builder().build(), source,
+                    builder, sink);
             converter.run();
 
             System.out.println("MATSim schedule has been written to: " + outputPath);

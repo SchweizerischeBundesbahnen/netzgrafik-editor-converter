@@ -7,8 +7,7 @@ public enum TestData {
 
     SIMPLE("netzgrafik-simple.json"),
     CYCLE("netzgrafik-cycle.json"),
-    CONFLICTING_TIMES(
-            "netzgrafik-conflicting-times.json");
+    CONFLICTING_TIMES("netzgrafik-conflicting-times.json");
 
     private final String fileName;
 

@@ -59,12 +59,13 @@ class InfrastructureBuilder {
 
         List<Id<Link>> routeLinks = new ArrayList<>();
         List<TransitRouteStop> routeStops = new ArrayList<>();
+        final double[] travelTime = {0};
 
         // add first stop
-        TransitStopFacility stopFacility = stopFacilities.get(transitLineInfo.getOriginStop().getId());
-        double travelTime = 0;
         double dwellTime = transitLineInfo.getDwellTimeAtOrigin().toSeconds();
-        TransitRouteStop transitRouteStop = factory.createTransitRouteStop(stopFacility, travelTime, dwellTime, true);
+        TransitStopFacility stopFacility = stopFacilities.get(transitLineInfo.getOriginStop().getId());
+        TransitRouteStop transitRouteStop = factory.createTransitRouteStop(stopFacility, -dwellTime, travelTime[0],
+                true);
         routeStops.add(transitRouteStop);
 
         // loop over route elements, set first stop as last element and start with second element
@@ -77,12 +78,15 @@ class InfrastructureBuilder {
 
                 @Override
                 public void visit(RouteStop routeStop) {
-                    TransitStopFacility stopFacility = stopFacilities.get(routeStop.getStopFacilityInfo().getId());
-                    double travelTime = routeStop.getTravelTime().toSeconds();
+                    travelTime[0] = travelTime[0] + routeStop.getTravelTime().toSeconds();
                     double dwellTime = routeStop.getDwellTime().toSeconds();
-                    TransitRouteStop transitRouteStop = factory.createTransitRouteStop(stopFacility, travelTime,
-                            dwellTime, true);
+
+                    TransitStopFacility stopFacility = stopFacilities.get(routeStop.getStopFacilityInfo().getId());
+                    TransitRouteStop transitRouteStop = factory.createTransitRouteStop(stopFacility, travelTime[0],
+                            travelTime[0] + dwellTime, true);
                     routeStops.add(transitRouteStop);
+
+                    travelTime[0] = travelTime[0] + dwellTime;
                 }
 
                 @Override
@@ -103,7 +107,7 @@ class InfrastructureBuilder {
             lastElement = currentElement;
         }
 
-        // get or add transit line and transit route
+        // get or create transit line
         TransitLine transitLine = factory.getOrCreateTransitLine(transitLineInfo.getId());
 
         return factory.createTransitRoute(transitLine,

@@ -128,58 +128,44 @@ public class NetzgrafikConverter {
         supplyBuilder.build();
     }
 
-    /**
-     * Create and add a Trainrun to a TransitLine
-     * <p>
-     * Creates a TransitLine from the Trainrun ordered by the TrainrunBuilder. Adds a TransitLine with both directions
-     * to the MATSim TransitSchedule. Further the Vehicles are assigned vehicle circuits (different route types)
-     * depending on the departure times, the vehicle arrivals and vehicle turnaround time.
-     *
-     * @param train    trainrun object from the ng file.
-     * @param nodes    the nodes in the trainrun.
-     * @param sections the section in the trainrun.
-     */
     private void createAndAddTransitLine(Trainrun train, List<Node> nodes, List<TrainrunSection> sections) {
 
         // get vehicle type info from train category and create line id
         String vehicleType = lookup.categories.get(train.getCategoryId()).getShortName();
         String lineId = createTransitLineId(train, nodes, vehicleType);
 
-        // create route stops, rail links and travel times
-        String fachCategory = lookup.categories.get(train.getCategoryId()).getFachCategory();
+        // add first route stop to transit line
         Iterator<Node> nodeIter = nodes.iterator();
-        Iterator<TrainrunSection> sectionIter = sections.iterator();
         Node sourceNode = nodeIter.next();
-        Duration travelTime = Duration.ofSeconds(0);
-
-        // add first route stop info
+        String fachCategory = lookup.categories.get(train.getCategoryId()).getFachCategory();
         Duration dwellTimeAtOrigin = getDwellTimeFromCategory(sourceNode, fachCategory);
         supplyBuilder.addTransitLine(lineId, vehicleType, sourceNode.getBetriebspunktName(), dwellTimeAtOrigin);
 
         // iterate over nodes and sections of transit line
+        Iterator<TrainrunSection> sectionIter = sections.iterator();
         TrainrunSection nextSection = sectionIter.next();
+        Duration travelTime = Duration.ofSeconds(0);
+
         for (int i = 1; i < nodes.size() - 1; i++) {
-            // add stop and check if it is a not nonstop transit stop
+
             Node targetNode = nodeIter.next();
             TrainrunSection currentSection = nextSection;
             nextSection = sectionIter.next();
-
-            // pass: Add route stop info with zero waiting time
             travelTime = travelTime.plusMinutes(Math.round(currentSection.getTravelTime().getTime()));
+
+            // check if it is a not nonstop transit pass or stop
             if (isPass(targetNode, currentSection.getId())) {
+                // pass: Add route pass to transit line
                 supplyBuilder.addRoutePass(lineId, targetNode.getBetriebspunktName());
+
             } else {
-                // stop: Add route stop info with waiting time from netzgrafik and reset travel time
-                Duration dwellTimeFromCategory = getDwellTimeFromCategory(targetNode, fachCategory);
+                // stop: Add route stop with dwell time from network graphic to transit line
                 Duration dwellTime = getDwellTimeFromSections(currentSection, nextSection);
 
-                if (!dwellTime.equals(dwellTimeFromCategory)) {
-                    log.warn(
-                            "Trainrun {} (lineId: {}) has mismatch in dwell time at Stop {} for category {}: expected {}s, but found {}s.",
-                            lookup.trains.get(train.getId()).getName(), lineId, targetNode.getBetriebspunktName(),
-                            fachCategory, dwellTimeFromCategory.toSeconds(), dwellTime.toSeconds());
-                }
+                // check consistency of dwell time from network graphic against dwell time from category
+                warnOnDwellTimeInconsistency(dwellTime, train, targetNode, fachCategory, lineId);
 
+                // add stop and reset travel time
                 supplyBuilder.addRouteStop(lineId, targetNode.getBetriebspunktName(), travelTime, dwellTime);
                 travelTime = Duration.ofSeconds(0);
             }
@@ -208,6 +194,16 @@ public class NetzgrafikConverter {
             departures.forEach(departure -> supplyBuilder.addDeparture(lineId, direction, departure));
         }
 
+    }
+
+    private void warnOnDwellTimeInconsistency(Duration dwellTime, Trainrun train, Node targetNode, String fachCategory, String lineId) {
+        Duration dwellTimeFromCategory = getDwellTimeFromCategory(targetNode, fachCategory);
+        if (!dwellTime.equals(dwellTimeFromCategory)) {
+            log.warn(
+                    "Trainrun {} (lineId: {}) has mismatch in dwell time at Stop {} for category {}: expected {}s, but found {}s.",
+                    lookup.trains.get(train.getId()).getName(), lineId, targetNode.getBetriebspunktName(), fachCategory,
+                    dwellTimeFromCategory.toSeconds(), dwellTime.toSeconds());
+        }
     }
 
     private String createTransitLineId(Trainrun train, List<Node> nodes, String vehicleType) {

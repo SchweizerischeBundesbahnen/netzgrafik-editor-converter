@@ -59,6 +59,7 @@ public class NetzgrafikConverterIT {
                 new NoRollingStockRepository(), new NoVehicleCircuitsPlanner());
         ConverterSink sink = new TransitScheduleXmlWriter(scenario, OUTPUT_PATH, testData.name().toLowerCase() + ".");
 
-        converter = new NetzgrafikConverter(NetzgrafikConverterConfig.builder().build(), source, builder, sink);
+        converter = new NetzgrafikConverter(NetzgrafikConverterConfig.builder().useTrainNames(true).build(), source,
+                builder, sink);
     }
 }

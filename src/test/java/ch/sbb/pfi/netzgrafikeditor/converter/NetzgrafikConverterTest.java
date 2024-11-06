@@ -11,12 +11,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
+import java.time.LocalTime;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class NetzgrafikConverterTest {
+
+    @Mock
+    private NetzgrafikConverterConfig config;
 
     @Mock
     private NetworkGraphicSource source;
@@ -32,6 +36,9 @@ class NetzgrafikConverterTest {
 
     @BeforeEach
     void setUp() {
+        when(config.getServiceDayStart()).thenReturn(LocalTime.MIN);
+        when(config.getServiceDayEnd()).thenReturn(LocalTime.MAX);
+        when(config.isUseTrainNames()).thenReturn(false);
         when(builder.addStopFacility(anyString())).thenReturn(builder);
         when(builder.addTransitLine(anyString(), anyString(), anyString(), any())).thenReturn(builder);
         when(builder.addRouteStop(anyString(), anyString(), any(), any())).thenReturn(builder);

@@ -11,11 +11,11 @@ public class NetzgrafikConverterConfig {
 
     private static final int SECONDS_IN_A_DAY = 24 * 60 * 60;
 
-    // TODO: Implement
     /**
      * Use the train names as names for the transit lines. Since this field is not mandatory in the NGE, it is per
      * default set to false.
      */
+    @Builder.Default
     boolean useTrainNames = false;
 
     // TODO: Introduce a service day class supporting more than 24 hours, e.g. 02:00 the next day.
@@ -23,11 +23,13 @@ public class NetzgrafikConverterConfig {
     /**
      * Time when the operation day starts, default is 05:00, this day.
      */
+    @Builder.Default
     LocalTime serviceDayStart = LocalTime.of(5, 0);
 
     /**
      * Time when the operation day ends, default is 23:00, this day.
      */
+    @Builder.Default
     LocalTime serviceDayEnd = LocalTime.of(23, 0);
 
 }

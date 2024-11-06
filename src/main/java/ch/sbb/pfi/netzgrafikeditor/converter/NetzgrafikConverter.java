@@ -212,7 +212,7 @@ public class NetzgrafikConverter {
 
     private String createTransitLineId(Trainrun train, List<Node> nodes, String vehicleType) {
 
-        // check if option is set to use train name; also avoid name if it is empty (optional field in nge)
+        // check if option is set to use train name; also avoid name if it is empty (optional field in NGE)
         String lineId;
         if (config.isUseTrainNames() && !train.getName().isBlank()) {
             lineId = train.getName();
@@ -240,11 +240,11 @@ public class NetzgrafikConverter {
         double departureTime = nextSection.getSourceDeparture().getTime();
 
         if (arrivalTime > departureTime) {
-            // Special case: The departure time is in the next hour
-            // Example: arrivalTime = 59, departureTime = 1; actual dwell time = 2 minutes
+            // special case: The departure time is in the next hour
+            // example: arrivalTime = 59, departureTime = 1; actual dwell time = 2 minutes
             return Duration.ofSeconds(Math.round((departureTime + 60 - arrivalTime) * 60.));
         } else {
-            // Normal case: Arrival time is before departure time within the same hour
+            // normal case: Arrival time is before departure time within the same hour
             return Duration.ofSeconds(Math.round((departureTime - arrivalTime) * 60.));
         }
     }

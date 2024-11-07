@@ -6,11 +6,14 @@ set namespaceSeparator none
 top to bottom direction
 
 package netzgrafikeditor.converter {
-class NetzgrafikConverter {
-+run()
-}
+    class NetzgrafikConverter {
+        +run()
+    }
 
     class NetzgrafikConverterConfig {
+        -useTrainNames: boolean
+        -serviceDayStart: LocalTime
+        -serviceDayEnd: LocalTime
     }
 
     interface NetworkGraphicSource {

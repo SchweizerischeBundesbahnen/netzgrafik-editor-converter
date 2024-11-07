@@ -13,6 +13,8 @@ The converter has a modular design (DI):
     - **matsim**: MATSim-specific transit schedule builder, implementing the supply builder interface.
     - **io**: Provides implementations for network graphic sources and converter output sinks.
 
+![Class diagram](docs/uml/class-diagram.svg)
+
 ## License
 
 This project is licensed under [Apache 2.0](LICENSE).

@@ -108,26 +108,30 @@ public class NetzgrafikConverter {
         HashMap<Integer, TrainrunBuilder> trainToBuilder = new HashMap<>();
         for (TrainrunSection section : lookup.sections.values()) {
             int trainId = section.getTrainrunId();
-            TrainrunBuilder trainrunBuilder = trainToBuilder.getOrDefault(trainId,
-                    new TrainrunBuilder(lookup.nodes, lookup.trains.get(section.getTrainrunId())));
+            TrainrunBuilder trainrunBuilder = trainToBuilder.getOrDefault(trainId, new TrainrunBuilder(lookup.nodes));
             trainrunBuilder.add(section);
             trainToBuilder.put(section.getTrainrunId(), trainrunBuilder);
         }
 
         // add each train (route & line)
-        for (TrainrunBuilder tb : trainToBuilder.values()) {
-            log.debug("Adding train {}", lookup.trains.get(tb.getTrain().getId()).getName());
-            // run builder to create ordered sections
-            tb.build();
+        for (var entry : trainToBuilder.entrySet()) {
+            Trainrun train = lookup.trains.get(entry.getKey());
+
             // add transit routes and lines for both directions
-            createAndAddTransitLine(tb.getTrain(), tb.getOrderedNodes(), tb.getOrderedSections());
+            log.debug("Adding train {}", train.getName());
+            createAndAddTransitLine(train, entry.getValue().build());
         }
 
         // build transit schedule
         supplyBuilder.build();
     }
 
-    private void createAndAddTransitLine(Trainrun train, List<Node> nodes, List<TrainrunSection> sections) {
+    private void createAndAddTransitLine(Trainrun train, List<TrainrunSection> sections) {
+
+        // order nodes
+        List<Node> nodes = new ArrayList<>();
+        nodes.addFirst(lookup.nodes.get(sections.getFirst().getSourceNodeId()));
+        sections.forEach(section -> nodes.add(lookup.nodes.get(section.getTargetNodeId())));
 
         // get vehicle type info from train category and create line id
         String vehicleType = lookup.categories.get(train.getCategoryId()).getShortName();

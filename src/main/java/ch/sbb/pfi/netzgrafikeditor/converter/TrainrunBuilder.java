@@ -2,14 +2,11 @@ package ch.sbb.pfi.netzgrafikeditor.converter;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.model.Node;
 import ch.sbb.pfi.netzgrafikeditor.converter.model.Port;
-import ch.sbb.pfi.netzgrafikeditor.converter.model.Trainrun;
 import ch.sbb.pfi.netzgrafikeditor.converter.model.TrainrunSection;
 import ch.sbb.pfi.netzgrafikeditor.converter.model.Transition;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,13 +24,6 @@ class TrainrunBuilder {
     private final Map<Integer, Node> nodes;
     private final Map<Integer, Port> ports = new HashMap<>();
     private final Map<Integer, TrainrunSection> sections = new HashMap<>();
-
-    @Getter
-    private final Trainrun train;
-    @Getter
-    private final List<TrainrunSection> orderedSections = new LinkedList<>(); // append to start
-    @Getter
-    private final List<Node> orderedNodes = new ArrayList<>();
 
     private static TrainrunSection swap(TrainrunSection original) {
         return TrainrunSection.builder().id(original.getId()) // keep
@@ -54,16 +44,19 @@ class TrainrunBuilder {
         nodes.get(section.getTargetNodeId()).getPorts().forEach(port -> ports.put(port.getId(), port));
     }
 
-    void build() {
+    /**
+     * Traverse the sections and build an ordered sequence.
+     */
+    List<TrainrunSection> build() {
+        List<TrainrunSection> orderedSections = new LinkedList<>(); // append to start of list
 
-        // find start of chain
+        // find start of the chain
         TrainrunSection randomSection = sections.values().iterator().next();
         AtomicReference<TrainrunSection> startSection = new AtomicReference<>();
-        iterateFromAndApply(randomSection, startSection::set);
+        traverse(randomSection, startSection::set);
 
-        // start from initial section
-        orderedSections.clear();
-        iterateFromAndApply(startSection.get(), orderedSections::addFirst);
+        // traverse from start section
+        traverse(startSection.get(), orderedSections::addFirst);
 
         // swap first section if needed
         TrainrunSection first = orderedSections.getFirst();
@@ -82,14 +75,12 @@ class TrainrunBuilder {
             }
         }
 
-        // add nodes
-        orderedNodes.addFirst(nodes.get(orderedSections.getFirst().getSourceNodeId()));
-        orderedSections.forEach(section -> orderedNodes.add(nodes.get(section.getTargetNodeId())));
+        return orderedSections;
     }
 
-    private void iterateFromAndApply(TrainrunSection section, Consumer<TrainrunSection> action) {
+    private void traverse(TrainrunSection root, Consumer<TrainrunSection> action) {
         Map<Integer, TrainrunSection> sectionsToVisit = new HashMap<>(sections);
-        TrainrunSection current = section;
+        TrainrunSection current = root;
         TrainrunSection next;
 
         while (true) {

@@ -55,22 +55,11 @@ class TrainrunBuilder implements Iterator<TrainrunSection> {
     }
 
     void build() {
-        for (TrainrunSection section : sections.values()) {
-            log.info("Trainrun ID: {}, Source Node: {} (Stop: {}), Target Node: {} (Stop: {})", section.getTrainrunId(),
-                    section.getSourceNodeId(), nodes.get(section.getSourceNodeId()).getBetriebspunktName(),
-                    section.getTargetNodeId(), nodes.get(section.getTargetNodeId()).getBetriebspunktName());
-        }
 
         // find start of chain
         TrainrunSection randomSection = sections.values().iterator().next();
         AtomicReference<TrainrunSection> startSection = new AtomicReference<>();
         iterateFromAndApply(randomSection, startSection::set);
-
-        log.info("Start: {}, Source Node: {} (Stop: {}), Target Node: {} (Stop: {})",
-                startSection.get().getTrainrunId(), startSection.get().getSourceNodeId(),
-                nodes.get(startSection.get().getSourceNodeId()).getBetriebspunktName(),
-                startSection.get().getTargetNodeId(),
-                nodes.get(startSection.get().getTargetNodeId()).getBetriebspunktName());
 
         // start from initial section
         orderedSections.clear();
@@ -96,20 +85,6 @@ class TrainrunBuilder implements Iterator<TrainrunSection> {
         // add nodes
         orderedNodes.addFirst(nodes.get(orderedSections.getFirst().getSourceNodeId()));
         orderedSections.forEach(section -> orderedNodes.add(nodes.get(section.getTargetNodeId())));
-
-        for (TrainrunSection section : orderedSections) {
-            log.info("Ordered: {}", format(section));
-        }
-    }
-
-    private String format(TrainrunSection section) {
-        if (section == null) {
-            return "-";
-        } else {
-            return String.format("%d: %s - %s", section.getId(),
-                    nodes.get(section.getSourceNodeId()).getBetriebspunktName(),
-                    nodes.get(section.getTargetNodeId()).getBetriebspunktName());
-        }
     }
 
     private void iterateFromAndApply(TrainrunSection section, Consumer<TrainrunSection> action) {
@@ -139,14 +114,11 @@ class TrainrunBuilder implements Iterator<TrainrunSection> {
             }
 
             // advance one section
-            log.info("current section: {}, next: {}", format(current), format(next));
             current = next;
         }
     }
 
     private TrainrunSection getSection(TrainrunSection section, SearchCase searchCase, Map<Integer, TrainrunSection> sectionsToVisit) {
-
-        log.error("IN: {}", section.getId());
 
         // get node to search on
         Node node = switch (searchCase) {
@@ -165,22 +137,16 @@ class TrainrunBuilder implements Iterator<TrainrunSection> {
 
                     // transition connects on port 1, return next section on port 2
                     if (transition.getPort1Id() == port.getId()) {
-                        log.error("OUT: {}", ports.get(transition.getPort2Id()).getTrainrunSectionId());
-
                         return sectionsToVisit.get(ports.get(transition.getPort2Id()).getTrainrunSectionId());
                     }
 
                     // transition connects on port 2, return next section on port 1
                     if (transition.getPort2Id() == port.getId()) {
-                        log.error("OUT: {}", ports.get(transition.getPort1Id()).getTrainrunSectionId());
-
                         return sectionsToVisit.get(ports.get(transition.getPort1Id()).getTrainrunSectionId());
                     }
                 }
             }
         }
-
-        log.error("OUT: null");
 
         // no section found
         return null;

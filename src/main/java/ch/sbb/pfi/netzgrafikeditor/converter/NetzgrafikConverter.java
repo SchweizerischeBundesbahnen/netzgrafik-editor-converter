@@ -23,7 +23,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -110,18 +109,19 @@ public class NetzgrafikConverter {
         for (TrainrunSection section : lookup.sections.values()) {
             int trainId = section.getTrainrunId();
             TrainrunBuilder trainrunBuilder = trainToBuilder.getOrDefault(trainId,
-                    new TrainrunBuilder(lookup.trains.get(section.getTrainrunId())));
+                    new TrainrunBuilder(lookup.nodes, lookup.transitions, lookup.trains.get(section.getTrainrunId())));
             trainrunBuilder.add(section);
             trainToBuilder.put(section.getTrainrunId(), trainrunBuilder);
         }
 
         // add each train (route & line)
         for (TrainrunBuilder tb : trainToBuilder.values()) {
-            log.debug("Adding train {}", lookup.trains.get(tb.train.getId()).getName());
+            log.debug("Adding train {}", lookup.trains.get(tb.getTrain().getId()).getName());
             // run builder to create ordered sections
             tb.build();
             // add transit routes and lines for both directions
-            createAndAddTransitLine(tb.train, tb.nodes, tb.sections);
+            // tb.getNodes(), tb.getSections()
+            createAndAddTransitLine(tb.getTrain(), null, null);
         }
 
         // build transit schedule
@@ -342,158 +342,6 @@ public class NetzgrafikConverter {
                             HashMap::new));
         }
 
-    }
-
-    /**
-     * Preprocess trainrun segments, since they are not ordered in NGE JSON export.
-     */
-    class TrainrunBuilder {
-
-        private final Trainrun train;
-        private final List<TrainrunSection> sections;
-        private final List<Node> nodes;
-        private final Map<Integer, List<TrainrunSection>> sources;
-        private final Map<Integer, List<TrainrunSection>> targets;
-
-        TrainrunBuilder(Trainrun train) {
-            this.train = train;
-            this.sections = new LinkedList<>(); // need to append to start of list
-            this.nodes = new ArrayList<>();
-            this.sources = new HashMap<>();
-            this.targets = new HashMap<>();
-        }
-
-        private static TrainrunSection swap(TrainrunSection original) {
-            return TrainrunSection.builder().id(original.getId()) // keep
-                    .sourceNodeId(original.getTargetNodeId())  // swap
-                    .targetNodeId(original.getSourceNodeId())  // swap
-                    .trainrunId(original.getTrainrunId()) // keep
-                    .sourceArrival(original.getTargetArrival())  // swap
-                    .sourceDeparture(original.getTargetDeparture()) // swap
-                    .targetArrival(original.getSourceArrival()) // swap
-                    .targetDeparture(original.getSourceDeparture()) // swap
-                    .travelTime(original.getTravelTime()) // keep
-                    .build();
-        }
-
-        private static TrainrunSection getNextTrainrunSection(int currentId, int id, Map<Integer, List<TrainrunSection>> trainrunSections) {
-            TrainrunSection ts = null;
-            if (trainrunSections.containsKey(id)) {
-                ts = trainrunSections.get(id).stream().filter(t -> t.getId() != currentId).findFirst().orElse(null);
-            }
-            return ts;
-        }
-
-        void add(TrainrunSection section) {
-            // add to sources
-            List<TrainrunSection> sourcesList = sources.getOrDefault(section.getSourceNodeId(), new ArrayList<>());
-            sourcesList.add(section);
-            sources.put(section.getSourceNodeId(), sourcesList);
-
-            // add to targets
-            List<TrainrunSection> targetsList = targets.getOrDefault(section.getTargetNodeId(), new ArrayList<>());
-            targetsList.add(section);
-            targets.put(section.getTargetNodeId(), targetsList);
-
-            log.debug("Adding section {} to trainrun builder for {} ({} --> {}, sources={} targets={})",
-                    section.getId(), train.getName(),
-                    lookup.nodes.get(section.getSourceNodeId()).getBetriebspunktName(),
-                    lookup.nodes.get(section.getTargetNodeId()).getBetriebspunktName(), sourcesList.size(),
-                    targetsList.size());
-        }
-
-        void build() {
-            orderSections();
-        }
-
-        private void orderSections() {
-            // add root section
-            sections.addFirst(sources.entrySet().iterator().next().getValue().getFirst());
-
-            // follow chain to terminal in target direction
-            int count = 0;
-            int maxIter = targets.size();
-            boolean terminal = false;
-            while (count < maxIter && !terminal) {
-                terminal = searchTargetSection();
-                count++;
-            }
-
-            // follow chain to terminal in target direction
-            terminal = false;
-            count = 0;
-            while (count < maxIter && !terminal) {
-                terminal = searchSourceSection();
-                count++;
-            }
-
-            // add ordered nodes of trainrun
-            nodes.addLast(lookup.nodes.get(sections.getFirst().getSourceNodeId()));
-            sections.forEach(ts -> nodes.addLast(lookup.nodes.get(ts.getTargetNodeId())));
-        }
-
-        /**
-         * Returns the next target section.
-         * <p>
-         * If the target section is not found inside the targets, then it is search inside the sources. If it is found,
-         * it has to be swapped.
-         */
-        private boolean searchTargetSection() {
-            TrainrunSection current = sections.getLast();
-            int currentId = current.getId();
-            int targetId = current.getTargetNodeId();
-
-            TrainrunSection target = getNextTrainrunSection(currentId, targetId, sources);
-            if (target != null) {
-                logSectionAction(current, target, "target", "");
-                sections.addLast(target);
-
-                return false;
-            }
-
-            target = getNextTrainrunSection(currentId, targetId, targets);
-            if (target != null) {
-                logSectionAction(current, target, "target", ", swapped");
-                sections.addLast(swap(target));
-
-                return false;
-            }
-            log.debug("Builder arrived at target terminal");
-
-            return true;
-        }
-
-        private boolean searchSourceSection() {
-            TrainrunSection current = sections.getFirst();
-            int currentId = current.getId();
-            int sourceId = current.getSourceNodeId();
-
-            TrainrunSection source = getNextTrainrunSection(currentId, sourceId, targets);
-            if (source != null) {
-                logSectionAction(current, source, "source", "");
-                sections.addFirst(source);
-                return false;
-            }
-
-            source = getNextTrainrunSection(currentId, sourceId, sources);
-            if (source != null) {
-                logSectionAction(current, source, "source", "");
-                sections.addFirst(swap(source));
-                return false;
-            }
-
-            log.debug("Builder arrived at source terminal");
-
-            return true;
-        }
-
-        private void logSectionAction(TrainrunSection current, TrainrunSection target, String type, String description) {
-            log.debug("Builder adding {} to section ({}: {} --> {}): ({}: {} --> {}){}", type, current.getId(),
-                    lookup.nodes.get(current.getSourceNodeId()).getBetriebspunktName(),
-                    lookup.nodes.get(current.getTargetNodeId()).getBetriebspunktName(), target.getId(),
-                    lookup.nodes.get(target.getSourceNodeId()).getBetriebspunktName(),
-                    lookup.nodes.get(target.getTargetNodeId()).getBetriebspunktName(), description);
-        }
     }
 
 }

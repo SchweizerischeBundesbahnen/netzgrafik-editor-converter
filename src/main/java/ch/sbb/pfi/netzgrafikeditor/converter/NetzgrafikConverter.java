@@ -120,7 +120,6 @@ public class NetzgrafikConverter {
             // run builder to create ordered sections
             tb.build();
             // add transit routes and lines for both directions
-            // tb.getNodes(), tb.getSections()
             createAndAddTransitLine(tb.getTrain(), tb.getOrderedNodes(), tb.getOrderedSections());
         }
 

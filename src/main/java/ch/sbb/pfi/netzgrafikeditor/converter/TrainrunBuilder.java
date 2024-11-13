@@ -11,18 +11,18 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 /**
- * Preprocess trainrun segments, since they are not ordered in NGE JSON export.
+ * Traverse and order trainrun sections
  */
 @Slf4j
 @AllArgsConstructor
-class TrainrunBuilder implements Iterator<TrainrunSection> {
+class TrainrunBuilder {
 
     private final Map<Integer, Node> nodes;
     private final Map<Integer, Port> ports = new HashMap<>();
@@ -31,7 +31,7 @@ class TrainrunBuilder implements Iterator<TrainrunSection> {
     @Getter
     private final Trainrun train;
     @Getter
-    private final List<TrainrunSection> orderedSections = new ArrayList<>();
+    private final List<TrainrunSection> orderedSections = new LinkedList<>(); // append to start
     @Getter
     private final List<Node> orderedNodes = new ArrayList<>();
 
@@ -63,7 +63,7 @@ class TrainrunBuilder implements Iterator<TrainrunSection> {
 
         // start from initial section
         orderedSections.clear();
-        iterateFromAndApply(startSection.get(), orderedSections::add);
+        iterateFromAndApply(startSection.get(), orderedSections::addFirst);
 
         // swap first section if needed
         TrainrunSection first = orderedSections.getFirst();
@@ -100,12 +100,12 @@ class TrainrunBuilder implements Iterator<TrainrunSection> {
             // mark as visited; remove from sections to visit
             sectionsToVisit.remove(current.getId());
 
-            // normal case; search on the left
-            next = getSection(current, SearchCase.SOURCE_NODE, sectionsToVisit);
+            // normal case; search on the target side (invert if source traversal)
+            next = getNextSection(current, TraversalMode.TARGET, sectionsToVisit);
 
-            // swapped case; search on the right
+            // swapped case; search on source side (invert if source traversal)
             if (next == null) {
-                next = getSection(current, SearchCase.TARGET_NODE, sectionsToVisit);
+                next = getNextSection(current, TraversalMode.SOURCE, sectionsToVisit);
             }
 
             // nothing found; we are at the end of chain
@@ -118,12 +118,12 @@ class TrainrunBuilder implements Iterator<TrainrunSection> {
         }
     }
 
-    private TrainrunSection getSection(TrainrunSection section, SearchCase searchCase, Map<Integer, TrainrunSection> sectionsToVisit) {
+    private TrainrunSection getNextSection(TrainrunSection section, TraversalMode traversalMode, Map<Integer, TrainrunSection> sectionsToVisit) {
 
         // get node to search on
-        Node node = switch (searchCase) {
-            case SOURCE_NODE -> nodes.get(section.getSourceNodeId());
-            case TARGET_NODE -> nodes.get(section.getTargetNodeId());
+        Node node = switch (traversalMode) {
+            case SOURCE -> nodes.get(section.getSourceNodeId());
+            case TARGET -> nodes.get(section.getTargetNodeId());
         };
 
         // normal case: check if section occurs on source node
@@ -153,20 +153,9 @@ class TrainrunBuilder implements Iterator<TrainrunSection> {
 
     }
 
-    @Override
-    public boolean hasNext() {
-        return false;
-    }
-
-    @Override
-    public TrainrunSection next() {
-        return null;
-    }
-
-
-    enum SearchCase {
-        SOURCE_NODE,
-        TARGET_NODE
+    private enum TraversalMode {
+        SOURCE,
+        TARGET
     }
 
 

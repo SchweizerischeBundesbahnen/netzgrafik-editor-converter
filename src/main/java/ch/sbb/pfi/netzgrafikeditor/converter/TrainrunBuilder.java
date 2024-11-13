@@ -9,26 +9,31 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 /**
  * Preprocess trainrun segments, since they are not ordered in NGE JSON export.
  */
 @Slf4j
 @AllArgsConstructor
-class TrainrunBuilder {
+class TrainrunBuilder implements Iterator<TrainrunSection> {
 
     private final Map<Integer, Node> nodes;
-    private final Map<Integer, Transition> transitions;
     private final Map<Integer, Port> ports = new HashMap<>();
+    private final Map<Integer, TrainrunSection> sections = new HashMap<>();
 
     @Getter
     private final Trainrun train;
     @Getter
-    private final Map<Integer, TrainrunSection> sections = new HashMap<>();
+    private final List<TrainrunSection> orderedSections = new ArrayList<>();
+    @Getter
+    private final List<Node> orderedNodes = new ArrayList<>();
 
     private static TrainrunSection swap(TrainrunSection original) {
         return TrainrunSection.builder().id(original.getId()) // keep
@@ -50,23 +55,51 @@ class TrainrunBuilder {
     }
 
     void build() {
-        List<TrainrunSection> orderedSections = new LinkedList<>();
-
         for (TrainrunSection section : sections.values()) {
             log.info("Trainrun ID: {}, Source Node: {} (Stop: {}), Target Node: {} (Stop: {})", section.getTrainrunId(),
                     section.getSourceNodeId(), nodes.get(section.getSourceNodeId()).getBetriebspunktName(),
                     section.getTargetNodeId(), nodes.get(section.getTargetNodeId()).getBetriebspunktName());
         }
 
+        // find start of chain
         TrainrunSection randomSection = sections.values().iterator().next();
+        AtomicReference<TrainrunSection> startSection = new AtomicReference<>();
+        iterateFromAndApply(randomSection, startSection::set);
 
-        TrainrunSection startSection = findStart(randomSection);
+        log.info("Start: {}, Source Node: {} (Stop: {}), Target Node: {} (Stop: {})",
+                startSection.get().getTrainrunId(), startSection.get().getSourceNodeId(),
+                nodes.get(startSection.get().getSourceNodeId()).getBetriebspunktName(),
+                startSection.get().getTargetNodeId(),
+                nodes.get(startSection.get().getTargetNodeId()).getBetriebspunktName());
 
-        log.info("Start: {}, Source Node: {} (Stop: {}), Target Node: {} (Stop: {})", startSection.getTrainrunId(),
-                startSection.getSourceNodeId(), nodes.get(startSection.getSourceNodeId()).getBetriebspunktName(),
-                startSection.getTargetNodeId(), nodes.get(startSection.getTargetNodeId()).getBetriebspunktName());
+        // start from initial section
+        orderedSections.clear();
+        iterateFromAndApply(startSection.get(), orderedSections::add);
 
+        // swap first section if needed
+        TrainrunSection first = orderedSections.getFirst();
+        TrainrunSection second = orderedSections.get(1);
+        if (first.getTargetNodeId() != second.getSourceNodeId() && first.getTargetNodeId() != first.getSourceNodeId()) {
+            orderedSections.set(0, swap(first));
+        }
 
+        // swap other sections if needed
+        for (int i = 1; i < orderedSections.size(); i++) {
+            int previousTargetNodeId = orderedSections.get(i - 1).getTargetNodeId();
+            TrainrunSection current = orderedSections.get(i);
+
+            if (previousTargetNodeId != current.getSourceNodeId()) {
+                orderedSections.set(i, swap(current));
+            }
+        }
+
+        // add nodes
+        orderedNodes.addFirst(nodes.get(orderedSections.getFirst().getSourceNodeId()));
+        orderedSections.forEach(section -> orderedNodes.add(nodes.get(section.getTargetNodeId())));
+
+        for (TrainrunSection section : orderedSections) {
+            log.info("Ordered: {}", format(section));
+        }
     }
 
     private String format(TrainrunSection section) {
@@ -79,25 +112,25 @@ class TrainrunBuilder {
         }
     }
 
-    private TrainrunSection findStart(TrainrunSection section) {
+    private void iterateFromAndApply(TrainrunSection section, Consumer<TrainrunSection> action) {
         Map<Integer, TrainrunSection> sectionsToVisit = new HashMap<>(sections);
-        boolean swapped = false;
         TrainrunSection current = section;
         TrainrunSection next;
 
-        int count = 0;
-
         while (true) {
+
+            // apply action on current section
+            action.accept(current);
 
             // mark as visited; remove from sections to visit
             sectionsToVisit.remove(current.getId());
 
             // normal case; search on the left
-            next = getSection(current, swapped ? SearchCase.TARGET_NODE : SearchCase.SOURCE_NODE, sectionsToVisit);
+            next = getSection(current, SearchCase.SOURCE_NODE, sectionsToVisit);
 
             // swapped case; search on the right
             if (next == null) {
-                next = getSection(current, swapped ? SearchCase.SOURCE_NODE : SearchCase.TARGET_NODE, sectionsToVisit);
+                next = getSection(current, SearchCase.TARGET_NODE, sectionsToVisit);
             }
 
             // nothing found; we are at the end of chain
@@ -105,20 +138,10 @@ class TrainrunBuilder {
                 break;
             }
 
-            // check if section is swapped; source node of current must be target node of previous
-            swapped = current.getSourceNodeId() != next.getTargetNodeId();
-
             // advance one section
-            log.info("Swapped: {}, current: {}, next: {}", swapped, format(current), format(next));
+            log.info("current section: {}, next: {}", format(current), format(next));
             current = next;
-
-            count++;
-            if (count > 10) {
-                throw new IllegalStateException("Abort...");
-            }
         }
-
-        return current;
     }
 
     private TrainrunSection getSection(TrainrunSection section, SearchCase searchCase, Map<Integer, TrainrunSection> sectionsToVisit) {
@@ -162,6 +185,16 @@ class TrainrunBuilder {
         // no section found
         return null;
 
+    }
+
+    @Override
+    public boolean hasNext() {
+        return false;
+    }
+
+    @Override
+    public TrainrunSection next() {
+        return null;
     }
 
 

@@ -109,7 +109,7 @@ public class NetzgrafikConverter {
         for (TrainrunSection section : lookup.sections.values()) {
             int trainId = section.getTrainrunId();
             TrainrunBuilder trainrunBuilder = trainToBuilder.getOrDefault(trainId,
-                    new TrainrunBuilder(lookup.nodes, lookup.transitions, lookup.trains.get(section.getTrainrunId())));
+                    new TrainrunBuilder(lookup.nodes, lookup.trains.get(section.getTrainrunId())));
             trainrunBuilder.add(section);
             trainToBuilder.put(section.getTrainrunId(), trainrunBuilder);
         }
@@ -121,7 +121,7 @@ public class NetzgrafikConverter {
             tb.build();
             // add transit routes and lines for both directions
             // tb.getNodes(), tb.getSections()
-            createAndAddTransitLine(tb.getTrain(), null, null);
+            createAndAddTransitLine(tb.getTrain(), tb.getOrderedNodes(), tb.getOrderedSections());
         }
 
         // build transit schedule

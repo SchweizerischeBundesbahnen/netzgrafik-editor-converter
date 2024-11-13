@@ -78,10 +78,9 @@ public class MatsimSupplyBuilder implements SupplyBuilder {
                     String.format("Route stop for line %s at not existing with id %s", lineId, originStopId));
         }
 
-        transitLineContainers.put(lineId,
-                new TransitLineContainer(new TransitLineInfo(lineId, vehicleTypeInfo, originStop, dwellTimeAtOrigin),
-                        new ArrayList<>(List.of(new RouteStop(originStop, Duration.ZERO, dwellTimeAtOrigin))),
-                        new EnumMap<>(RouteDirection.class)));
+        transitLineContainers.put(lineId, new TransitLineContainer(new TransitLineInfo(lineId, vehicleTypeInfo),
+                new ArrayList<>(List.of(new RouteStop(originStop, Duration.ZERO, dwellTimeAtOrigin))),
+                new EnumMap<>(RouteDirection.class)));
 
         return this;
     }

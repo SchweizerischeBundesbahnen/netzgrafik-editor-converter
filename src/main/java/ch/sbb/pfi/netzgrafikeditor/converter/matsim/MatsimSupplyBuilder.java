@@ -152,6 +152,7 @@ public class MatsimSupplyBuilder implements SupplyBuilder {
         // build transit lines with corresponding transit routes
         EnumMap<RouteDirection, Map<String, TransitRoute>> transitRoutes = new EnumMap<>(RouteDirection.class);
         for (TransitLineContainer container : transitLineContainers.values()) {
+
             // forward direction
             transitRoutes.computeIfAbsent(RouteDirection.FORWARD, k -> new HashMap<>())
                     .put(container.transitLineInfo.getId(),

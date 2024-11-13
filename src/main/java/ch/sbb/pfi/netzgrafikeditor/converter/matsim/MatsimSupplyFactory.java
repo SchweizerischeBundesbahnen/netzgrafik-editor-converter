@@ -10,6 +10,7 @@ import org.matsim.api.core.v01.network.NetworkFactory;
 import org.matsim.api.core.v01.network.Node;
 import org.matsim.core.population.routes.NetworkRoute;
 import org.matsim.core.population.routes.RouteUtils;
+import org.matsim.core.utils.misc.OptionalTime;
 import org.matsim.pt.transitSchedule.api.Departure;
 import org.matsim.pt.transitSchedule.api.TransitLine;
 import org.matsim.pt.transitSchedule.api.TransitRoute;
@@ -78,11 +79,11 @@ class MatsimSupplyFactory {
         return transitRoute;
     }
 
-    TransitRouteStop createTransitRouteStop(TransitStopFacility transitStopFacility, double cumulativeTravelTime, double departureTime, boolean awaitDeparture) {
+    TransitRouteStop createTransitRouteStop(TransitStopFacility transitStopFacility, OptionalTime arrivalOffset, OptionalTime departureOffset) {
         log.debug("Creating TransitRouteStop at TransitStopFacility {}", transitStopFacility.getId());
-        TransitRouteStop transitRouteStop = sf.createTransitRouteStop(transitStopFacility, cumulativeTravelTime,
-                departureTime);
-        transitRouteStop.setAwaitDepartureTime(awaitDeparture);
+        TransitRouteStop transitRouteStop = sf.createTransitRouteStop(transitStopFacility, arrivalOffset,
+                departureOffset);
+        transitRouteStop.setAwaitDepartureTime(true);
 
         return transitRouteStop;
     }

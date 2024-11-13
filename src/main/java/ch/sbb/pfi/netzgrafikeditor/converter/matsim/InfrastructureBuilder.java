@@ -16,6 +16,7 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Node;
+import org.matsim.core.utils.misc.OptionalTime;
 import org.matsim.pt.transitSchedule.api.TransitLine;
 import org.matsim.pt.transitSchedule.api.TransitRoute;
 import org.matsim.pt.transitSchedule.api.TransitRouteStop;
@@ -55,10 +56,12 @@ class InfrastructureBuilder {
     }
 
     TransitRoute buildTransitRoute(TransitLineInfo transitLineInfo, List<RouteElement> routeElements, RouteDirection direction) {
+        TransitLine transitLine = factory.getOrCreateTransitLine(transitLineInfo.getId());
         List<Id<Link>> routeLinks = new ArrayList<>();
         List<TransitRouteStop> routeStops = new ArrayList<>();
         final double[] travelTime = {0};
 
+        // correct for route direction
         List<RouteElement> directedRouteElements = switch (direction) {
             case FORWARD -> routeElements;
             case REVERSE -> routeElements.reversed();
@@ -66,29 +69,35 @@ class InfrastructureBuilder {
 
         // add first stop
         RouteStop firstRouteStop = (RouteStop) directedRouteElements.getFirst();
-        double dwellTime = firstRouteStop.getDwellTime().toSeconds();
         TransitStopFacility stopFacility = stopFacilities.get(firstRouteStop.getStopFacilityInfo().getId());
-        TransitRouteStop transitRouteStop = factory.createTransitRouteStop(stopFacility, -dwellTime, travelTime[0],
-                true);
+        TransitRouteStop transitRouteStop = factory.createTransitRouteStop(stopFacility, OptionalTime.undefined(),
+                OptionalTime.zeroSeconds());
         routeStops.add(transitRouteStop);
 
         // loop over route elements, set first stop as last element and start with second element
         for (int i = 1; i < directedRouteElements.size(); i++) {
+            boolean lastStop = i == directedRouteElements.size() - 1;
             RouteElement lastElement = directedRouteElements.get(i - 1);
             RouteElement currentElement = directedRouteElements.get(i);
 
             // visit element
             currentElement.accept(new RouteElementVisitor() {
 
+
                 @Override
                 public void visit(RouteStop routeStop) {
                     travelTime[0] = travelTime[0] + routeStop.getTravelTime().toSeconds();
                     double dwellTime = routeStop.getDwellTime().toSeconds();
 
+                    // define offset times
+                    OptionalTime arrivalOffset = OptionalTime.defined(travelTime[0]);
+                    OptionalTime departureOffset = lastStop ? OptionalTime.undefined() : OptionalTime.defined(
+                            travelTime[0] + dwellTime);
+
                     // add route stop
                     TransitStopFacility stopFacility = stopFacilities.get(routeStop.getStopFacilityInfo().getId());
-                    TransitRouteStop transitRouteStop = factory.createTransitRouteStop(stopFacility, travelTime[0],
-                            travelTime[0] + dwellTime, true);
+                    TransitRouteStop transitRouteStop = factory.createTransitRouteStop(stopFacility, arrivalOffset,
+                            departureOffset);
                     routeStops.add(transitRouteStop);
 
                     travelTime[0] = travelTime[0] + dwellTime;
@@ -104,9 +113,6 @@ class InfrastructureBuilder {
             // connect stop facilities on network
             routeLinks.addAll(connect(stopFacilities, addedSegments, transitLineInfo, lastElement, currentElement));
         }
-
-        // get or create transit line
-        TransitLine transitLine = factory.getOrCreateTransitLine(transitLineInfo.getId());
 
         return factory.createTransitRoute(transitLine,
                 String.format("%s_%s", transitLineInfo.getId(), direction.name()), routeLinks, routeStops);

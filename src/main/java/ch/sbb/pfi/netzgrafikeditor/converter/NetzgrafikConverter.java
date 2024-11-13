@@ -363,6 +363,19 @@ public class NetzgrafikConverter {
             this.targets = new HashMap<>();
         }
 
+        private static TrainrunSection swap(TrainrunSection original) {
+            return TrainrunSection.builder().id(original.getId()) // keep
+                    .sourceNodeId(original.getTargetNodeId())  // swap
+                    .targetNodeId(original.getSourceNodeId())  // swap
+                    .trainrunId(original.getTrainrunId()) // keep
+                    .sourceArrival(original.getTargetArrival())  // swap
+                    .sourceDeparture(original.getTargetDeparture()) // swap
+                    .targetArrival(original.getSourceArrival()) // swap
+                    .targetDeparture(original.getSourceDeparture()) // swap
+                    .travelTime(original.getTravelTime()) // keep
+                    .build();
+        }
+
         private static TrainrunSection getNextTrainrunSection(int currentId, int id, Map<Integer, List<TrainrunSection>> trainrunSections) {
             TrainrunSection ts = null;
             if (trainrunSections.containsKey(id)) {
@@ -441,8 +454,7 @@ public class NetzgrafikConverter {
             target = getNextTrainrunSection(currentId, targetId, targets);
             if (target != null) {
                 logSectionAction(current, target, "target", ", swapped");
-                target.swap();
-                sections.addLast(target);
+                sections.addLast(swap(target));
 
                 return false;
             }
@@ -466,8 +478,7 @@ public class NetzgrafikConverter {
             source = getNextTrainrunSection(currentId, sourceId, sources);
             if (source != null) {
                 logSectionAction(current, source, "source", "");
-                source.swap();
-                sections.addFirst(source);
+                sections.addFirst(swap(source));
                 return false;
             }
 

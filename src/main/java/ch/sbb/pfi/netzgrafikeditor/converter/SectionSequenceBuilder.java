@@ -25,19 +25,6 @@ class SectionSequenceBuilder {
     private final Map<Integer, Port> ports = new HashMap<>();
     private final Map<Integer, TrainrunSection> sections = new HashMap<>();
 
-    private static TrainrunSection swap(TrainrunSection original) {
-        return TrainrunSection.builder().id(original.getId()) // keep
-                .sourceNodeId(original.getTargetNodeId())  // swap
-                .targetNodeId(original.getSourceNodeId())  // swap
-                .trainrunId(original.getTrainrunId()) // keep
-                .sourceArrival(original.getTargetArrival())  // swap
-                .sourceDeparture(original.getTargetDeparture()) // swap
-                .targetArrival(original.getSourceArrival()) // swap
-                .targetDeparture(original.getSourceDeparture()) // swap
-                .travelTime(original.getTravelTime()) // keep
-                .build();
-    }
-
     void add(TrainrunSection section) {
         sections.put(section.getId(), section);
         nodes.get(section.getSourceNodeId()).getPorts().forEach(port -> ports.put(port.getId(), port));
@@ -58,22 +45,7 @@ class SectionSequenceBuilder {
         // traverse from first section and collect sections
         traverse(firstSection.get(), orderedSections::addFirst);
 
-        // swap first section if needed
-        TrainrunSection first = orderedSections.getFirst();
-        TrainrunSection second = orderedSections.get(1);
-        if (first.getTargetNodeId() != second.getSourceNodeId() && first.getTargetNodeId() != first.getSourceNodeId()) {
-            orderedSections.set(0, swap(first));
-        }
-
-        // swap further sections if needed
-        for (int i = 1; i < orderedSections.size(); i++) {
-            int previousTargetNodeId = orderedSections.get(i - 1).getTargetNodeId();
-            TrainrunSection current = orderedSections.get(i);
-
-            if (previousTargetNodeId != current.getSourceNodeId()) {
-                orderedSections.set(i, swap(current));
-            }
-        }
+        SectionAligner.align(orderedSections);
 
         return orderedSections;
     }
@@ -147,6 +119,52 @@ class SectionSequenceBuilder {
     private enum TraversalMode {
         SOURCE,
         TARGET
+    }
+
+    /**
+     * Utility class for aligning and swapping train run sections.
+     * <p>
+     * The NGE records sections in the direction they are drawn. This class ensures that sections in a sequence are
+     * correctly aligned by swapping the source and target nodes (and associated times) of sections when necessary.
+     */
+    private static class SectionAligner {
+
+        private static void align(List<TrainrunSection> orderedSections) {
+
+            // align segments if sequence is longer than one section
+            if (orderedSections.size() > 1) {
+
+                // check swap on first section
+                TrainrunSection first = orderedSections.getFirst();
+                TrainrunSection second = orderedSections.get(1);
+                if (first.getTargetNodeId() != second.getSourceNodeId() && first.getTargetNodeId() != first.getSourceNodeId()) {
+                    orderedSections.set(0, swap(first));
+                }
+
+                // check swaps on further sections
+                for (int i = 1; i < orderedSections.size(); i++) {
+                    int previousTargetNodeId = orderedSections.get(i - 1).getTargetNodeId();
+                    TrainrunSection current = orderedSections.get(i);
+
+                    if (previousTargetNodeId != current.getSourceNodeId()) {
+                        orderedSections.set(i, swap(current));
+                    }
+                }
+            }
+        }
+
+        private static TrainrunSection swap(TrainrunSection original) {
+            return TrainrunSection.builder().id(original.getId()) // keep
+                    .sourceNodeId(original.getTargetNodeId())  // swap
+                    .targetNodeId(original.getSourceNodeId())  // swap
+                    .trainrunId(original.getTrainrunId()) // keep
+                    .sourceArrival(original.getTargetArrival())  // swap
+                    .sourceDeparture(original.getTargetDeparture()) // swap
+                    .targetArrival(original.getSourceArrival()) // swap
+                    .targetDeparture(original.getSourceDeparture()) // swap
+                    .travelTime(original.getTravelTime()) // keep
+                    .build();
+        }
     }
 
 }

@@ -8,7 +8,8 @@ import ch.sbb.pfi.netzgrafikeditor.converter.supply.fallback.NoInfrastructureRep
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.fallback.NoRollingStockRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.fallback.NoVehicleCircuitsPlanner;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.scenario.ScenarioUtils;
@@ -32,23 +33,10 @@ public class NetworkGraphicConverterIT {
         scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
     }
 
-    @Test
-    void convert_simple() throws IOException {
-        configureConverter(TestData.SIMPLE);
-        converter.run();
-        assertNotNull(scenario);
-    }
-
-    @Test
-    void convert_cycle() throws IOException {
-        configureConverter(TestData.CYCLE);
-        converter.run();
-        assertNotNull(scenario);
-    }
-
-    @Test
-    void convert_conflictingTimes() throws IOException {
-        configureConverter(TestData.CONFLICTING_TIMES);
+    @ParameterizedTest
+    @EnumSource(TestData.class)
+    void convert_allScenarios(TestData testData) throws IOException {
+        configureConverter(testData);
         converter.run();
         assertNotNull(scenario);
     }
@@ -60,7 +48,6 @@ public class NetworkGraphicConverterIT {
         ConverterSink sink = new TransitScheduleXmlWriter(scenario, OUTPUT_PATH, testData.name().toLowerCase() + ".");
 
         converter = new NetworkGraphicConverter(NetworkGraphicConverterConfig.builder().useTrainNames(true).build(),
-                source,
-                builder, sink);
+                source, builder, sink);
     }
 }

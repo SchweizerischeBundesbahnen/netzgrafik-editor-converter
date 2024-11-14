@@ -18,14 +18,14 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class NetzgrafikConverterIT {
+public class NetworkGraphicConverterIT {
 
     public static final String OUTPUT_ROOT = "integration-test/output/";
     public static final Path OUTPUT_PATH = Path.of(
-            OUTPUT_ROOT + NetzgrafikConverterIT.class.getCanonicalName().replace(".", "/"));
+            OUTPUT_ROOT + NetworkGraphicConverterIT.class.getCanonicalName().replace(".", "/"));
 
     private Scenario scenario;
-    private NetzgrafikConverter converter;
+    private NetworkGraphicConverter converter;
 
     @BeforeEach
     void setUp() {
@@ -59,7 +59,8 @@ public class NetzgrafikConverterIT {
                 new NoRollingStockRepository(), new NoVehicleCircuitsPlanner());
         ConverterSink sink = new TransitScheduleXmlWriter(scenario, OUTPUT_PATH, testData.name().toLowerCase() + ".");
 
-        converter = new NetzgrafikConverter(NetzgrafikConverterConfig.builder().useTrainNames(true).build(), source,
+        converter = new NetworkGraphicConverter(NetworkGraphicConverterConfig.builder().useTrainNames(true).build(),
+                source,
                 builder, sink);
     }
 }

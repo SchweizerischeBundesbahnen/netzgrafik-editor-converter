@@ -29,11 +29,11 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
-public class NetzgrafikConverter {
+public class NetworkGraphicConverter {
 
-    private final NetzgrafikConverterConfig config;
+    private final NetworkGraphicConverterConfig config;
     private final NetworkGraphicSource source;
-    private final SupplyBuilder supplyBuilder;
+    private final SupplyBuilder builder;
     private final ConverterSink sink;
 
     private Map<String, Integer> lineCounter;
@@ -70,10 +70,23 @@ public class NetzgrafikConverter {
         return Duration.ofSeconds(Math.round(trainrunCategoryHaltezeit.getHaltezeit() * 60));
     }
 
+    private static Duration getDwellTimeFromSections(TrainrunSection currentSection, TrainrunSection nextSection) {
+        double arrivalTime = currentSection.getTargetArrival().getTime();
+        double departureTime = nextSection.getSourceDeparture().getTime();
+
+        if (arrivalTime > departureTime) {
+            // special case: The departure time is in the next hour
+            // example: arrivalTime = 59, departureTime = 1; actual dwell time = 2 minutes
+            return Duration.ofSeconds(Math.round((departureTime + 60 - arrivalTime) * 60.));
+        } else {
+            // normal case: Arrival time is before departure time within the same hour
+            return Duration.ofSeconds(Math.round((departureTime - arrivalTime) * 60.));
+        }
+    }
+
     public void run() throws IOException {
         log.info("Converting netzgrafik using source {}, supply builder {} and sink {}",
-                source.getClass().getSimpleName(), supplyBuilder.getClass().getSimpleName(),
-                sink.getClass().getSimpleName());
+                source.getClass().getSimpleName(), builder.getClass().getSimpleName(), sink.getClass().getSimpleName());
 
         initialize(source.load());
         addStops();
@@ -87,48 +100,42 @@ public class NetzgrafikConverter {
         lookup = new Lookup(network);
     }
 
-    /**
-     * Adding stops nodes from netzgrafik.
-     */
     private void addStops() {
         log.info("Adding nodes of network graphic");
         for (Node node : lookup.nodes.values()) {
             log.debug("Adding node {}", node.getBetriebspunktName());
-            supplyBuilder.addStopFacility(node.getBetriebspunktName());
+            builder.addStopFacility(node.getBetriebspunktName());
         }
     }
 
-    /**
-     * Convert trains to transit lines and add to the MATSim schedule
-     */
     private void addTrains() {
         log.info("Adding trains");
 
-        // setup trainrun builder
-        HashMap<Integer, TrainrunBuilder> trainToBuilder = new HashMap<>();
+        // setup trainrun section sequence builders
+        HashMap<Integer, SectionSequenceBuilder> sequences = new HashMap<>();
         for (TrainrunSection section : lookup.sections.values()) {
             int trainId = section.getTrainrunId();
-            TrainrunBuilder trainrunBuilder = trainToBuilder.getOrDefault(trainId, new TrainrunBuilder(lookup.nodes));
-            trainrunBuilder.add(section);
-            trainToBuilder.put(section.getTrainrunId(), trainrunBuilder);
+            SectionSequenceBuilder sequence = sequences.computeIfAbsent(trainId,
+                    k -> new SectionSequenceBuilder(lookup.nodes));
+            sequence.add(section);
         }
 
-        // add each train (route & line)
-        for (var entry : trainToBuilder.entrySet()) {
+        // add a transit line with transit routes for each train
+        for (var entry : sequences.entrySet()) {
             Trainrun train = lookup.trains.get(entry.getKey());
+            SectionSequenceBuilder sequence = entry.getValue();
 
-            // add transit routes and lines for both directions
             log.debug("Adding train {}", train.getName());
-            createAndAddTransitLine(train, entry.getValue().build());
+            createAndAddTransitLine(train, sequence.build());
         }
 
         // build transit schedule
-        supplyBuilder.build();
+        builder.build();
     }
 
     private void createAndAddTransitLine(Trainrun train, List<TrainrunSection> sections) {
 
-        // order nodes
+        // order trainrun nodes
         List<Node> nodes = new ArrayList<>();
         nodes.addFirst(lookup.nodes.get(sections.getFirst().getSourceNodeId()));
         sections.forEach(section -> nodes.add(lookup.nodes.get(section.getTargetNodeId())));
@@ -142,13 +149,12 @@ public class NetzgrafikConverter {
         Node sourceNode = nodeIter.next();
         String fachCategory = lookup.categories.get(train.getCategoryId()).getFachCategory();
         Duration dwellTimeAtOrigin = getDwellTimeFromCategory(sourceNode, fachCategory);
-        supplyBuilder.addTransitLine(lineId, vehicleType, sourceNode.getBetriebspunktName(), dwellTimeAtOrigin);
+        builder.addTransitLine(lineId, vehicleType, sourceNode.getBetriebspunktName(), dwellTimeAtOrigin);
 
         // iterate over nodes and sections of transit line
         Iterator<TrainrunSection> sectionIter = sections.iterator();
         TrainrunSection nextSection = sectionIter.next();
         Duration travelTime = Duration.ofSeconds(0);
-
         for (int i = 1; i < nodes.size() - 1; i++) {
 
             Node targetNode = nodeIter.next();
@@ -159,7 +165,7 @@ public class NetzgrafikConverter {
             // check if it is a not nonstop transit pass or stop
             if (isPass(targetNode, currentSection.getId())) {
                 // pass: Add route pass to transit line
-                supplyBuilder.addRoutePass(lineId, targetNode.getBetriebspunktName());
+                builder.addRoutePass(lineId, targetNode.getBetriebspunktName());
 
             } else {
                 // stop: Add route stop with dwell time from network graphic to transit line
@@ -169,7 +175,7 @@ public class NetzgrafikConverter {
                 warnOnDwellTimeInconsistency(dwellTime, train, targetNode, fachCategory, lineId);
 
                 // add stop and reset travel time
-                supplyBuilder.addRouteStop(lineId, targetNode.getBetriebspunktName(), travelTime, dwellTime);
+                builder.addRouteStop(lineId, targetNode.getBetriebspunktName(), travelTime, dwellTime);
                 travelTime = Duration.ofSeconds(0);
             }
         }
@@ -178,12 +184,12 @@ public class NetzgrafikConverter {
         Node targetNode = nodeIter.next();
         Duration dwellTimeAtDestination = getDwellTimeFromCategory(targetNode, fachCategory);
         travelTime = travelTime.plusMinutes(Math.round(nextSection.getTravelTime().getTime()));
-        supplyBuilder.addRouteStop(lineId, targetNode.getBetriebspunktName(), travelTime, dwellTimeAtDestination);
+        builder.addRouteStop(lineId, targetNode.getBetriebspunktName(), travelTime, dwellTimeAtDestination);
 
         // prepare daytime intervals
         List<DayTimeInterval> timeIntervals = lookup.times.get(train.getTrainrunTimeCategoryId()).getDayTimeIntervals();
         if (timeIntervals.isEmpty()) {
-            // add interval for full day (in minutes)
+            // add interval for full day in minutes if no interval is set in the input
             timeIntervals.add(DayTimeInterval.builder()
                     .from((int) (Math.round(config.getServiceDayStart().toSecondOfDay() / 60.)))
                     .to(((int) Math.round(config.getServiceDayEnd().toSecondOfDay() / 60.)))
@@ -194,7 +200,7 @@ public class NetzgrafikConverter {
         for (RouteDirection direction : RouteDirection.values()) {
             List<LocalTime> departures = createDepartureTimesInIntervals(timeIntervals, train, sections, direction);
             log.debug("Add departures at: {}", departures);
-            departures.forEach(departure -> supplyBuilder.addDeparture(lineId, direction, departure));
+            departures.forEach(departure -> builder.addDeparture(lineId, direction, departure));
         }
 
     }
@@ -232,20 +238,6 @@ public class NetzgrafikConverter {
         }
 
         return lineId;
-    }
-
-    private Duration getDwellTimeFromSections(TrainrunSection currentSection, TrainrunSection nextSection) {
-        double arrivalTime = currentSection.getTargetArrival().getTime();
-        double departureTime = nextSection.getSourceDeparture().getTime();
-
-        if (arrivalTime > departureTime) {
-            // special case: The departure time is in the next hour
-            // example: arrivalTime = 59, departureTime = 1; actual dwell time = 2 minutes
-            return Duration.ofSeconds(Math.round((departureTime + 60 - arrivalTime) * 60.));
-        } else {
-            // normal case: Arrival time is before departure time within the same hour
-            return Duration.ofSeconds(Math.round((departureTime - arrivalTime) * 60.));
-        }
     }
 
     /**

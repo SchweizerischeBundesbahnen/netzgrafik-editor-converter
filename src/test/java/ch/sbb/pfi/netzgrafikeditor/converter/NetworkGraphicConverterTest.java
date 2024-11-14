@@ -17,10 +17,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class NetzgrafikConverterTest {
+class NetworkGraphicConverterTest {
 
     @Mock
-    private NetzgrafikConverterConfig config;
+    private NetworkGraphicConverterConfig config;
 
     @Mock
     private NetworkGraphicSource source;
@@ -32,7 +32,7 @@ class NetzgrafikConverterTest {
     private ConverterSink sink;
 
     @InjectMocks
-    private NetzgrafikConverter converter;
+    private NetworkGraphicConverter converter;
 
     @BeforeEach
     void setUp() {

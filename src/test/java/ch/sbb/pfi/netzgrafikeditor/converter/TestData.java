@@ -5,9 +5,9 @@ import java.nio.file.Paths;
 
 public enum TestData {
 
-    SIMPLE("netzgrafik-simple.json"),
-    CYCLE("netzgrafik-cycle.json"),
-    CONFLICTING_TIMES("netzgrafik-conflicting-times.json");
+    SIMPLE("ng-simple.json"),
+    CYCLE("ng-cycle.json"),
+    CONFLICTING_TIMES("ng-conflicting-times.json");
 
     private final String fileName;
 

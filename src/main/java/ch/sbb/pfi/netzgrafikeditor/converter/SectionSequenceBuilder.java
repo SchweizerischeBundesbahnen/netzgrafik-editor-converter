@@ -19,7 +19,7 @@ import java.util.function.Consumer;
  */
 @Slf4j
 @AllArgsConstructor
-class TrainrunBuilder {
+class SectionSequenceBuilder {
 
     private final Map<Integer, Node> nodes;
     private final Map<Integer, Port> ports = new HashMap<>();
@@ -50,13 +50,13 @@ class TrainrunBuilder {
     List<TrainrunSection> build() {
         List<TrainrunSection> orderedSections = new LinkedList<>(); // append to start of list
 
-        // find start of the chain
+        // find first section of the chain
         TrainrunSection randomSection = sections.values().iterator().next();
-        AtomicReference<TrainrunSection> startSection = new AtomicReference<>();
-        traverse(randomSection, startSection::set);
+        AtomicReference<TrainrunSection> firstSection = new AtomicReference<>();
+        traverse(randomSection, firstSection::set);
 
-        // traverse from start section
-        traverse(startSection.get(), orderedSections::addFirst);
+        // traverse from first section and collect sections
+        traverse(firstSection.get(), orderedSections::addFirst);
 
         // swap first section if needed
         TrainrunSection first = orderedSections.getFirst();
@@ -65,7 +65,7 @@ class TrainrunBuilder {
             orderedSections.set(0, swap(first));
         }
 
-        // swap other sections if needed
+        // swap further sections if needed
         for (int i = 1; i < orderedSections.size(); i++) {
             int previousTargetNodeId = orderedSections.get(i - 1).getTargetNodeId();
             TrainrunSection current = orderedSections.get(i);
@@ -91,15 +91,15 @@ class TrainrunBuilder {
             // mark as visited; remove from sections to visit
             sectionsToVisit.remove(current.getId());
 
-            // normal case; search on the target side (invert if source traversal)
+            // normal case; search on the target side
             next = getNextSection(current, TraversalMode.TARGET, sectionsToVisit);
 
-            // swapped case; search on source side (invert if source traversal)
+            // swapped case; search on source side
             if (next == null) {
                 next = getNextSection(current, TraversalMode.SOURCE, sectionsToVisit);
             }
 
-            // nothing found; we are at the end of chain
+            // nothing found; end of section sequence
             if (next == null) {
                 break;
             }
@@ -117,13 +117,13 @@ class TrainrunBuilder {
             case TARGET -> nodes.get(section.getTargetNodeId());
         };
 
-        // normal case: check if section occurs on source node
+        // iterate over ports on selected node
         for (Port port : node.getPorts()) {
 
-            // search a port connecting to this trainrun section
+            // check if port is connecting to this trainrun section
             if (port.getTrainrunSectionId() == section.getId()) {
 
-                // search for a transition
+                // search for a transition matching this port
                 for (Transition transition : node.getTransitions()) {
 
                     // transition connects on port 1, return next section on port 2
@@ -148,6 +148,5 @@ class TrainrunBuilder {
         SOURCE,
         TARGET
     }
-
 
 }

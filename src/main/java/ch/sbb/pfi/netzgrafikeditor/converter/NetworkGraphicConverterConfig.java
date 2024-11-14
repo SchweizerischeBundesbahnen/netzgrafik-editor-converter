@@ -7,7 +7,7 @@ import java.time.LocalTime;
 
 @Value
 @Builder
-public class NetzgrafikConverterConfig {
+public class NetworkGraphicConverterConfig {
 
     private static final int SECONDS_IN_A_DAY = 24 * 60 * 60;
 

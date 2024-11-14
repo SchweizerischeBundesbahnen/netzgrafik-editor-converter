@@ -59,28 +59,22 @@ class MatsimSupplyBuilderTest {
         VehicleInfo vehicleInfo3 = new VehicleInfo("vehicle3", vehicleTypeInfo2);
         VehicleInfo vehicleInfo4 = new VehicleInfo("vehicle4", vehicleTypeInfo2);
 
-        DepartureInfo departureInfo1 = new DepartureInfo(
-                new TransitLineInfo("lineSimple", vehicleTypeInfo1, Stop.A.getStopFacilityInfo(), Default.DWELL_TIME),
+        DepartureInfo departureInfo1 = new DepartureInfo(new TransitLineInfo("lineSimple", vehicleTypeInfo1),
                 RouteDirection.FORWARD, Default.SERVICE_DAY_START.plusMinutes(0));
 
-        DepartureInfo departureInfo2 = new DepartureInfo(
-                new TransitLineInfo("lineSimple", vehicleTypeInfo1, Stop.A.getStopFacilityInfo(), Default.DWELL_TIME),
+        DepartureInfo departureInfo2 = new DepartureInfo(new TransitLineInfo("lineSimple", vehicleTypeInfo1),
                 RouteDirection.FORWARD, Default.SERVICE_DAY_START.plusMinutes(5));
 
-        DepartureInfo departureInfo3 = new DepartureInfo(
-                new TransitLineInfo("lineSimple", vehicleTypeInfo1, Stop.A.getStopFacilityInfo(), Default.DWELL_TIME),
+        DepartureInfo departureInfo3 = new DepartureInfo(new TransitLineInfo("lineSimple", vehicleTypeInfo1),
                 RouteDirection.FORWARD, Default.SERVICE_DAY_START.plusMinutes(10));
 
-        DepartureInfo departureInfo4 = new DepartureInfo(
-                new TransitLineInfo("lineSimple", vehicleTypeInfo2, Stop.A.getStopFacilityInfo(), Default.DWELL_TIME),
+        DepartureInfo departureInfo4 = new DepartureInfo(new TransitLineInfo("lineSimple", vehicleTypeInfo2),
                 RouteDirection.REVERSE, Default.SERVICE_DAY_START.plusMinutes(1));
 
-        DepartureInfo departureInfo5 = new DepartureInfo(
-                new TransitLineInfo("lineSimple", vehicleTypeInfo2, Stop.A.getStopFacilityInfo(), Default.DWELL_TIME),
+        DepartureInfo departureInfo5 = new DepartureInfo(new TransitLineInfo("lineSimple", vehicleTypeInfo2),
                 RouteDirection.REVERSE, Default.SERVICE_DAY_START.plusMinutes(6));
 
-        DepartureInfo departureInfo6 = new DepartureInfo(
-                new TransitLineInfo("lineSimple", vehicleTypeInfo2, Stop.A.getStopFacilityInfo(), Default.DWELL_TIME),
+        DepartureInfo departureInfo6 = new DepartureInfo(new TransitLineInfo("lineSimple", vehicleTypeInfo2),
                 RouteDirection.REVERSE, Default.SERVICE_DAY_START.plusMinutes(11));
 
         VehicleAllocation allocation1 = new VehicleAllocation("departure1", departureInfo1, vehicleInfo1);

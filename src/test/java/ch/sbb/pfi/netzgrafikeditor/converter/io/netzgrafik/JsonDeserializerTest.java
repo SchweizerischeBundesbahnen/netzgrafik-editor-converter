@@ -1,6 +1,6 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik;
 
-import ch.sbb.pfi.netzgrafikeditor.converter.TestData;
+import ch.sbb.pfi.netzgrafikeditor.converter.TestCase;
 import ch.sbb.pfi.netzgrafikeditor.converter.model.NetworkGraphic;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ class JsonDeserializerTest {
 
     @Test
     void testRead_fromString() throws IOException {
-        String jsonString = Files.readString(TestData.SIMPLE.getPath());
+        String jsonString = Files.readString(TestCase.SIMPLE.getPath());
 
         NetworkGraphic networkGraphic = deserializer.read(jsonString);
 
@@ -33,7 +33,7 @@ class JsonDeserializerTest {
 
     @Test
     void testRead_fromFile() throws IOException {
-        Path filePath = TestData.SIMPLE.getPath();
+        Path filePath = TestCase.SIMPLE.getPath();
 
         NetworkGraphic networkGraphic = deserializer.read(filePath);
 
@@ -42,7 +42,7 @@ class JsonDeserializerTest {
 
     @Test
     void testRead_fromURL() throws IOException {
-        URL url = TestData.SIMPLE.getPath().toUri().toURL();
+        URL url = TestCase.SIMPLE.getPath().toUri().toURL();
 
         NetworkGraphic networkGraphic = deserializer.read(url);
 

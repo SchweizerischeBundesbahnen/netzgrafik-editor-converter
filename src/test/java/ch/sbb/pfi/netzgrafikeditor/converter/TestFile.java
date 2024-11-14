@@ -1,20 +1,17 @@
 package ch.sbb.pfi.netzgrafikeditor.converter;
 
+import lombok.RequiredArgsConstructor;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public enum TestData {
+@RequiredArgsConstructor
+public class TestFile {
 
-    SIMPLE("netzgrafik-simple.json"),
-    CYCLE("netzgrafik-cycle.json"),
-    CONFLICTING_TIMES(
-            "netzgrafik-conflicting-times.json");
+    private static final String RESOURCES_ROOT = "src/test/resources/";
 
+    private final String folder;
     private final String fileName;
-
-    TestData(String fileName) {
-        this.fileName = fileName;
-    }
 
     /**
      * Returns the Path to the test file in the src/test/resources directory.
@@ -22,6 +19,6 @@ public enum TestData {
      * @return Path to the test file
      */
     public Path getPath() {
-        return Paths.get("src/test/resources/" + fileName);
+        return Paths.get(RESOURCES_ROOT).resolve(folder).resolve(fileName);
     }
 }

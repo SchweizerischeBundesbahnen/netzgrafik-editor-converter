@@ -2,47 +2,32 @@ package ch.sbb.pfi.netzgrafikeditor.converter.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 
-@Getter
-@Setter
+@Value
 @Builder
 @Jacksonized
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TrainrunSection implements Identifiable {
 
-    private int id;
+    int id;
 
-    private int sourceNodeId;
+    int sourceNodeId;
 
-    private int targetNodeId;
+    int targetNodeId;
 
-    private int trainrunId;
+    int trainrunId;
 
-    private Time sourceArrival;
+    Time sourceArrival;
 
-    private Time travelTime;
+    Time travelTime;
 
-    private Time sourceDeparture;
+    Time sourceDeparture;
 
-    private Time targetArrival;
+    Time targetArrival;
 
-    private Time targetDeparture;
-
-    // TODO: Move this into the converter, this should be read-only value object.
-    public void swap() {
-        int tmpId = sourceNodeId;
-        Time tmpDeparture = sourceDeparture;
-        Time tmpArrival = sourceArrival;
-        sourceNodeId = targetNodeId;
-        sourceDeparture = targetDeparture;
-        sourceArrival = targetArrival;
-        targetNodeId = tmpId;
-        targetDeparture = tmpDeparture;
-        targetArrival = tmpArrival;
-    }
+    Time targetDeparture;
 
 }

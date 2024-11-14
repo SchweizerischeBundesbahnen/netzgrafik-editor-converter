@@ -1,4 +1,4 @@
-package ch.sbb.pfi.netzgrafikeditor.converter.supply.impl;
+package ch.sbb.pfi.netzgrafikeditor.converter.supply.fallback;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.RollingStockRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.VehicleTypeInfo;

@@ -78,9 +78,9 @@ public class MatsimSupplyBuilder implements SupplyBuilder {
                     String.format("Route stop for line %s at not existing with id %s", lineId, originStopId));
         }
 
-        transitLineContainers.put(lineId,
-                new TransitLineContainer(new TransitLineInfo(lineId, vehicleTypeInfo, originStop, dwellTimeAtOrigin),
-                        new ArrayList<>(), new EnumMap<>(RouteDirection.class)));
+        transitLineContainers.put(lineId, new TransitLineContainer(new TransitLineInfo(lineId, vehicleTypeInfo),
+                new ArrayList<>(List.of(new RouteStop(originStop, Duration.ZERO, dwellTimeAtOrigin))),
+                new EnumMap<>(RouteDirection.class)));
 
         return this;
     }
@@ -152,6 +152,7 @@ public class MatsimSupplyBuilder implements SupplyBuilder {
         // build transit lines with corresponding transit routes
         EnumMap<RouteDirection, Map<String, TransitRoute>> transitRoutes = new EnumMap<>(RouteDirection.class);
         for (TransitLineContainer container : transitLineContainers.values()) {
+
             // forward direction
             transitRoutes.computeIfAbsent(RouteDirection.FORWARD, k -> new HashMap<>())
                     .put(container.transitLineInfo.getId(),

@@ -1,15 +1,16 @@
 package ch.sbb.pfi.netzgrafikeditor;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.ConverterSink;
+import ch.sbb.pfi.netzgrafikeditor.converter.NetworkGraphicConverter;
+import ch.sbb.pfi.netzgrafikeditor.converter.NetworkGraphicConverterConfig;
 import ch.sbb.pfi.netzgrafikeditor.converter.NetworkGraphicSource;
-import ch.sbb.pfi.netzgrafikeditor.converter.NetzgrafikConverter;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.matsim.TransitScheduleXmlWriter;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonFileReader;
 import ch.sbb.pfi.netzgrafikeditor.converter.matsim.MatsimSupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.SupplyBuilder;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.impl.NoInfrastructureRepository;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.impl.NoRollingStockRepository;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.impl.NoVehicleCircuitsPlanner;
+import ch.sbb.pfi.netzgrafikeditor.converter.supply.fallback.NoInfrastructureRepository;
+import ch.sbb.pfi.netzgrafikeditor.converter.supply.fallback.NoRollingStockRepository;
+import ch.sbb.pfi.netzgrafikeditor.converter.supply.fallback.NoVehicleCircuitsPlanner;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.scenario.ScenarioUtils;
@@ -33,7 +34,7 @@ public class Application implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if (args.length < 2) {
-            System.err.println("Please provide the path to the netzgrafik JSON file and the output directory.");
+            System.err.println("Please provide the path to the network graphic JSON file and the output directory.");
             System.exit(1);
         }
 
@@ -57,7 +58,8 @@ public class Application implements CommandLineRunner {
                     .substring(0, baseFilename.lastIndexOf('.'));
             ConverterSink sink = new TransitScheduleXmlWriter(scenario, outputPath, filenameWithoutExtension + ".");
 
-            NetzgrafikConverter converter = new NetzgrafikConverter(source, builder, sink);
+            NetworkGraphicConverter converter = new NetworkGraphicConverter(
+                    NetworkGraphicConverterConfig.builder().build(), source, builder, sink);
             converter.run();
 
             System.out.println("MATSim schedule has been written to: " + outputPath);

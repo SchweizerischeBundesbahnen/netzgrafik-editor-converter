@@ -46,8 +46,27 @@ class NetworkGraphicConverterTest {
     }
 
     @Test
+    void convert_short() throws IOException {
+        when(source.load()).thenReturn(new JsonDeserializer().read(TestCase.SHORT.getPath()));
+
+        converter.run();
+
+        verifyConversionSteps();
+    }
+
+    @Test
     void convert_simple() throws IOException {
         when(source.load()).thenReturn(new JsonDeserializer().read(TestCase.SIMPLE.getPath()));
+
+        converter.run();
+
+        verifyConversionSteps();
+    }
+
+    @Test
+    void convert_simplePass() throws IOException {
+        when(source.load()).thenReturn(new JsonDeserializer().read(TestCase.SIMPLE_PASS.getPath()));
+        when(builder.addRoutePass(anyString(), anyString())).thenReturn(builder);
 
         converter.run();
 
@@ -64,9 +83,8 @@ class NetworkGraphicConverterTest {
     }
 
     @Test
-    void convert_conflictingTimes() throws IOException {
-        when(source.load()).thenReturn(new JsonDeserializer().read(TestCase.SIMPLE.getPath()));
-        when(builder.addRoutePass(anyString(), anyString())).thenReturn(builder);
+    void convert_simpleDwellTimeConflict() throws IOException {
+        when(source.load()).thenReturn(new JsonDeserializer().read(TestCase.SIMPLE_DWELL_TIME_CONFLICT.getPath()));
 
         converter.run();
 

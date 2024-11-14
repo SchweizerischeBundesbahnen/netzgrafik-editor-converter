@@ -126,7 +126,7 @@ class InfrastructureBuilder {
 
         List<Id<Link>> linkIds = new ArrayList<>();
         int count = 0;
-        for (var segment : segments) {
+        for (TrackSegmentInfo segment : segments) {
 
             // check if segment was already added
             if (addedSegments.containsKey(segment.getSegmentId())) {

@@ -126,7 +126,7 @@ public class NetworkGraphicConverter {
         }
 
         // add a transit line with transit routes for each train
-        for (var entry : sequences.entrySet()) {
+        for (Map.Entry<Integer, SectionSequenceBuilder> entry : sequences.entrySet()) {
             Trainrun train = lookup.trains.get(entry.getKey());
             SectionSequenceBuilder sequence = entry.getValue();
 
@@ -289,7 +289,7 @@ public class NetworkGraphicConverter {
             return false;
         }
 
-        for (var transition : nodeTransitions) {
+        for (Transition transition : nodeTransitions) {
             if (!transition.isNonStopTransit()) {
                 continue;
             }

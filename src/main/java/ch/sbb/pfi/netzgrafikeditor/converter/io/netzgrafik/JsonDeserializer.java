@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -49,7 +50,7 @@ public class JsonDeserializer {
      */
     public NetworkGraphic read(URL url) throws IOException {
         log.info("Reading netzgrafik from URL: {}", url.toString());
-        try (var inputStream = url.openStream()) {
+        try (InputStream inputStream = url.openStream()) {
             String content = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
             return read(content);
         }

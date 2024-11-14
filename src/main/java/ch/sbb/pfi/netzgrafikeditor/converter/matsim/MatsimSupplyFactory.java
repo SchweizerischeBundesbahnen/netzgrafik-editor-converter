@@ -63,8 +63,7 @@ class MatsimSupplyFactory {
 
     TransitRoute createTransitRoute(TransitLine transitLine, String id, List<Id<Link>> routeLinks, List<TransitRouteStop> stops) {
         Id<TransitRoute> routeId = Id.create(String.format(IdPattern.TRANSIT_ROUTE, id), TransitRoute.class);
-        NetworkRoute networkRoute = RouteUtils.createLinkNetworkRouteImpl(routeLinks.getFirst(),
-                routeLinks.subList(1, routeLinks.size() - 1), routeLinks.getLast());
+        NetworkRoute networkRoute = RouteUtils.createNetworkRoute(routeLinks);
         TransitRoute transitRoute = transitLine.getRoutes().get(routeId);
 
         if (transitRoute != null) {

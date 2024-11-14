@@ -39,7 +39,7 @@ class NetworkGraphicConverterTest {
     void setUp() {
         when(config.getServiceDayStart()).thenReturn(LocalTime.MIN);
         when(config.getServiceDayEnd()).thenReturn(LocalTime.MAX);
-        when(config.isUseTrainNames()).thenReturn(false);
+        when(config.isUseTrainNamesAsIds()).thenReturn(false);
         when(builder.addStopFacility(anyString())).thenReturn(builder);
         when(builder.addTransitLine(anyString(), anyString(), anyString(), any())).thenReturn(builder);
         when(builder.addRouteStop(anyString(), anyString(), any(), any())).thenReturn(builder);

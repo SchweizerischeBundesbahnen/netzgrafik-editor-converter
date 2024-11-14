@@ -88,7 +88,12 @@ public class NetworkGraphicConverter {
         log.info("Converting netzgrafik using source {}, supply builder {} and sink {}",
                 source.getClass().getSimpleName(), builder.getClass().getSimpleName(), sink.getClass().getSimpleName());
 
-        initialize(source.load());
+        NetworkGraphic networkGraphic = source.load();
+
+        new NetworkGraphicValidator(networkGraphic, config.isUseTrainNamesAsIds(),
+                config.isFailOnValidationIssue()).run();
+
+        initialize(networkGraphic);
         addStops();
         addTrains();
 
@@ -198,7 +203,7 @@ public class NetworkGraphicConverter {
 
         // create departures in intervals for both directions
         for (RouteDirection direction : RouteDirection.values()) {
-            List<LocalTime> departures = createDepartureTimesInIntervals(timeIntervals, train, sections, direction);
+            List<LocalTime> departures = createDepartureTimes(timeIntervals, train, sections, direction);
             log.debug("Add departures at: {}", departures);
             departures.forEach(departure -> builder.addDeparture(lineId, direction, departure));
         }
@@ -219,7 +224,7 @@ public class NetworkGraphicConverter {
 
         // check if option is set to use train name; also avoid name if it is empty (optional field in NGE)
         String lineId;
-        if (config.isUseTrainNames() && !train.getName().isBlank()) {
+        if (config.isUseTrainNamesAsIds() && !train.getName().isBlank()) {
             lineId = train.getName();
         } else {
             // create id from vehicle type with origin and destination, ignore the train name from nge
@@ -247,7 +252,7 @@ public class NetworkGraphicConverter {
      *
      * @return a list with a time in seconds from midnight for each departure.
      */
-    private List<LocalTime> createDepartureTimesInIntervals(List<DayTimeInterval> timeIntervals, Trainrun train, List<TrainrunSection> sections, RouteDirection routeDirection) {
+    private List<LocalTime> createDepartureTimes(List<DayTimeInterval> timeIntervals, Trainrun train, List<TrainrunSection> sections, RouteDirection routeDirection) {
         final double hourOffset = switch (routeDirection) {
             case FORWARD -> sections.getFirst().getSourceDeparture().getTime() * 60.;
             case REVERSE -> sections.getLast().getTargetDeparture().getTime() * 60.;

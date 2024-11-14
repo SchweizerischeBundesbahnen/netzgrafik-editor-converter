@@ -4,8 +4,9 @@ import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonDeserializer;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.RouteDirection;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.SupplyBuilder;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -45,49 +46,11 @@ class NetworkGraphicConverterTest {
         when(builder.addDeparture(anyString(), any(RouteDirection.class), any())).thenReturn(builder);
     }
 
-    @Test
-    void convert_short() throws IOException {
-        when(source.load()).thenReturn(new JsonDeserializer().read(TestCase.SHORT.getPath()));
-
+    @ParameterizedTest
+    @EnumSource(TestCase.class)
+    void run(TestCase testCase) throws IOException {
+        when(source.load()).thenReturn(new JsonDeserializer().read(testCase.getPath()));
         converter.run();
-
-        verifyConversionSteps();
-    }
-
-    @Test
-    void convert_simple() throws IOException {
-        when(source.load()).thenReturn(new JsonDeserializer().read(TestCase.SIMPLE.getPath()));
-
-        converter.run();
-
-        verifyConversionSteps();
-    }
-
-    @Test
-    void convert_simplePass() throws IOException {
-        when(source.load()).thenReturn(new JsonDeserializer().read(TestCase.SIMPLE_PASS.getPath()));
-        when(builder.addRoutePass(anyString(), anyString())).thenReturn(builder);
-
-        converter.run();
-
-        verifyConversionSteps();
-    }
-
-    @Test
-    void convert_cycle() throws IOException {
-        when(source.load()).thenReturn(new JsonDeserializer().read(TestCase.CYCLE.getPath()));
-
-        converter.run();
-
-        verifyConversionSteps();
-    }
-
-    @Test
-    void convert_simpleDwellTimeConflict() throws IOException {
-        when(source.load()).thenReturn(new JsonDeserializer().read(TestCase.SIMPLE_DWELL_TIME_CONFLICT.getPath()));
-
-        converter.run();
-
         verifyConversionSteps();
     }
 

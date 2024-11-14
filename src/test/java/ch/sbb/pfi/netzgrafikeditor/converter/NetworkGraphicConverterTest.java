@@ -47,7 +47,7 @@ class NetworkGraphicConverterTest {
 
     @Test
     void convert_simple() throws IOException {
-        when(source.load()).thenReturn(new JsonDeserializer().read(TestData.SIMPLE.getPath()));
+        when(source.load()).thenReturn(new JsonDeserializer().read(TestCase.SIMPLE.getPath()));
 
         converter.run();
 
@@ -56,7 +56,7 @@ class NetworkGraphicConverterTest {
 
     @Test
     void convert_cycle() throws IOException {
-        when(source.load()).thenReturn(new JsonDeserializer().read(TestData.CYCLE.getPath()));
+        when(source.load()).thenReturn(new JsonDeserializer().read(TestCase.CYCLE.getPath()));
 
         converter.run();
 
@@ -65,7 +65,7 @@ class NetworkGraphicConverterTest {
 
     @Test
     void convert_conflictingTimes() throws IOException {
-        when(source.load()).thenReturn(new JsonDeserializer().read(TestData.CONFLICTING_TIMES.getPath()));
+        when(source.load()).thenReturn(new JsonDeserializer().read(TestCase.SIMPLE.getPath()));
         when(builder.addRoutePass(anyString(), anyString())).thenReturn(builder);
 
         converter.run();

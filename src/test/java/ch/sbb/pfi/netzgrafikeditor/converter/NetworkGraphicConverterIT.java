@@ -34,18 +34,18 @@ public class NetworkGraphicConverterIT {
     }
 
     @ParameterizedTest
-    @EnumSource(TestData.class)
-    void convert_allScenarios(TestData testData) throws IOException {
-        configureConverter(testData);
+    @EnumSource(TestCase.class)
+    void convert(TestCase testCase) throws IOException {
+        configureConverter(testCase);
         converter.run();
         assertNotNull(scenario);
     }
 
-    private void configureConverter(TestData testData) throws IOException {
-        NetworkGraphicSource source = new JsonFileReader(testData.getPath());
+    private void configureConverter(TestCase testCase) throws IOException {
+        NetworkGraphicSource source = new JsonFileReader(testCase.getPath());
         SupplyBuilder builder = new MatsimSupplyBuilder(scenario, new NoInfrastructureRepository(source.load()),
                 new NoRollingStockRepository(), new NoVehicleCircuitsPlanner());
-        ConverterSink sink = new TransitScheduleXmlWriter(scenario, OUTPUT_PATH, testData.name().toLowerCase() + ".");
+        ConverterSink sink = new TransitScheduleXmlWriter(scenario, OUTPUT_PATH, testCase.name().toLowerCase() + ".");
 
         converter = new NetworkGraphicConverter(NetworkGraphicConverterConfig.builder().useTrainNames(true).build(),
                 source, builder, sink);

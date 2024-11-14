@@ -7,7 +7,10 @@ public enum TestData {
 
     SIMPLE("ng-simple.json"),
     CYCLE("ng-cycle.json"),
-    CONFLICTING_TIMES("ng-conflicting-times.json");
+    CONFLICTING_TIMES("ng-conflicting-times.json"),
+    REALISTIC_SCENARIO("ng-realistic-scenario.json");
+
+    private static final String RESOURCES_ROOT = "src/test/resources/";
 
     private final String fileName;
 
@@ -21,6 +24,6 @@ public enum TestData {
      * @return Path to the test file
      */
     public Path getPath() {
-        return Paths.get("src/test/resources/" + fileName);
+        return Paths.get(RESOURCES_ROOT + fileName);
     }
 }

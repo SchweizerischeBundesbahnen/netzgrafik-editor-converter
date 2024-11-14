@@ -69,10 +69,11 @@ class InfrastructureBuilder {
 
         // add first stop
         RouteStop firstRouteStop = (RouteStop) directedRouteElements.getFirst();
-        TransitStopFacility stopFacility = stopFacilities.get(firstRouteStop.getStopFacilityInfo().getId());
-        TransitRouteStop transitRouteStop = factory.createTransitRouteStop(stopFacility, OptionalTime.undefined(),
+        final TransitStopFacility[] stopFacility = {stopFacilities.get(firstRouteStop.getStopFacilityInfo().getId())};
+        TransitRouteStop transitRouteStop = factory.createTransitRouteStop(stopFacility[0], OptionalTime.undefined(),
                 OptionalTime.zeroSeconds());
         routeStops.add(transitRouteStop);
+        routeLinks.add(stopFacility[0].getLinkId());
 
         // loop over route elements, set first stop as last element and start with second element
         for (int i = 1; i < directedRouteElements.size(); i++) {
@@ -82,7 +83,6 @@ class InfrastructureBuilder {
 
             // visit element
             currentElement.accept(new RouteElementVisitor() {
-
 
                 @Override
                 public void visit(RouteStop routeStop) {
@@ -95,8 +95,8 @@ class InfrastructureBuilder {
                             travelTime[0] + dwellTime);
 
                     // add route stop
-                    TransitStopFacility stopFacility = stopFacilities.get(routeStop.getStopFacilityInfo().getId());
-                    TransitRouteStop transitRouteStop = factory.createTransitRouteStop(stopFacility, arrivalOffset,
+                    stopFacility[0] = stopFacilities.get(routeStop.getStopFacilityInfo().getId());
+                    TransitRouteStop transitRouteStop = factory.createTransitRouteStop(stopFacility[0], arrivalOffset,
                             departureOffset);
                     routeStops.add(transitRouteStop);
 
@@ -110,8 +110,9 @@ class InfrastructureBuilder {
 
             });
 
-            // connect stop facilities on network
+            // connect stop facilities on network and add stop link
             routeLinks.addAll(connect(stopFacilities, addedSegments, transitLineInfo, lastElement, currentElement));
+            routeLinks.add(stopFacility[0].getLinkId());
         }
 
         return factory.createTransitRoute(transitLine,

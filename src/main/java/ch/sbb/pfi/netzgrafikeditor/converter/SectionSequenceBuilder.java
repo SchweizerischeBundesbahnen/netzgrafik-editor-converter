@@ -137,7 +137,7 @@ class SectionSequenceBuilder {
                 // check swap on first section
                 TrainrunSection first = orderedSections.getFirst();
                 TrainrunSection second = orderedSections.get(1);
-                if (first.getTargetNodeId() != second.getSourceNodeId() && first.getTargetNodeId() != first.getSourceNodeId()) {
+                if (first.getTargetNodeId() != second.getSourceNodeId() && first.getTargetNodeId() != second.getTargetNodeId()) {
                     orderedSections.set(0, swap(first));
                 }
 

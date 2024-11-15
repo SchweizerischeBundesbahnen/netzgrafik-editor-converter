@@ -98,7 +98,6 @@ public class NetworkGraphicConverterIT {
         ConverterSink sink = new TransitScheduleXmlWriter(scenario, OUTPUT_PATH, prefix.toLowerCase() + CASE_SEPARATOR);
 
         converter = new NetworkGraphicConverter(
-                NetworkGraphicConverterConfig.builder().useTrainNamesAsIds(true).build(),
-                source, builder, sink);
+                NetworkGraphicConverterConfig.builder().useTrainNamesAsIds(true).build(), source, builder, sink);
     }
 }

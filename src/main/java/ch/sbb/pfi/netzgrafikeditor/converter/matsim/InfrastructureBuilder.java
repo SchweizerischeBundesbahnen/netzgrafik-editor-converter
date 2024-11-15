@@ -104,8 +104,8 @@ class InfrastructureBuilder {
                 }
 
                 @Override
-                public void visit(RoutePass passInfo) {
-                    // nothing to do here
+                public void visit(RoutePass routePass) {
+                    stopFacility[0] = stopFacilities.get(routePass.getStopFacilityInfo().getId());
                 }
 
             });

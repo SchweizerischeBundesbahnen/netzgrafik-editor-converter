@@ -59,7 +59,8 @@ public class Application implements CommandLineRunner {
             ConverterSink sink = new TransitScheduleXmlWriter(scenario, outputPath, filenameWithoutExtension + ".");
 
             NetworkGraphicConverter converter = new NetworkGraphicConverter(
-                    NetworkGraphicConverterConfig.builder().build(), source, builder, sink);
+                    NetworkGraphicConverterConfig.builder().failOnValidationIssue(false).build(), source, builder,
+                    sink);
             converter.run();
 
             System.out.println("MATSim schedule has been written to: " + outputPath);

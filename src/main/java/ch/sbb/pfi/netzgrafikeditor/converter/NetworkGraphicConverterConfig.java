@@ -19,7 +19,7 @@ public class NetworkGraphicConverterConfig {
      */
     @Builder.Default
     boolean useTrainNamesAsIds = false;
-    
+
     /**
      * Strategy for the validation of the network graphic: SKIP_VALIDATION, WARN_ON_ISSUES, FAIL_ON_ISSUES, FIX_ISSUES.
      * The converter uses the node `betriebsPunktName` and the trainrun `name` attributes as IDs to pass to the supply

@@ -23,11 +23,11 @@ The class diagram outlines the core classes and their relationships:
 
 ```sh
 # configure arguments
-NETZGRAFIK_FILE=integration-test/input/networkGraphic.json
+NETWORK_GRAPHIC_FILE=integration-test/input/networkGraphic.json
 OUTPUT_DIRECTORY=integration-test/output/
 
 # run spring command line runner app
-./mvnw spring-boot:run -Dspring-boot.run.arguments="$NETZGRAFIK_FILE $OUTPUT_DIRECTORY"
+./mvnw spring-boot:run -Dspring-boot.run.arguments="$NETWORK_GRAPHIC_FILE $OUTPUT_DIRECTORY"
 ```
 
 ## License

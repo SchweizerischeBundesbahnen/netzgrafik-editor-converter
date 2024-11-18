@@ -3,9 +3,9 @@ package ch.sbb.pfi.netzgrafikeditor.converter.core.supply;
 import lombok.Value;
 
 @Value
-public class TransitLineInfo {
+public class TransitRouteInfo {
 
     String id;
-    String productId;
+    TransitLineInfo transitLineInfo;
 
 }

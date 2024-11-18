@@ -86,6 +86,10 @@ public class NetworkGraphicConverter {
         }
     }
 
+    private static String createTransitRouteId(String lineId, RouteDirection direction) {
+        return String.format("%s_%s", lineId, direction.name());
+    }
+
     private void warnOnDwellTimeInconsistency(Duration dwellTime, Trainrun train, Node targetNode, String fachCategory, String lineId) {
         Duration dwellTimeFromCategory = getDwellTimeFromCategory(targetNode, fachCategory);
         if (!dwellTime.equals(dwellTimeFromCategory)) {
@@ -159,13 +163,17 @@ public class NetworkGraphicConverter {
         // get vehicle type info from train category and create line id
         String vehicleType = lookup.categories.get(train.getCategoryId()).getShortName();
         String lineId = createTransitLineId(train, nodes, vehicleType);
+        builder.addTransitLine(lineId, vehicleType);
 
         // add first route stop to transit line
+        String routeId = createTransitRouteId(lineId, RouteDirection.FORWARD);
+        // TODO: Add route directions!
+
         Iterator<Node> nodeIter = nodes.iterator();
         Node sourceNode = nodeIter.next();
         String fachCategory = lookup.categories.get(train.getCategoryId()).getFachCategory();
         Duration dwellTimeAtOrigin = getDwellTimeFromCategory(sourceNode, fachCategory);
-        builder.addTransitLine(lineId, vehicleType, sourceNode.getBetriebspunktName(), dwellTimeAtOrigin);
+        builder.addTransitRoute(routeId, lineId, sourceNode.getBetriebspunktName(), dwellTimeAtOrigin);
 
         // iterate over nodes and sections of transit line
         Iterator<TrainrunSection> sectionIter = sections.iterator();
@@ -181,7 +189,7 @@ public class NetworkGraphicConverter {
             // check if it is a not nonstop transit pass or stop
             if (isPass(targetNode, currentSection.getId())) {
                 // pass: Add route pass to transit line
-                builder.addRoutePass(lineId, targetNode.getBetriebspunktName());
+                builder.addRoutePass(routeId, targetNode.getBetriebspunktName());
 
             } else {
                 // stop: Add route stop with dwell time from network graphic to transit line
@@ -191,7 +199,7 @@ public class NetworkGraphicConverter {
                 warnOnDwellTimeInconsistency(dwellTime, train, targetNode, fachCategory, lineId);
 
                 // add stop and reset travel time
-                builder.addRouteStop(lineId, targetNode.getBetriebspunktName(), travelTime, dwellTime);
+                builder.addRouteStop(routeId, targetNode.getBetriebspunktName(), travelTime, dwellTime);
                 travelTime = Duration.ofSeconds(0);
             }
         }
@@ -200,7 +208,7 @@ public class NetworkGraphicConverter {
         Node targetNode = nodeIter.next();
         Duration dwellTimeAtDestination = getDwellTimeFromCategory(targetNode, fachCategory);
         travelTime = travelTime.plusMinutes(Math.round(nextSection.getTravelTime().getTime()));
-        builder.addRouteStop(lineId, targetNode.getBetriebspunktName(), travelTime, dwellTimeAtDestination);
+        builder.addRouteStop(routeId, targetNode.getBetriebspunktName(), travelTime, dwellTimeAtDestination);
 
         // prepare daytime intervals
         List<DayTimeInterval> timeIntervals = lookup.times.get(train.getTrainrunTimeCategoryId()).getDayTimeIntervals();
@@ -212,11 +220,12 @@ public class NetworkGraphicConverter {
                     .build());
         }
 
+        // TODO: Both directions
         // create departures in intervals for both directions
         for (RouteDirection direction : RouteDirection.values()) {
             List<LocalTime> departures = createDepartureTimes(timeIntervals, train, sections, direction);
             log.debug("Add departures at: {}", departures);
-            departures.forEach(departure -> builder.addDeparture(lineId, direction, departure));
+            departures.forEach(departure -> builder.addDeparture(routeId, departure));
         }
 
     }

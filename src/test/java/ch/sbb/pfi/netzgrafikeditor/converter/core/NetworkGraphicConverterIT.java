@@ -96,7 +96,7 @@ public class NetworkGraphicConverterIT {
 
         NetworkGraphicSource source = new JsonFileReader(path);
         SupplyBuilder builder = new MatsimSupplyBuilder(scenario, new NoInfrastructureRepository(),
-                new NoRollingStockRepository(), new NoVehicleCircuitsPlanner());
+                new NoVehicleCircuitsPlanner(new NoRollingStockRepository()));
         ConverterSink sink = new TransitScheduleXmlWriter(scenario, OUTPUT_PATH.resolve(prefix.toLowerCase()),
                 prefix.toLowerCase() + CASE_SEPARATOR);
 

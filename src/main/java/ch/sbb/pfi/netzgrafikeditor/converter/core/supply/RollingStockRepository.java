@@ -2,6 +2,6 @@ package ch.sbb.pfi.netzgrafikeditor.converter.core.supply;
 
 public interface RollingStockRepository {
 
-    VehicleTypeInfo getVehicleType(String vehicleTypeId);
+    VehicleTypeInfo getVehicleType(String productId);
 
 }

@@ -3,11 +3,10 @@ package ch.sbb.pfi.netzgrafikeditor.converter.matsim;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.Coordinate;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.DepartureInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
-import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RollingStockRepository;
-import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteDirection;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TrackSegmentInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitLineInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitRouteInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleAllocation;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleInfo;
@@ -40,16 +39,19 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MatsimSupplyBuilderTest {
 
-    private Scenario scenario;
     @Mock
     private InfrastructureRepository infrastructureRepository;
-    @Mock
-    private RollingStockRepository rollingStockRepository;
+
     @Mock
     private VehicleCircuitsPlanner vehicleCircuitsPlanner;
+
+    private Scenario scenario;
+
     private MatsimSupplyBuilder matsimSupplyBuilder;
 
     private static List<VehicleAllocation> mockVehicleAllocations() {
+        TransitLineInfo transitLineInfo = new TransitLineInfo("lineSimple", "A");
+
         VehicleTypeInfo vehicleTypeInfo1 = new VehicleTypeInfo("vehicleType1", 100, 200.0, 50.0, Map.of());
         VehicleTypeInfo vehicleTypeInfo2 = new VehicleTypeInfo("vehicleType2", 150, 300.0, 60.0, Map.of());
 
@@ -58,23 +60,18 @@ class MatsimSupplyBuilderTest {
         VehicleInfo vehicleInfo3 = new VehicleInfo("vehicle3", vehicleTypeInfo2);
         VehicleInfo vehicleInfo4 = new VehicleInfo("vehicle4", vehicleTypeInfo2);
 
-        DepartureInfo departureInfo1 = new DepartureInfo(new TransitLineInfo("lineSimple", vehicleTypeInfo1),
-                RouteDirection.FORWARD, Default.SERVICE_DAY_START.plusMinutes(0));
-
-        DepartureInfo departureInfo2 = new DepartureInfo(new TransitLineInfo("lineSimple", vehicleTypeInfo1),
-                RouteDirection.FORWARD, Default.SERVICE_DAY_START.plusMinutes(5));
-
-        DepartureInfo departureInfo3 = new DepartureInfo(new TransitLineInfo("lineSimple", vehicleTypeInfo1),
-                RouteDirection.FORWARD, Default.SERVICE_DAY_START.plusMinutes(10));
-
-        DepartureInfo departureInfo4 = new DepartureInfo(new TransitLineInfo("lineSimple", vehicleTypeInfo2),
-                RouteDirection.REVERSE, Default.SERVICE_DAY_START.plusMinutes(1));
-
-        DepartureInfo departureInfo5 = new DepartureInfo(new TransitLineInfo("lineSimple", vehicleTypeInfo2),
-                RouteDirection.REVERSE, Default.SERVICE_DAY_START.plusMinutes(6));
-
-        DepartureInfo departureInfo6 = new DepartureInfo(new TransitLineInfo("lineSimple", vehicleTypeInfo2),
-                RouteDirection.REVERSE, Default.SERVICE_DAY_START.plusMinutes(11));
+        DepartureInfo departureInfo1 = new DepartureInfo(new TransitRouteInfo("lineSimple_F", transitLineInfo),
+                Default.SERVICE_DAY_START.plusMinutes(0));
+        DepartureInfo departureInfo2 = new DepartureInfo(new TransitRouteInfo("lineSimple_F", transitLineInfo),
+                Default.SERVICE_DAY_START.plusMinutes(5));
+        DepartureInfo departureInfo3 = new DepartureInfo(new TransitRouteInfo("lineSimple_F", transitLineInfo),
+                Default.SERVICE_DAY_START.plusMinutes(10));
+        DepartureInfo departureInfo4 = new DepartureInfo(new TransitRouteInfo("lineSimple_R", transitLineInfo),
+                Default.SERVICE_DAY_START.plusMinutes(1));
+        DepartureInfo departureInfo5 = new DepartureInfo(new TransitRouteInfo("lineSimple_R", transitLineInfo),
+                Default.SERVICE_DAY_START.plusMinutes(6));
+        DepartureInfo departureInfo6 = new DepartureInfo(new TransitRouteInfo("lineSimple_R", transitLineInfo),
+                Default.SERVICE_DAY_START.plusMinutes(11));
 
         VehicleAllocation allocation1 = new VehicleAllocation("departure1", departureInfo1, vehicleInfo1);
         VehicleAllocation allocation2 = new VehicleAllocation("departure2", departureInfo2, vehicleInfo2);
@@ -89,8 +86,7 @@ class MatsimSupplyBuilderTest {
     @BeforeEach
     void setUp() {
         scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
-        matsimSupplyBuilder = new MatsimSupplyBuilder(scenario, infrastructureRepository, rollingStockRepository,
-                vehicleCircuitsPlanner);
+        matsimSupplyBuilder = new MatsimSupplyBuilder(scenario, infrastructureRepository, vehicleCircuitsPlanner);
     }
 
     /**
@@ -98,14 +94,14 @@ class MatsimSupplyBuilderTest {
      */
     private void mockTrackSegments(Stop stopA, Stop stopB, Segments segments) {
         when(infrastructureRepository.getTrack(eq(stopA.getStopFacilityInfo()), eq(stopB.getStopFacilityInfo()),
-                any(TransitLineInfo.class))).thenReturn(segments.getSegments());
+                any(TransitRouteInfo.class))).thenReturn(segments.getSegments());
     }
 
     /**
      * A -- B -- (C) -- D
      */
     @Test
-    void addTransitLine_simple() {
+    void addTransitRoute_simple() {
         // mock infrastructure
         when(infrastructureRepository.getStopFacility(eq("A"), anyDouble(), anyDouble())).thenReturn(
                 Stop.A.getStopFacilityInfo());
@@ -133,16 +129,21 @@ class MatsimSupplyBuilderTest {
                 .addStopFacility("B", 1, 1)
                 .addStopFacility("C", 2, 2)
                 .addStopFacility("D", 3, 3)
-                .addTransitLine("lineSimple", "vehicleType", "A", Default.DWELL_TIME)
-                .addRouteStop("lineSimple", "B", Default.TRAVEL_TIME, Default.DWELL_TIME)
-                .addRoutePass("lineSimple", "C")
-                .addRouteStop("lineSimple", "D", Default.TRAVEL_TIME.plus(Default.TRAVEL_TIME), Default.DWELL_TIME)
-                .addDeparture("lineSimple", RouteDirection.FORWARD, Default.SERVICE_DAY_START.plusMinutes(0))
-                .addDeparture("lineSimple", RouteDirection.FORWARD, Default.SERVICE_DAY_START.plusMinutes(5))
-                .addDeparture("lineSimple", RouteDirection.FORWARD, Default.SERVICE_DAY_START.plusMinutes(10))
-                .addDeparture("lineSimple", RouteDirection.REVERSE, Default.SERVICE_DAY_START.plusMinutes(1))
-                .addDeparture("lineSimple", RouteDirection.REVERSE, Default.SERVICE_DAY_START.plusMinutes(6))
-                .addDeparture("lineSimple", RouteDirection.REVERSE, Default.SERVICE_DAY_START.plusMinutes(11))
+                .addTransitLine("lineSimple", "vehicleType")
+                .addTransitRoute("lineSimple_F", "lineSimple", "A", Default.DWELL_TIME)
+                .addRouteStop("lineSimple_F", "B", Default.TRAVEL_TIME, Default.DWELL_TIME)
+                .addRoutePass("lineSimple_F", "C")
+                .addRouteStop("lineSimple_F", "D", Default.TRAVEL_TIME.plus(Default.TRAVEL_TIME), Default.DWELL_TIME)
+                .addTransitRoute("lineSimple_R", "lineSimple", "D", Default.DWELL_TIME)
+                .addRouteStop("lineSimple_R", "C", Default.TRAVEL_TIME, Default.DWELL_TIME)
+                .addRoutePass("lineSimple_R", "B")
+                .addRouteStop("lineSimple_R", "A", Default.TRAVEL_TIME.plus(Default.TRAVEL_TIME), Default.DWELL_TIME)
+                .addDeparture("lineSimple_F", Default.SERVICE_DAY_START.plusMinutes(0))
+                .addDeparture("lineSimple_F", Default.SERVICE_DAY_START.plusMinutes(5))
+                .addDeparture("lineSimple_F", Default.SERVICE_DAY_START.plusMinutes(10))
+                .addDeparture("lineSimple_R", Default.SERVICE_DAY_START.plusMinutes(1))
+                .addDeparture("lineSimple_R", Default.SERVICE_DAY_START.plusMinutes(6))
+                .addDeparture("lineSimple_R", Default.SERVICE_DAY_START.plusMinutes(11))
                 .build();
 
         // assert

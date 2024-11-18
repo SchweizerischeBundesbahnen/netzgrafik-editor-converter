@@ -1,14 +1,13 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.matsim;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
-import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteDirection;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteElement;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteElementVisitor;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RoutePass;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteStop;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TrackSegmentInfo;
-import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitLineInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitRouteInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.matsim.api.core.v01.Coord;
@@ -55,20 +54,14 @@ class InfrastructureBuilder {
         return stop;
     }
 
-    TransitRoute buildTransitRoute(TransitLineInfo transitLineInfo, List<RouteElement> routeElements, RouteDirection direction) {
-        TransitLine transitLine = factory.getOrCreateTransitLine(transitLineInfo.getId());
+    TransitRoute buildTransitRoute(TransitRouteInfo transitRouteInfo, List<RouteElement> routeElements) {
+        TransitLine transitLine = factory.getOrCreateTransitLine(transitRouteInfo.getTransitLineInfo().getId());
         List<Id<Link>> routeLinks = new ArrayList<>();
         List<TransitRouteStop> routeStops = new ArrayList<>();
         final double[] travelTime = {0};
 
-        // correct for route direction
-        List<RouteElement> directedRouteElements = switch (direction) {
-            case FORWARD -> routeElements;
-            case REVERSE -> routeElements.reversed();
-        };
-
         // add first stop
-        RouteStop firstRouteStop = (RouteStop) directedRouteElements.getFirst();
+        RouteStop firstRouteStop = (RouteStop) routeElements.getFirst();
         final TransitStopFacility[] stopFacility = {stopFacilities.get(firstRouteStop.getStopFacilityInfo().getId())};
         TransitRouteStop transitRouteStop = factory.createTransitRouteStop(stopFacility[0], OptionalTime.undefined(),
                 OptionalTime.zeroSeconds());
@@ -76,10 +69,10 @@ class InfrastructureBuilder {
         routeLinks.add(stopFacility[0].getLinkId());
 
         // loop over route elements, set first stop as last element and start with second element
-        for (int i = 1; i < directedRouteElements.size(); i++) {
-            boolean lastStop = i == directedRouteElements.size() - 1;
-            RouteElement lastElement = directedRouteElements.get(i - 1);
-            RouteElement currentElement = directedRouteElements.get(i);
+        for (int i = 1; i < routeElements.size(); i++) {
+            boolean lastStop = i == routeElements.size() - 1;
+            RouteElement lastElement = routeElements.get(i - 1);
+            RouteElement currentElement = routeElements.get(i);
 
             // visit element
             currentElement.accept(new RouteElementVisitor() {
@@ -111,18 +104,17 @@ class InfrastructureBuilder {
             });
 
             // connect stop facilities on network and add stop link
-            routeLinks.addAll(connect(stopFacilities, addedSegments, transitLineInfo, lastElement, currentElement));
+            routeLinks.addAll(connect(stopFacilities, addedSegments, transitRouteInfo, lastElement, currentElement));
             routeLinks.add(stopFacility[0].getLinkId());
         }
 
-        return factory.createTransitRoute(transitLine,
-                String.format("%s_%s", transitLineInfo.getId(), direction.name()), routeLinks, routeStops);
+        return factory.createTransitRoute(transitLine, transitRouteInfo.getId(), routeLinks, routeStops);
     }
 
     // connects transit route stops on network, calls infrastructure repository for track information
-    private List<Id<Link>> connect(Map<String, TransitStopFacility> stopFacilities, Map<String, Id<Link>> addedSegments, TransitLineInfo transitLineInfo, RouteElement from, RouteElement to) {
+    private List<Id<Link>> connect(Map<String, TransitStopFacility> stopFacilities, Map<String, Id<Link>> addedSegments, TransitRouteInfo transitRouteInfo, RouteElement from, RouteElement to) {
         List<TrackSegmentInfo> segments = infrastructureRepository.getTrack(from.getStopFacilityInfo(),
-                to.getStopFacilityInfo(), transitLineInfo);
+                to.getStopFacilityInfo(), transitRouteInfo);
 
         List<Id<Link>> linkIds = new ArrayList<>();
         int count = 0;

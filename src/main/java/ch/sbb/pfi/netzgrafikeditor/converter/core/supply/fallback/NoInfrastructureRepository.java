@@ -4,7 +4,7 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.Coordinate;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TrackSegmentInfo;
-import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitLineInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitRouteInfo;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +22,7 @@ public class NoInfrastructureRepository implements InfrastructureRepository {
     }
 
     @Override
-    public List<TrackSegmentInfo> getTrack(StopFacilityInfo fromStop, StopFacilityInfo toStop, TransitLineInfo transitLineInfo) {
+    public List<TrackSegmentInfo> getTrack(StopFacilityInfo fromStop, StopFacilityInfo toStop, TransitRouteInfo transitRouteInfo) {
         Coordinate fromCoord = coordinates.get(fromStop.getId());
         Coordinate toCoord = coordinates.get(toStop.getId());
 

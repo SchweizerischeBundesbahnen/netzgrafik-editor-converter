@@ -69,7 +69,7 @@ public class Application implements CommandLineRunner {
         NetworkGraphicSource source = new JsonFileReader(jsonFilePath);
 
         SupplyBuilder builder = new MatsimSupplyBuilder(scenario, new NoInfrastructureRepository(),
-                new NoRollingStockRepository(), new NoVehicleCircuitsPlanner());
+                new NoVehicleCircuitsPlanner(new NoRollingStockRepository()));
 
         String baseFilename = jsonFilePath.getFileName().toString();
         String filenameWithoutExtension = jsonFilePath.getFileName()

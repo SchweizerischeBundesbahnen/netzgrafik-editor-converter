@@ -7,13 +7,15 @@ public interface SupplyBuilder {
 
     SupplyBuilder addStopFacility(String id, double x, double y);
 
-    SupplyBuilder addTransitLine(String lineId, String vehicleTypeId, String originStopId, Duration dwellTimeAtOrigin);
+    SupplyBuilder addTransitLine(String id, String productId);
 
-    SupplyBuilder addRouteStop(String lineId, String stopId, Duration travelTime, Duration dwellTime);
+    SupplyBuilder addTransitRoute(String id, String lineId, String originStopId, Duration dwellTimeAtOrigin);
 
-    SupplyBuilder addRoutePass(String lineId, String stopId);
+    SupplyBuilder addRouteStop(String routeId, String stopId, Duration travelTime, Duration dwellTime);
 
-    SupplyBuilder addDeparture(String lineId, RouteDirection direction, LocalTime time);
+    SupplyBuilder addRoutePass(String routeId, String stopId);
+
+    SupplyBuilder addDeparture(String routeId, LocalTime time);
 
     void build();
 

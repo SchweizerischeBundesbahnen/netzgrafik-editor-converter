@@ -6,6 +6,6 @@ public interface InfrastructureRepository {
 
     StopFacilityInfo getStopFacility(String stopId, double x, double y);
 
-    List<TrackSegmentInfo> getTrack(StopFacilityInfo fromStop, StopFacilityInfo toStop, TransitLineInfo transitLineInfo);
+    List<TrackSegmentInfo> getTrack(StopFacilityInfo fromStop, StopFacilityInfo toStop, TransitRouteInfo transitRouteInfo);
 
 }

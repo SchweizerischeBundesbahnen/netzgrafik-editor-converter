@@ -1,17 +1,17 @@
 package ch.sbb.pfi.netzgrafikeditor;
 
-import ch.sbb.pfi.netzgrafikeditor.converter.ConverterSink;
-import ch.sbb.pfi.netzgrafikeditor.converter.NetworkGraphicConverter;
-import ch.sbb.pfi.netzgrafikeditor.converter.NetworkGraphicConverterConfig;
-import ch.sbb.pfi.netzgrafikeditor.converter.NetworkGraphicSource;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.ConverterSink;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.NetworkGraphicConverter;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.NetworkGraphicConverterConfig;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.NetworkGraphicSource;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.SupplyBuilder;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback.NoInfrastructureRepository;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback.NoRollingStockRepository;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback.NoVehicleCircuitsPlanner;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.validation.ValidationStrategy;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.matsim.TransitScheduleXmlWriter;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonFileReader;
 import ch.sbb.pfi.netzgrafikeditor.converter.matsim.MatsimSupplyBuilder;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.SupplyBuilder;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.fallback.NoInfrastructureRepository;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.fallback.NoRollingStockRepository;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.fallback.NoVehicleCircuitsPlanner;
-import ch.sbb.pfi.netzgrafikeditor.converter.validation.ValidationStrategy;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.scenario.ScenarioUtils;

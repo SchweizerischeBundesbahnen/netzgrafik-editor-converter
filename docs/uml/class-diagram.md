@@ -5,13 +5,14 @@
 set namespaceSeparator none
 top to bottom direction
 
-package netzgrafikeditor.converter {
+package netzgrafikeditor.converter.core {
     class NetzgrafikConverter {
         +run()
     }
 
     class NetzgrafikConverterConfig {
         -useTrainNames: boolean
+        -validationStrategy: ValidationStrategy
         -serviceDayStart: LocalTime
         -serviceDayEnd: LocalTime
     }
@@ -48,10 +49,15 @@ package netzgrafikeditor.converter {
             +plan(): List<VehicleAllocation>
         }
     }
+}
 
-    package matsim {
-        class MatsimSupplyBuilder {
-        }
+package matsim {
+    class MatsimSupplyBuilder {
+    }
+}
+
+package io.matsim {
+    class TransitScheduleXmlWriter {
     }
 }
 
@@ -59,9 +65,11 @@ NetzgrafikConverter *- NetzgrafikConverterConfig : has
 NetzgrafikConverter *-- NetworkGraphicSource : has
 NetzgrafikConverter *--- SupplyBuilder : has
 NetzgrafikConverter *-- ConverterSink : has
-NetzgrafikConverter ..> MatsimSupplyBuilder : <<runtime>>
+NetzgrafikConverter .> MatsimSupplyBuilder : <<runtime>>
+NetzgrafikConverter .> TransitScheduleXmlWriter : <<runtime>>
 
 MatsimSupplyBuilder .|> SupplyBuilder: <<implements>>
+TransitScheduleXmlWriter ..|> ConverterSink: <<implements>>
 MatsimSupplyBuilder *-- InfrastructureRepository : has
 MatsimSupplyBuilder *-- RollingStockRepository : has
 MatsimSupplyBuilder *-- VehicleCircuitsPlanner : has

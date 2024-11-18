@@ -1,7 +1,7 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik;
 
-import ch.sbb.pfi.netzgrafikeditor.converter.NetworkGraphicSource;
-import ch.sbb.pfi.netzgrafikeditor.converter.model.NetworkGraphic;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.NetworkGraphicSource;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.model.NetworkGraphic;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;

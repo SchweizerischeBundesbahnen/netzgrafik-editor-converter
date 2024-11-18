@@ -40,7 +40,7 @@ public class NetworkGraphicValidator {
         }
 
         for (Issue<Identifiable> issue : issues) {
-            log.warn("Validation found issue: {}", issue);
+            log.warn("Found: {}", issue);
         }
 
         return issues.isEmpty();

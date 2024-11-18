@@ -1,16 +1,17 @@
 package ch.sbb.pfi.netzgrafikeditor;
 
-import ch.sbb.pfi.netzgrafikeditor.converter.ConverterSink;
-import ch.sbb.pfi.netzgrafikeditor.converter.NetworkGraphicConverter;
-import ch.sbb.pfi.netzgrafikeditor.converter.NetworkGraphicConverterConfig;
-import ch.sbb.pfi.netzgrafikeditor.converter.NetworkGraphicSource;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.ConverterSink;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.NetworkGraphicConverter;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.NetworkGraphicConverterConfig;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.NetworkGraphicSource;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.SupplyBuilder;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback.NoInfrastructureRepository;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback.NoRollingStockRepository;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback.NoVehicleCircuitsPlanner;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.validation.ValidationStrategy;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.matsim.TransitScheduleXmlWriter;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonFileReader;
 import ch.sbb.pfi.netzgrafikeditor.converter.matsim.MatsimSupplyBuilder;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.SupplyBuilder;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.fallback.NoInfrastructureRepository;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.fallback.NoRollingStockRepository;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.fallback.NoVehicleCircuitsPlanner;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.scenario.ScenarioUtils;
@@ -47,19 +48,13 @@ public class Application implements CommandLineRunner {
 
     private void convertJsonToMatsimSchedule(Path jsonFilePath) {
         try {
+            NetworkGraphicConverterConfig config = NetworkGraphicConverterConfig.builder()
+                    .validationStrategy(ValidationStrategy.WARN_ON_ISSUES)
+                    .build();
+
             Scenario scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
-            NetworkGraphicSource source = new JsonFileReader(jsonFilePath);
-            SupplyBuilder builder = new MatsimSupplyBuilder(scenario, new NoInfrastructureRepository(source.load()),
-                    new NoRollingStockRepository(), new NoVehicleCircuitsPlanner());
+            NetworkGraphicConverter converter = getNetworkGraphicConverter(jsonFilePath, scenario, config);
 
-            String baseFilename = jsonFilePath.getFileName().toString();
-            String filenameWithoutExtension = jsonFilePath.getFileName()
-                    .toString()
-                    .substring(0, baseFilename.lastIndexOf('.'));
-            ConverterSink sink = new TransitScheduleXmlWriter(scenario, outputPath, filenameWithoutExtension + ".");
-
-            NetworkGraphicConverter converter = new NetworkGraphicConverter(
-                    NetworkGraphicConverterConfig.builder().build(), source, builder, sink);
             converter.run();
 
             System.out.println("MATSim schedule has been written to: " + outputPath);
@@ -68,5 +63,20 @@ public class Application implements CommandLineRunner {
             System.err.println("Error during conversion: " + e.getMessage());
             System.exit(1);
         }
+    }
+
+    private NetworkGraphicConverter getNetworkGraphicConverter(Path jsonFilePath, Scenario scenario, NetworkGraphicConverterConfig config) {
+        NetworkGraphicSource source = new JsonFileReader(jsonFilePath);
+
+        SupplyBuilder builder = new MatsimSupplyBuilder(scenario, new NoInfrastructureRepository(),
+                new NoRollingStockRepository(), new NoVehicleCircuitsPlanner());
+
+        String baseFilename = jsonFilePath.getFileName().toString();
+        String filenameWithoutExtension = jsonFilePath.getFileName()
+                .toString()
+                .substring(0, baseFilename.lastIndexOf('.'));
+        ConverterSink sink = new TransitScheduleXmlWriter(scenario, outputPath, filenameWithoutExtension + ".");
+
+        return new NetworkGraphicConverter(config, source, builder, sink);
     }
 }

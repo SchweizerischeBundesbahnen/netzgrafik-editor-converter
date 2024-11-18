@@ -1,307 +1,354 @@
 <svg xmlns="http://www.w3.org/2000/svg" contentStyleType="text/css"
-     height="582px" preserveAspectRatio="none" style="width:1152px;height:582px;background:#FFFFFF;" version="1.1"
-     viewBox="0 0 1152 582" width="1152px" zoomAndPan="magnify">
+     height="689px" preserveAspectRatio="none" style="width:1660px;height:689px;background:#FFFFFF;" version="1.1"
+     viewBox="0 0 1660 689" width="1660px" zoomAndPan="magnify">
     <defs/>
-    <g><!--cluster netzgrafikeditor.converter-->
-        <g id="cluster_netzgrafikeditor.converter">
-            <path d="M8.5,6 L219.7256,6 A3.75,3.75 0 0 1 222.2256,8.5 L229.2256,28.2969 L1142.5,28.2969 A2.5,2.5 0 0 1 1145,30.7969 L1145,573.32 A2.5,2.5 0 0 1 1142.5,575.82 L8.5,575.82 A2.5,2.5 0 0 1 6,573.32 L6,8.5 A2.5,2.5 0 0 1 8.5,6 "
+    <g><!--cluster netzgrafikeditor.converter.core-->
+        <g id="cluster_netzgrafikeditor.converter.core">
+            <path d="M244.5,39.5659 L495.3604,39.5659 A3.75,3.75 0 0 1 497.8604,42.0659 L504.8604,61.8628 L1378.5,61.8628 A2.5,2.5 0 0 1 1381,64.3628 L1381,680.1859 A2.5,2.5 0 0 1 1378.5,682.6859 L244.5,682.6859 A2.5,2.5 0 0 1 242,680.1859 L242,42.0659 A2.5,2.5 0 0 1 244.5,39.5659 "
                   fill="none" style="stroke:#000000;stroke-width:1.5;"/>
-            <line style="stroke:#000000;stroke-width:1.5;" x1="6" x2="229.2256" y1="28.2969" y2="28.2969"/>
+            <line style="stroke:#000000;stroke-width:1.5;" x1="242" x2="504.8604" y1="61.8628" y2="61.8628"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing"
-                  textLength="210.2256" x="10" y="20.9951">netzgrafikeditor.converter
+                  textLength="249.8604" x="246" y="54.561">netzgrafikeditor.converter.core
             </text>
         </g><!--cluster supply-->
         <g id="cluster_supply">
-            <path d="M32.5,355.04 L85.7676,355.04 A3.75,3.75 0 0 1 88.2676,357.54 L95.2676,377.3369 L1118.5,377.3369 A2.5,2.5 0 0 1 1121,379.8369 L1121,549.32 A2.5,2.5 0 0 1 1118.5,551.82 L32.5,551.82 A2.5,2.5 0 0 1 30,549.32 L30,357.54 A2.5,2.5 0 0 1 32.5,355.04 "
+            <path d="M268.5,442.9059 L321.7676,442.9059 A3.75,3.75 0 0 1 324.2676,445.4059 L331.2676,465.2028 L1354.5,465.2028 A2.5,2.5 0 0 1 1357,467.7028 L1357,656.1859 A2.5,2.5 0 0 1 1354.5,658.6859 L268.5,658.6859 A2.5,2.5 0 0 1 266,656.1859 L266,445.4059 A2.5,2.5 0 0 1 268.5,442.9059 "
                   fill="none" style="stroke:#000000;stroke-width:1.5;"/>
-            <line style="stroke:#000000;stroke-width:1.5;" x1="30" x2="95.2676" y1="377.3369" y2="377.3369"/>
+            <line style="stroke:#000000;stroke-width:1.5;" x1="266" x2="331.2676" y1="465.2028" y2="465.2028"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing"
-                  textLength="52.2676" x="34" y="370.0351">supply
+                  textLength="52.2676" x="270" y="457.901">supply
             </text>
         </g><!--cluster matsim-->
         <g id="cluster_matsim">
-            <path d="M444.5,200.89 L503.9473,200.89 A3.75,3.75 0 0 1 506.4473,203.39 L513.4473,223.1869 L651.5,223.1869 A2.5,2.5 0 0 1 654,225.6869 L654,297.39 A2.5,2.5 0 0 1 651.5,299.89 L444.5,299.89 A2.5,2.5 0 0 1 442,297.39 L442,203.39 A2.5,2.5 0 0 1 444.5,200.89 "
+            <path d="M8.5,269.7559 L67.9473,269.7559 A3.75,3.75 0 0 1 70.4473,272.2559 L77.4473,292.0528 L215.5,292.0528 A2.5,2.5 0 0 1 218,294.5528 L218,385.2559 A2.5,2.5 0 0 1 215.5,387.7559 L8.5,387.7559 A2.5,2.5 0 0 1 6,385.2559 L6,272.2559 A2.5,2.5 0 0 1 8.5,269.7559 "
                   fill="none" style="stroke:#000000;stroke-width:1.5;"/>
-            <line style="stroke:#000000;stroke-width:1.5;" x1="442" x2="513.4473" y1="223.1869" y2="223.1869"/>
+            <line style="stroke:#000000;stroke-width:1.5;" x1="6" x2="77.4473" y1="292.0528" y2="292.0528"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing"
-                  textLength="58.4473" x="446" y="215.8851">matsim
+                  textLength="58.4473" x="10" y="284.751">matsim
+            </text>
+        </g><!--cluster io.matsim-->
+        <g id="cluster_io.matsim">
+            <path d="M1407.5,72.1659 L1486.6826,72.1659 A3.75,3.75 0 0 1 1489.1826,74.6659 L1496.1826,94.4628 L1650.5,94.4628 A2.5,2.5 0 0 1 1653,96.9628 L1653,187.6659 A2.5,2.5 0 0 1 1650.5,190.1659 L1407.5,190.1659 A2.5,2.5 0 0 1 1405,187.6659 L1405,74.6659 A2.5,2.5 0 0 1 1407.5,72.1659 "
+                  fill="none" style="stroke:#000000;stroke-width:1.5;"/>
+            <line style="stroke:#000000;stroke-width:1.5;" x1="1405" x2="1496.1826" y1="94.4628" y2="94.4628"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing"
+                  textLength="78.1826" x="1409" y="87.161">io.matsim
             </text>
         </g><!--class NetzgrafikConverter-->
         <g id="elem_NetzgrafikConverter">
             <rect codeLine="5" fill="#F1F1F1" height="64.2969" id="NetzgrafikConverter" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="173.7979" x="650.1" y="57.3"/>
-            <ellipse cx="665.1" cy="73.3" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/>
-            <path d="M668.0688,78.9406 Q667.4906,79.2375 666.85,79.3781 Q666.2094,79.5344 665.5063,79.5344 Q663.0063,79.5344 661.6781,77.8938 Q660.3656,76.2375 660.3656,73.1125 Q660.3656,69.9875 661.6781,68.3313 Q663.0063,66.675 665.5063,66.675 Q666.2094,66.675 666.85,66.8313 Q667.5063,66.9875 668.0688,67.2844 L668.0688,70.0031 Q667.4438,69.425 666.85,69.1594 Q666.2563,68.8781 665.6313,68.8781 Q664.2875,68.8781 663.6,69.9563 Q662.9125,71.0188 662.9125,73.1125 Q662.9125,75.2063 663.6,76.2844 Q664.2875,77.3469 665.6313,77.3469 Q666.2563,77.3469 666.85,77.0813 Q667.4438,76.8 668.0688,76.2219 L668.0688,78.9406 Z "
+                  style="stroke:#181818;stroke-width:0.5;" width="173.7979" x="838.1" y="118.0159"/>
+            <ellipse cx="853.1" cy="134.0159" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M856.0688,139.6565 Q855.4906,139.9534 854.85,140.094 Q854.2094,140.2503 853.5063,140.2503 Q851.0063,140.2503 849.6781,138.6097 Q848.3656,136.9534 848.3656,133.8284 Q848.3656,130.7034 849.6781,129.0472 Q851.0063,127.3909 853.5063,127.3909 Q854.2094,127.3909 854.85,127.5472 Q855.5063,127.7034 856.0688,128.0003 L856.0688,130.719 Q855.4438,130.1409 854.85,129.8753 Q854.2563,129.594 853.6313,129.594 Q852.2875,129.594 851.6,130.6722 Q850.9125,131.7347 850.9125,133.8284 Q850.9125,135.9222 851.6,137.0003 Q852.2875,138.0628 853.6313,138.0628 Q854.2563,138.0628 854.85,137.7972 Q855.4438,137.5159 856.0688,136.9378 L856.0688,139.6565 Z "
                   fill="#000000"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="141.7979"
-                  x="679.1" y="78.1467">NetzgrafikConverter
+                  x="867.1" y="138.8626">NetzgrafikConverter
             </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="651.1" x2="822.8979" y1="89.3" y2="89.3"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="651.1" x2="822.8979" y1="97.3" y2="97.3"/>
-            <ellipse cx="661.1" cy="110.9484" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="839.1" x2="1010.8979" y1="150.0159" y2="150.0159"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="839.1" x2="1010.8979" y1="158.0159" y2="158.0159"/>
+            <ellipse cx="849.1" cy="171.6644" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="34.4258"
-                  x="670.1" y="114.2951">run()
+                  x="858.1" y="175.011">run()
             </text>
         </g><!--class NetzgrafikConverterConfig-->
         <g id="elem_NetzgrafikConverterConfig">
-            <rect codeLine="9" fill="#F1F1F1" height="96.8906" id="NetzgrafikConverterConfig" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="218.7168" x="882.64" y="41"/>
-            <ellipse cx="897.64" cy="57" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/>
-            <path d="M900.6088,62.6406 Q900.0306,62.9375 899.39,63.0781 Q898.7494,63.2344 898.0463,63.2344 Q895.5463,63.2344 894.2181,61.5938 Q892.9056,59.9375 892.9056,56.8125 Q892.9056,53.6875 894.2181,52.0313 Q895.5463,50.375 898.0463,50.375 Q898.7494,50.375 899.39,50.5313 Q900.0463,50.6875 900.6088,50.9844 L900.6088,53.7031 Q899.9838,53.125 899.39,52.8594 Q898.7963,52.5781 898.1713,52.5781 Q896.8275,52.5781 896.14,53.6563 Q895.4525,54.7188 895.4525,56.8125 Q895.4525,58.9063 896.14,59.9844 Q896.8275,61.0469 898.1713,61.0469 Q898.7963,61.0469 899.39,60.7813 Q899.9838,60.5 900.6088,59.9219 L900.6088,62.6406 Z "
+            <rect codeLine="9" fill="#F1F1F1" height="113.1875" id="NetzgrafikConverterConfig" rx="2.5" ry="2.5"
+                  style="stroke:#181818;stroke-width:0.5;" width="294.2832" x="1070.86" y="93.5659"/>
+            <ellipse cx="1120.3932" cy="109.5659" fill="#ADD1B2" rx="11" ry="11"
+                     style="stroke:#181818;stroke-width:1;"/>
+            <path d="M1123.362,115.2065 Q1122.7838,115.5034 1122.1432,115.644 Q1121.5026,115.8003 1120.7995,115.8003 Q1118.2995,115.8003 1116.9713,114.1597 Q1115.6588,112.5034 1115.6588,109.3784 Q1115.6588,106.2534 1116.9713,104.5972 Q1118.2995,102.9409 1120.7995,102.9409 Q1121.5026,102.9409 1122.1432,103.0972 Q1122.7995,103.2534 1123.362,103.5503 L1123.362,106.269 Q1122.737,105.6909 1122.1432,105.4253 Q1121.5495,105.144 1120.9245,105.144 Q1119.5807,105.144 1118.8932,106.2222 Q1118.2057,107.2847 1118.2057,109.3784 Q1118.2057,111.4722 1118.8932,112.5503 Q1119.5807,113.6128 1120.9245,113.6128 Q1121.5495,113.6128 1122.1432,113.3472 Q1122.737,113.0659 1123.362,112.4878 L1123.362,115.2065 Z "
                   fill="#000000"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="186.7168"
-                  x="911.64" y="61.8467">NetzgrafikConverterConfig
+                  x="1140.8932" y="114.4126">NetzgrafikConverterConfig
             </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="883.64" x2="1100.3568" y1="73" y2="73"/>
-            <rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="890.64" y="83.6484"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="1071.86" x2="1364.1432" y1="125.5659" y2="125.5659"/>
+            <rect fill="none" height="6" style="stroke:#C82930;stroke-width:1;" width="6" x="1078.86" y="136.2144"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="174.166"
-                  x="902.64" y="89.9951">useTrainNames: boolean
+                  x="1090.86" y="142.561">useTrainNames: boolean
             </text>
-            <rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="890.64" y="99.9453"/>
+            <rect fill="none" height="6" style="stroke:#C82930;stroke-width:1;" width="6" x="1078.86" y="152.5112"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="268.2832"
+                  x="1090.86" y="158.8579">validationStrategy: ValidationStrategy
+            </text>
+            <rect fill="none" height="6" style="stroke:#C82930;stroke-width:1;" width="6" x="1078.86" y="168.8081"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="192.3838"
-                  x="902.64" y="106.292">serviceDayStart: LocalTime
+                  x="1090.86" y="175.1548">serviceDayStart: LocalTime
             </text>
-            <rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="890.64" y="116.2422"/>
+            <rect fill="none" height="6" style="stroke:#C82930;stroke-width:1;" width="6" x="1078.86" y="185.105"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="184.7891"
-                  x="902.64" y="122.5889">serviceDayEnd: LocalTime
+                  x="1090.86" y="191.4517">serviceDayEnd: LocalTime
             </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="883.64" x2="1100.3568" y1="129.8906" y2="129.8906"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="1071.86" x2="1364.1432" y1="198.7534" y2="198.7534"/>
         </g><!--class NetworkGraphicSource-->
         <g id="elem_NetworkGraphicSource">
-            <rect codeLine="15" fill="#F1F1F1" height="64.2969" id="NetworkGraphicSource" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="193.376" x="769.31" y="227.74"/>
-            <ellipse cx="784.31" cy="243.74" fill="#B4A7E5" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/>
-            <path d="M780.2319,239.5056 L780.2319,237.3494 L787.6225,237.3494 L787.6225,239.5056 L785.1538,239.5056 L785.1538,247.5838 L787.6225,247.5838 L787.6225,249.74 L780.2319,249.74 L780.2319,247.5838 L782.7006,247.5838 L782.7006,239.5056 L780.2319,239.5056 Z "
+            <rect codeLine="16" fill="#F1F1F1" height="64.2969" id="NetworkGraphicSource" rx="2.5" ry="2.5"
+                  style="stroke:#181818;stroke-width:0.5;" width="193.376" x="984.31" y="315.6059"/>
+            <ellipse cx="999.31" cy="331.6059" fill="#B4A7E5" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M995.2319,327.3715 L995.2319,325.2153 L1002.6225,325.2153 L1002.6225,327.3715 L1000.1538,327.3715 L1000.1538,335.4497 L1002.6225,335.4497 L1002.6225,337.6059 L995.2319,337.6059 L995.2319,335.4497 L997.7006,335.4497 L997.7006,327.3715 L995.2319,327.3715 Z "
                   fill="#000000"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
-                  textLength="161.376" x="798.31" y="248.5867">NetworkGraphicSource
+                  textLength="161.376" x="1013.31" y="336.4526">NetworkGraphicSource
             </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="770.31" x2="961.686" y1="259.74" y2="259.74"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="770.31" x2="961.686" y1="267.74" y2="267.74"/>
-            <ellipse cx="780.31" cy="281.3884" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="985.31" x2="1176.686" y1="347.6059" y2="347.6059"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="985.31" x2="1176.686" y1="355.6059" y2="355.6059"/>
+            <ellipse cx="995.31" cy="369.2544" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="40.8447"
-                  x="789.31" y="284.7351">load()
+                  x="1004.31" y="372.601">load()
             </text>
         </g><!--class ConverterSink-->
         <g id="elem_ConverterSink">
-            <rect codeLine="19" fill="#F1F1F1" height="64.2969" id="ConverterSink" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="131.4834" x="997.26" y="227.74"/>
-            <ellipse cx="1012.26" cy="243.74" fill="#B4A7E5" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/>
-            <path d="M1008.1819,239.5056 L1008.1819,237.3494 L1015.5725,237.3494 L1015.5725,239.5056 L1013.1038,239.5056 L1013.1038,247.5838 L1015.5725,247.5838 L1015.5725,249.74 L1008.1819,249.74 L1008.1819,247.5838 L1010.6506,247.5838 L1010.6506,239.5056 L1008.1819,239.5056 Z "
+            <rect codeLine="20" fill="#F1F1F1" height="64.2969" id="ConverterSink" rx="2.5" ry="2.5"
+                  style="stroke:#181818;stroke-width:0.5;" width="131.4834" x="1222.26" y="315.6059"/>
+            <ellipse cx="1237.26" cy="331.6059" fill="#B4A7E5" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M1233.1819,327.3715 L1233.1819,325.2153 L1240.5725,325.2153 L1240.5725,327.3715 L1238.1038,327.3715 L1238.1038,335.4497 L1240.5725,335.4497 L1240.5725,337.6059 L1233.1819,337.6059 L1233.1819,335.4497 L1235.6506,335.4497 L1235.6506,327.3715 L1233.1819,327.3715 Z "
                   fill="#000000"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
-                  textLength="99.4834" x="1026.26" y="248.5867">ConverterSink
+                  textLength="99.4834" x="1251.26" y="336.4526">ConverterSink
             </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="998.26" x2="1127.7434" y1="259.74" y2="259.74"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="998.26" x2="1127.7434" y1="267.74" y2="267.74"/>
-            <ellipse cx="1008.26" cy="281.3884" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="1223.26" x2="1352.7434" y1="347.6059" y2="347.6059"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="1223.26" x2="1352.7434" y1="355.6059" y2="355.6059"/>
+            <ellipse cx="1233.26" cy="369.2544" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="43.6953"
-                  x="1017.26" y="284.7351">save()
+                  x="1242.26" y="372.601">save()
             </text>
         </g><!--class SupplyBuilder-->
         <g id="elem_SupplyBuilder">
-            <rect codeLine="24" fill="#F1F1F1" height="145.7813" id="SupplyBuilder" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="158.2275" x="946.89" y="390.04"/>
-            <ellipse cx="974.9431" cy="406.04" fill="#B4A7E5" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/>
-            <path d="M970.865,401.8056 L970.865,399.6494 L978.2556,399.6494 L978.2556,401.8056 L975.7868,401.8056 L975.7868,409.8838 L978.2556,409.8838 L978.2556,412.04 L970.865,412.04 L970.865,409.8838 L973.3337,409.8838 L973.3337,401.8056 L970.865,401.8056 Z "
+            <rect codeLine="25" fill="#F1F1F1" height="145.7813" id="SupplyBuilder" rx="2.5" ry="2.5"
+                  style="stroke:#181818;stroke-width:0.5;" width="158.2275" x="1182.89" y="496.9059"/>
+            <ellipse cx="1210.9431" cy="512.9059" fill="#B4A7E5" rx="11" ry="11"
+                     style="stroke:#181818;stroke-width:1;"/>
+            <path d="M1206.865,508.6715 L1206.865,506.5153 L1214.2556,506.5153 L1214.2556,508.6715 L1211.7868,508.6715 L1211.7868,516.7497 L1214.2556,516.7497 L1214.2556,518.9059 L1206.865,518.9059 L1206.865,516.7497 L1209.3337,516.7497 L1209.3337,508.6715 L1206.865,508.6715 Z "
                   fill="#000000"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
-                  textLength="97.2207" x="991.8438" y="410.8867">SupplyBuilder
+                  textLength="97.2207" x="1227.8438" y="517.7526">SupplyBuilder
             </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="947.89" x2="1104.1175" y1="422.04" y2="422.04"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="947.89" x2="1104.1175" y1="430.04" y2="430.04"/>
-            <ellipse cx="957.89" cy="443.6884" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="1183.89" x2="1340.1175" y1="528.9059" y2="528.9059"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="1183.89" x2="1340.1175" y1="536.9059" y2="536.9059"/>
+            <ellipse cx="1193.89" cy="550.5544" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="132.2275"
-                  x="966.89" y="447.0351">addStopFacility(...)
+                  x="1202.89" y="553.901">addStopFacility(...)
             </text>
-            <ellipse cx="957.89" cy="459.9853" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/>
+            <ellipse cx="1193.89" cy="566.8512" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="128.2354"
-                  x="966.89" y="463.332">addTransitLine(...)
+                  x="1202.89" y="570.1979">addTransitLine(...)
             </text>
-            <ellipse cx="957.89" cy="476.2822" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/>
+            <ellipse cx="1193.89" cy="583.1481" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="123.7236"
-                  x="966.89" y="479.6289">addRouteStop(...)
+                  x="1202.89" y="586.4948">addRouteStop(...)
             </text>
-            <ellipse cx="957.89" cy="492.5791" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/>
+            <ellipse cx="1193.89" cy="599.445" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="123.5049"
-                  x="966.89" y="495.9257">addRoutePass(...)
+                  x="1202.89" y="602.7917">addRoutePass(...)
             </text>
-            <ellipse cx="957.89" cy="508.8759" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/>
+            <ellipse cx="1193.89" cy="615.7419" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="121.9736"
-                  x="966.89" y="512.2226">addDeparture(...)
+                  x="1202.89" y="619.0885">addDeparture(...)
             </text>
-            <ellipse cx="957.89" cy="525.1728" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/>
+            <ellipse cx="1193.89" cy="632.0387" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="45.3496"
-                  x="966.89" y="528.5195">build()
+                  x="1202.89" y="635.3854">build()
             </text>
         </g><!--class InfrastructureRepository-->
         <g id="elem_InfrastructureRepository">
-            <rect codeLine="33" fill="#F1F1F1" height="80.5938" id="InfrastructureRepository" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="272.1279" x="45.94" y="422.63"/>
-            <ellipse cx="92.1646" cy="438.63" fill="#B4A7E5" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/>
-            <path d="M88.0865,434.3956 L88.0865,432.2394 L95.4771,432.2394 L95.4771,434.3956 L93.0084,434.3956 L93.0084,442.4738 L95.4771,442.4738 L95.4771,444.63 L88.0865,444.63 L88.0865,442.4738 L90.5552,442.4738 L90.5552,434.3956 L88.0865,434.3956 Z "
+            <rect codeLine="34" fill="#F1F1F1" height="80.5938" id="InfrastructureRepository" rx="2.5" ry="2.5"
+                  style="stroke:#181818;stroke-width:0.5;" width="272.1279" x="281.94" y="529.4959"/>
+            <ellipse cx="328.1646" cy="545.4959" fill="#B4A7E5" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M324.0865,541.2615 L324.0865,539.1053 L331.4771,539.1053 L331.4771,541.2615 L329.0084,541.2615 L329.0084,549.3397 L331.4771,549.3397 L331.4771,551.4959 L324.0865,551.4959 L324.0865,549.3397 L326.5552,549.3397 L326.5552,541.2615 L324.0865,541.2615 Z "
                   fill="#000000"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
-                  textLength="171.1787" x="112.6646" y="443.4767">InfrastructureRepository
+                  textLength="171.1787" x="348.6646" y="550.3426">InfrastructureRepository
             </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="46.94" x2="317.0679" y1="454.63" y2="454.63"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="46.94" x2="317.0679" y1="462.63" y2="462.63"/>
-            <ellipse cx="56.94" cy="476.2784" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="282.94" x2="553.0679" y1="561.4959" y2="561.4959"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="282.94" x2="553.0679" y1="569.4959" y2="569.4959"/>
+            <ellipse cx="292.94" cy="583.1444" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="246.1279"
-                  x="65.94" y="479.6251">getStopFacility(...): StopFacilityInfo
+                  x="301.94" y="586.491">getStopFacility(...): StopFacilityInfo
             </text>
-            <ellipse cx="56.94" cy="492.5753" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/>
+            <ellipse cx="292.94" cy="599.4412" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="244.7471"
-                  x="65.94" y="495.922">getTrack(...): List&lt;TrackSegment&gt;
+                  x="301.94" y="602.7879">getTrack(...): List&lt;TrackSegment&gt;
             </text>
         </g><!--class RollingStockRepository-->
         <g id="elem_RollingStockRepository">
-            <rect codeLine="38" fill="#F1F1F1" height="64.2969" id="RollingStockRepository" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="279.9072" x="353.05" y="430.78"/>
-            <ellipse cx="407.9836" cy="446.78" fill="#B4A7E5" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/>
-            <path d="M403.9055,442.5456 L403.9055,440.3894 L411.2961,440.3894 L411.2961,442.5456 L408.8273,442.5456 L408.8273,450.6238 L411.2961,450.6238 L411.2961,452.78 L403.9055,452.78 L403.9055,450.6238 L406.3742,450.6238 L406.3742,442.5456 L403.9055,442.5456 Z "
+            <rect codeLine="39" fill="#F1F1F1" height="64.2969" id="RollingStockRepository" rx="2.5" ry="2.5"
+                  style="stroke:#181818;stroke-width:0.5;" width="279.9072" x="589.05" y="537.6459"/>
+            <ellipse cx="643.9836" cy="553.6459" fill="#B4A7E5" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M639.9055,549.4115 L639.9055,547.2553 L647.2961,547.2553 L647.2961,549.4115 L644.8273,549.4115 L644.8273,557.4897 L647.2961,557.4897 L647.2961,559.6459 L639.9055,559.6459 L639.9055,557.4897 L642.3742,557.4897 L642.3742,549.4115 L639.9055,549.4115 Z "
                   fill="#000000"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
-                  textLength="161.54" x="428.4836" y="451.6267">RollingStockRepository
+                  textLength="161.54" x="664.4836" y="558.4926">RollingStockRepository
             </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="354.05" x2="631.9572" y1="462.78" y2="462.78"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="354.05" x2="631.9572" y1="470.78" y2="470.78"/>
-            <ellipse cx="364.05" cy="484.4284" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="590.05" x2="867.9572" y1="569.6459" y2="569.6459"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="590.05" x2="867.9572" y1="577.6459" y2="577.6459"/>
+            <ellipse cx="600.05" cy="591.2944" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="253.9072"
-                  x="373.05" y="487.7751">getVehicleType(...): VehicleTypeInfo
+                  x="609.05" y="594.641">getVehicleType(...): VehicleTypeInfo
             </text>
         </g><!--class VehicleCircuitsPlanner-->
         <g id="elem_VehicleCircuitsPlanner">
-            <rect codeLine="42" fill="#F1F1F1" height="80.5938" id="VehicleCircuitsPlanner" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="244.4219" x="667.79" y="422.63"/>
-            <ellipse cx="707.8002" cy="438.63" fill="#B4A7E5" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/>
-            <path d="M703.722,434.3956 L703.722,432.2394 L711.1127,432.2394 L711.1127,434.3956 L708.6439,434.3956 L708.6439,442.4738 L711.1127,442.4738 L711.1127,444.63 L703.722,444.63 L703.722,442.4738 L706.1908,442.4738 L706.1908,434.3956 L703.722,434.3956 Z "
+            <rect codeLine="43" fill="#F1F1F1" height="80.5938" id="VehicleCircuitsPlanner" rx="2.5" ry="2.5"
+                  style="stroke:#181818;stroke-width:0.5;" width="244.4219" x="903.79" y="529.4959"/>
+            <ellipse cx="943.8002" cy="545.4959" fill="#B4A7E5" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M939.722,541.2615 L939.722,539.1053 L947.1127,539.1053 L947.1127,541.2615 L944.6439,541.2615 L944.6439,549.3397 L947.1127,549.3397 L947.1127,551.4959 L939.722,551.4959 L939.722,549.3397 L942.1908,549.3397 L942.1908,541.2615 L939.722,541.2615 Z "
                   fill="#000000"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
-                  textLength="156.8438" x="727.358" y="443.4767">VehicleCircuitsPlanner
+                  textLength="156.8438" x="963.358" y="550.3426">VehicleCircuitsPlanner
             </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="668.79" x2="911.2119" y1="454.63" y2="454.63"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="668.79" x2="911.2119" y1="462.63" y2="462.63"/>
-            <ellipse cx="678.79" cy="476.2784" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="904.79" x2="1147.2119" y1="561.4959" y2="561.4959"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="904.79" x2="1147.2119" y1="569.4959" y2="569.4959"/>
+            <ellipse cx="914.79" cy="583.1444" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="78.5723"
-                  x="687.79" y="479.6251">register(...)
+                  x="923.79" y="586.491">register(...)
             </text>
-            <ellipse cx="678.79" cy="492.5753" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/>
+            <ellipse cx="914.79" cy="599.4412" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="218.4219"
-                  x="687.79" y="495.922">plan(): List&lt;VehicleAllocation&gt;
+                  x="923.79" y="602.7879">plan(): List&lt;VehicleAllocation&gt;
             </text>
         </g><!--class MatsimSupplyBuilder-->
         <g id="elem_MatsimSupplyBuilder">
-            <rect codeLine="49" fill="#F1F1F1" height="48" id="MatsimSupplyBuilder" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="180.1895" x="457.91" y="235.89"/>
-            <ellipse cx="472.91" cy="251.89" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/>
-            <path d="M475.8788,257.5306 Q475.3006,257.8275 474.66,257.9681 Q474.0194,258.1244 473.3163,258.1244 Q470.8163,258.1244 469.4881,256.4838 Q468.1756,254.8275 468.1756,251.7025 Q468.1756,248.5775 469.4881,246.9213 Q470.8163,245.265 473.3163,245.265 Q474.0194,245.265 474.66,245.4213 Q475.3163,245.5775 475.8788,245.8744 L475.8788,248.5931 Q475.2538,248.015 474.66,247.7494 Q474.0663,247.4681 473.4413,247.4681 Q472.0975,247.4681 471.41,248.5463 Q470.7225,249.6088 470.7225,251.7025 Q470.7225,253.7963 471.41,254.8744 Q472.0975,255.9369 473.4413,255.9369 Q474.0663,255.9369 474.66,255.6713 Q475.2538,255.39 475.8788,254.8119 L475.8788,257.5306 Z "
+            <rect codeLine="51" fill="#F1F1F1" height="48" id="MatsimSupplyBuilder" rx="2.5" ry="2.5"
+                  style="stroke:#181818;stroke-width:0.5;" width="180.1895" x="21.91" y="323.7559"/>
+            <ellipse cx="36.91" cy="339.7559" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M39.8788,345.3965 Q39.3006,345.6934 38.66,345.834 Q38.0194,345.9903 37.3163,345.9903 Q34.8163,345.9903 33.4881,344.3497 Q32.1756,342.6934 32.1756,339.5684 Q32.1756,336.4434 33.4881,334.7872 Q34.8163,333.1309 37.3163,333.1309 Q38.0194,333.1309 38.66,333.2872 Q39.3163,333.4434 39.8788,333.7403 L39.8788,336.459 Q39.2538,335.8809 38.66,335.6153 Q38.0663,335.334 37.4413,335.334 Q36.0975,335.334 35.41,336.4122 Q34.7225,337.4747 34.7225,339.5684 Q34.7225,341.6622 35.41,342.7403 Q36.0975,343.8028 37.4413,343.8028 Q38.0663,343.8028 38.66,343.5372 Q39.2538,343.2559 39.8788,342.6778 L39.8788,345.3965 Z "
                   fill="#000000"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="148.1895"
-                  x="486.91" y="256.7367">MatsimSupplyBuilder
+                  x="50.91" y="344.6026">MatsimSupplyBuilder
             </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="458.91" x2="637.0995" y1="267.89" y2="267.89"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="458.91" x2="637.0995" y1="275.89" y2="275.89"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="22.91" x2="201.0995" y1="355.7559" y2="355.7559"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="22.91" x2="201.0995" y1="363.7559" y2="363.7559"/>
+        </g><!--class TransitScheduleXmlWriter-->
+        <g id="elem_TransitScheduleXmlWriter">
+            <rect codeLine="56" fill="#F1F1F1" height="48" id="TransitScheduleXmlWriter" rx="2.5" ry="2.5"
+                  style="stroke:#181818;stroke-width:0.5;" width="215.2305" x="1421.38" y="126.1659"/>
+            <ellipse cx="1436.38" cy="142.1659" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M1439.3488,147.8065 Q1438.7706,148.1034 1438.13,148.244 Q1437.4894,148.4003 1436.7863,148.4003 Q1434.2863,148.4003 1432.9581,146.7597 Q1431.6456,145.1034 1431.6456,141.9784 Q1431.6456,138.8534 1432.9581,137.1972 Q1434.2863,135.5409 1436.7863,135.5409 Q1437.4894,135.5409 1438.13,135.6972 Q1438.7863,135.8534 1439.3488,136.1503 L1439.3488,138.869 Q1438.7238,138.2909 1438.13,138.0253 Q1437.5363,137.744 1436.9113,137.744 Q1435.5675,137.744 1434.88,138.8222 Q1434.1925,139.8847 1434.1925,141.9784 Q1434.1925,144.0722 1434.88,145.1503 Q1435.5675,146.2128 1436.9113,146.2128 Q1437.5363,146.2128 1438.13,145.9472 Q1438.7238,145.6659 1439.3488,145.0878 L1439.3488,147.8065 Z "
+                  fill="#000000"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="183.2305"
+                  x="1450.38" y="147.0126">TransitScheduleXmlWriter
+            </text>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="1422.38" x2="1635.6105" y1="158.1659" y2="158.1659"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="1422.38" x2="1635.6105" y1="166.1659" y2="166.1659"/>
         </g><!--reverse link NetzgrafikConverter to NetzgrafikConverterConfig-->
         <g id="link_NetzgrafikConverter_NetzgrafikConverterConfig">
-            <path codeLine="54" d="M836.04,89.44 C854.8,89.44 862.86,89.44 882.35,89.44 " fill="none"
-                  id="NetzgrafikConverter-backto-NetzgrafikConverterConfig" style="stroke:#181818;stroke-width:1.0;"/>
-            <polygon fill="#181818" points="824.04,89.44,830.04,93.44,836.04,89.44,830.04,85.44,824.04,89.44"
-                     style="stroke:#181818;stroke-width:1.0;"/>
+            <path codeLine="60" d="M1024.12,150.1659 C1042.59,150.1659 1050.58,150.1659 1070.59,150.1659 " fill="none"
+                  id="NetzgrafikConverter-backto-NetzgrafikConverterConfig" style="stroke:#181818;stroke-width:1;"/>
+            <polygon fill="#181818"
+                     points="1012.12,150.1659,1018.12,154.1659,1024.12,150.1659,1018.12,146.1659,1012.12,150.1659"
+                     style="stroke:#181818;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="22.9785"
-                  x="842.27" y="82.5069">has
+                  x="1030.38" y="143.2328">has
             </text>
         </g><!--reverse link NetzgrafikConverter to NetworkGraphicSource-->
         <g id="link_NetzgrafikConverter_NetworkGraphicSource">
-            <path codeLine="55" d="M768.2567,131.2567 C791.3567,161.4167 818.82,197.28 841.95,227.48 " fill="none"
-                  id="NetzgrafikConverter-backto-NetworkGraphicSource" style="stroke:#181818;stroke-width:1.0;"/>
+            <path codeLine="61" d="M957.5438,191.9664 C986.6638,228.4664 1026.91,278.9459 1056,315.4059 " fill="none"
+                  id="NetzgrafikConverter-backto-NetworkGraphicSource" style="stroke:#181818;stroke-width:1;"/>
             <polygon fill="#181818"
-                     points="760.96,121.73,761.4328,128.9256,768.2567,131.2567,767.7839,124.0611,760.96,121.73"
-                     style="stroke:#181818;stroke-width:1.0;"/>
+                     points="950.06,182.5859,950.6751,189.7707,957.5438,191.9664,956.9287,184.7815,950.06,182.5859"
+                     style="stroke:#181818;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="22.9785"
-                  x="810" y="180.9569">has
+                  x="1004" y="249.8228">has
             </text>
         </g><!--reverse link NetzgrafikConverter to SupplyBuilder-->
         <g id="link_NetzgrafikConverter_SupplyBuilder">
-            <path codeLine="56"
-                  d="M719.8137,133.1919 C702.8837,179.5519 684.49,255.13 728,307.89 C786.19,378.44 851.24,300.57 930,347.04 C948.24,357.8 964.6,373.36 978.43,389.56 "
-                  fill="none" id="NetzgrafikConverter-backto-SupplyBuilder" style="stroke:#181818;stroke-width:1.0;"/>
+            <path codeLine="62"
+                  d="M913.7691,194.1257 C901.8191,245.6557 889.73,336.8559 943,395.7559 C1010.5,470.3859 1080.81,381.3459 1166,434.9059 C1189.97,449.9759 1209.76,473.4159 1225.02,496.4959 "
+                  fill="none" id="NetzgrafikConverter-backto-SupplyBuilder" style="stroke:#181818;stroke-width:1;"/>
             <polygon fill="#181818"
-                     points="723.93,121.92,718.1145,126.1838,719.8137,133.1919,725.6291,128.9281,723.93,121.92"
-                     style="stroke:#181818;stroke-width:1.0;"/>
+                     points="916.48,182.4359,911.228,187.3772,913.7691,194.1257,919.0211,189.1844,916.48,182.4359"
+                     style="stroke:#181818;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="22.9785"
-                  x="729" y="264.4569">has
+                  x="944" y="352.3228">has
             </text>
         </g><!--reverse link NetzgrafikConverter to ConverterSink-->
         <g id="link_NetzgrafikConverter_ConverterSink">
-            <path codeLine="57"
-                  d="M829.7954,126.5124 C888.6954,149.8624 951.5,175.99 980,192.89 C996.63,202.75 1013.58,215.63 1027.79,227.38 "
-                  fill="none" id="NetzgrafikConverter-backto-ConverterSink" style="stroke:#181818;stroke-width:1.0;"/>
+            <path codeLine="63"
+                  d="M1007.2177,187.4741 C1025.6477,195.4741 1034.51,199.1659 1053,206.7559 C1115.61,232.4659 1137.48,226.0959 1195,261.7559 C1218.8,276.5059 1242.05,297.7559 1259.35,315.3259 "
+                  fill="none" id="NetzgrafikConverter-backto-ConverterSink" style="stroke:#181818;stroke-width:1;"/>
             <polygon fill="#181818"
-                     points="818.64,122.09,822.7436,128.0197,829.7954,126.5124,825.6918,120.5827,818.64,122.09"
-                     style="stroke:#181818;stroke-width:1.0;"/>
+                     points="996.21,182.6959,1000.1211,188.7542,1007.2177,187.4741,1003.3066,181.4158,996.21,182.6959"
+                     style="stroke:#181818;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="22.9785"
-                  x="961" y="180.9569">has
+                  x="1179" y="249.8228">has
             </text>
         </g><!--link NetzgrafikConverter to MatsimSupplyBuilder-->
         <g id="link_NetzgrafikConverter_MatsimSupplyBuilder">
-            <path codeLine="58"
-                  d="M690.31,121.99 C671.56,135.39 650.14,151.64 632,167.89 C608.14,189.26 587.5006,212.0209 571.1506,231.1309 "
+            <path codeLine="64"
+                  d="M837.61,153.7459 C704.7,160.2059 445.7,182.7959 242,261.7559 C203.78,276.5659 169.8451,300.0582 144.7351,319.7082 "
                   fill="none" id="NetzgrafikConverter-to-MatsimSupplyBuilder"
-                  style="stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/>
+                  style="stroke:#181818;stroke-width:1;stroke-dasharray:7.0,7.0;"/>
             <polygon fill="#181818"
-                     points="567.25,235.69,576.1403,231.4518,570.5005,231.8908,570.0615,226.251,567.25,235.69"
-                     style="stroke:#181818;stroke-width:1.0;"/>
+                     points="140.01,323.4059,149.5629,321.0095,143.9476,320.3245,144.6326,314.7093,140.01,323.4059"
+                     style="stroke:#181818;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="67.1011"
-                  x="633" y="180.9569">&#171;runtime&#187;
+                  x="314" y="249.8228">&#171;runtime&#187;
+            </text>
+        </g><!--link NetzgrafikConverter to TransitScheduleXmlWriter-->
+        <g id="link_NetzgrafikConverter_TransitScheduleXmlWriter">
+            <path codeLine="65"
+                  d="M950.72,117.6359 C974.11,90.8959 1011.28,54.9559 1053,39.4159 C1121.3,13.9759 1311.84,16.4059 1381,39.4159 C1432.16,56.4359 1475.6942,94.5466 1502.4742,121.6666 "
+                  fill="none" id="NetzgrafikConverter-to-TransitScheduleXmlWriter"
+                  style="stroke:#181818;stroke-width:1;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="#181818"
+                     points="1506.69,125.9359,1503.2125,116.7214,1503.1768,122.3782,1497.5201,122.3425,1506.69,125.9359"
+                     style="stroke:#181818;stroke-width:1;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="67.1011"
+                  x="1182.5" y="19.6328">&#171;runtime&#187;
             </text>
         </g><!--link MatsimSupplyBuilder to SupplyBuilder-->
         <g id="link_MatsimSupplyBuilder_SupplyBuilder">
-            <path codeLine="60"
-                  d="M559.68,284.05 C570.46,302.64 588.37,327.48 612,339.04 C643.75,354.57 898.17,331.67 930,347.04 C950.01,356.7 955.8403,358.9073 970.0703,375.9673 "
+            <path codeLine="67"
+                  d="M165,372.2559 C188.16,381.3759 215.95,390.8059 242,395.7559 C350.77,416.4059 631.95,385.7759 740,409.9059 C758.45,414.0259 760.53,422.8559 779,426.9059 C800.01,431.5059 1146.97,424.8859 1166,434.9059 C1191.81,448.4959 1202.6182,457.3415 1217.9182,481.3215 "
                   fill="none" id="MatsimSupplyBuilder-to-SupplyBuilder"
-                  style="stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/>
-            <polygon fill="none" points="981.6,389.79,974.6779,372.1241,965.4628,379.8106,981.6,389.79"
-                     style="stroke:#181818;stroke-width:1.0;"/>
+                  style="stroke:#181818;stroke-width:1;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="none" points="1227.6,496.4959,1222.9764,478.0942,1212.8601,484.5487,1227.6,496.4959"
+                     style="stroke:#181818;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="92.8154"
-                  x="613" y="335.1069">&#171;implements&#187;
+                  x="780" y="422.9728">&#171;implements&#187;
+            </text>
+        </g><!--link TransitScheduleXmlWriter to ConverterSink-->
+        <g id="link_TransitScheduleXmlWriter_ConverterSink">
+            <path codeLine="68" d="M1500.41,174.3659 C1457.27,209.3759 1389.4058,264.4523 1340.8758,303.8423 "
+                  fill="none" id="TransitScheduleXmlWriter-to-ConverterSink"
+                  style="stroke:#181818;stroke-width:1;stroke-dasharray:7.0,7.0;"/>
+            <polygon fill="none" points="1326.9,315.1859,1344.657,308.5009,1337.0946,299.1837,1326.9,315.1859"
+                     style="stroke:#181818;stroke-width:1;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="92.8154"
+                  x="1423" y="249.8228">&#171;implements&#187;
             </text>
         </g><!--reverse link MatsimSupplyBuilder to InfrastructureRepository-->
         <g id="link_MatsimSupplyBuilder_InfrastructureRepository">
-            <path codeLine="61"
-                  d="M466.3792,288.4319 C424.0892,303.7719 381.16,321.57 336,347.04 C297.65,368.67 257.9,398.54 228.4,422.4 "
-                  fill="none" id="MatsimSupplyBuilder-backto-InfrastructureRepository"
-                  style="stroke:#181818;stroke-width:1.0;"/>
+            <path codeLine="69" d="M154.2031,379.1011 C206.1931,416.4811 299.01,483.2259 362.71,529.0359 " fill="none"
+                  id="MatsimSupplyBuilder-backto-InfrastructureRepository" style="stroke:#181818;stroke-width:1;"/>
             <polygon fill="#181818"
-                     points="477.66,284.34,470.6556,282.6257,466.3792,288.4319,473.3836,290.1462,477.66,284.34"
-                     style="stroke:#181818;stroke-width:1.0;"/>
+                     points="144.46,372.0959,146.9965,378.8462,154.2031,379.1011,151.6666,372.3508,144.46,372.0959"
+                     style="stroke:#181818;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="22.9785"
-                  x="381" y="335.1069">has
+                  x="221" y="422.9728">has
             </text>
         </g><!--reverse link MatsimSupplyBuilder to RollingStockRepository-->
         <g id="link_MatsimSupplyBuilder_RollingStockRepository">
-            <path codeLine="62"
-                  d="M502.8928,291.7093 C490.6228,301.7493 487.61,307.05 481,322.04 C465.65,356.83 473.46,401.17 481.91,430.49 "
+            <path codeLine="70"
+                  d="M179.3138,376.4881 C201.9138,385.0981 217.25,389.8959 242,395.7559 C385.72,429.7859 436.67,375.7459 572,434.9059 C625.17,458.1459 673.92,505.5959 702.55,537.2959 "
                   fill="none" id="MatsimSupplyBuilder-backto-RollingStockRepository"
-                  style="stroke:#181818;stroke-width:1.0;"/>
+                  style="stroke:#181818;stroke-width:1;"/>
             <polygon fill="#181818"
-                     points="512.18,284.11,505.0033,284.8139,502.8928,291.7093,510.0695,291.0053,512.18,284.11"
-                     style="stroke:#181818;stroke-width:1.0;"/>
+                     points="168.1,372.2159,172.2828,378.0899,179.3138,376.4881,175.1309,370.6141,168.1,372.2159"
+                     style="stroke:#181818;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="22.9785"
-                  x="482" y="335.1069">has
+                  x="549" y="422.9728">has
             </text>
         </g><!--reverse link MatsimSupplyBuilder to VehicleCircuitsPlanner-->
         <g id="link_MatsimSupplyBuilder_VehicleCircuitsPlanner">
-            <path codeLine="63"
-                  d="M535.9982,295.631 C531.1082,313.001 531.62,324.6 545,339.04 C560.91,356.2 628.28,338.32 650,347.04 C690.71,363.37 728.62,396.02 754.7,422.35 "
+            <path codeLine="71"
+                  d="M176.5215,376.5875 C199.6215,385.6475 216.1,390.6559 242,395.7559 C389.52,424.7959 430.19,397.1459 580,409.9059 C638.94,414.9259 653.07,421.7659 712,426.9059 C731.28,428.5859 868.21,427.2859 886,434.9059 C932.38,454.7559 972.47,497.3159 997.72,529.1559 "
                   fill="none" id="MatsimSupplyBuilder-backto-VehicleCircuitsPlanner"
-                  style="stroke:#181818;stroke-width:1.0;"/>
+                  style="stroke:#181818;stroke-width:1;"/>
             <polygon fill="#181818"
-                     points="539.25,284.08,533.7737,288.7716,535.9982,295.631,541.4744,290.9394,539.25,284.08"
-                     style="stroke:#181818;stroke-width:1.0;"/>
+                     points="165.35,372.2059,169.4752,378.1205,176.5215,376.5875,172.3963,370.6729,165.35,372.2059"
+                     style="stroke:#181818;stroke-width:1;"/>
             <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="22.9785"
-                  x="546" y="335.1069">has
+                  x="713" y="422.9728">has
             </text>
-        </g><!--SRC=[VLJRRjim37ttL-WnxH1_W14OsDfj690MHHpiNPKPbx0i6HAT8Rly-oZNQUn4jfziwXpo78gq1n96Dk1RgQ20LZf9rWbZ3IHaMq5Ml5eYsuWI7IX2QvA4iRMiG1YWtvMJ1woXHAQbofeZE08d_YI27wMbz-Bv0_PmTHwUJwupgxl-yr-opEAN0rOZxhhpi7SIpNEmaB5Kgq6Qoxa7TqG5Z_9Ka7IKYQrLKk-nWHZcgocl4OCaD5p-m2qAidvPLtztidr3LTZESN3aHbjPJkrSk1z62ZJrcEJb4QQaSujzrxRwDC9UiXNzqPSETJbfQ9zHbcN1z_TDAjH8frMQfdSt26wTyKXRD107x6n74F8i7B_mPSMF7yCuKUTYoL-3xDKbEDYUElnX3avwSfqAMNRGMX_6x7HjjWAwCPk9SOWpsHiEsrVr0DwYfqqVAA1gm52-B6rdjKPJSGrLBmhx2Jmc6lQd5ePIeyX4LhJE07v0fpea_wAbCRUtxQ1Y_U0YZMwPiJeR7B9zrfg7FEpos6La-Xf97fjHjVVLVEh3S_DtpiIvOfj_lrvOxKoyIJz3MyTtRv6oljgIvVpJ_Pp7fcaUxK4cDXl-cn7_FF8yIMAGz6y-bHGusBGQmj1vfiLOGTpiChphdAFD3EeoQMRgUj9_]-->
+        </g><!--SRC=[VLJRZfim47tFL_Wnsofy08eYjRjjLIbThKAqxQlNJCW8OoDxI4NR_VVQB5bmCF20OEQSyPovs08nnIkmDHUGGSqD9ssOqWfMf6j6chre8bsn70q8GgrMAuSjUG5C0Vqf33zX2JawMYAqke0Xy5y6sDyLSu-Gt5hs-8wzlu9wlty-caQjxxhVrzKootsSi1XnDus5e-6e7hsErEMh9N0r-2zSOivzwXavUL2qANkUs0Qy1ND10G-ypOWRIjbU2owFM44CyqNbjuXU0YgNxidLrSluhKtvpV3wZ2BJZH4mLYyrpqFv0_TTU8Qg79Cilq18klR5DdKjsn5sY9PrhiyDoZneG1UHvtdcclwL2vH8xJf9ahi9mfLQMQGzAeW33heXy74Mt4-kkN7tWvz1Qami-8jFUpqOUzcXmk_gPBWbqmWVvG2rjdussrkn1T14RCh69XT9JpXElYXxy1ujRJj31aK5YdRBgHsqbAWATuOe5nDx1ZSc4evj3VrH8qkGLlIS7doFHZH8zabofQRTDb2u_C542bqxnlegi8_sIKetv7vZnYhVtg_3dL1nibW5g_-ZCyKcBs2YJYBaVjmoSOQyaV2haZyDKXWXThTys2nS7YaxSpj3syItTP6okTchvVZXHizZarsqT2dRRjrrIUwssUtcYBDb2zchs079lrsentEmgYNu6RUEDXizyTn0tuGREz5NPNPltmeqHvlPgMNIp89qfFy0]-->
     </g>
 </svg>

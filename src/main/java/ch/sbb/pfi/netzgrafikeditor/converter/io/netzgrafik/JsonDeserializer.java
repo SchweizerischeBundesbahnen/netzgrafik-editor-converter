@@ -1,10 +1,11 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik;
 
-import ch.sbb.pfi.netzgrafikeditor.converter.model.NetworkGraphic;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.model.NetworkGraphic;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -24,10 +25,6 @@ public class JsonDeserializer {
      */
     public NetworkGraphic read(String jsonString) throws IOException {
         log.info("Reading netzgrafik from JSON string");
-
-        // TODO: Validate input in deserializer? Remove spaces and dots?
-        // network.getNodes().forEach(n -> n.set(n.getBetriebspunktName().replaceAll(" ", "_").replaceAll("\\.", "")));
-
         return objectMapper.readValue(jsonString, NetworkGraphic.class);
     }
 
@@ -53,7 +50,7 @@ public class JsonDeserializer {
      */
     public NetworkGraphic read(URL url) throws IOException {
         log.info("Reading netzgrafik from URL: {}", url.toString());
-        try (var inputStream = url.openStream()) {
+        try (InputStream inputStream = url.openStream()) {
             String content = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
             return read(content);
         }

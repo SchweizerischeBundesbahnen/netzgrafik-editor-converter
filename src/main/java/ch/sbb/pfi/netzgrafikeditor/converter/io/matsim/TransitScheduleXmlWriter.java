@@ -1,6 +1,6 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.io.matsim;
 
-import ch.sbb.pfi.netzgrafikeditor.converter.ConverterSink;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.ConverterSink;
 import lombok.RequiredArgsConstructor;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.core.config.ConfigWriter;

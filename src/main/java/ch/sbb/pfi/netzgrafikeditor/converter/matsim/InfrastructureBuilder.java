@@ -1,14 +1,14 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.matsim;
 
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.InfrastructureRepository;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.RouteDirection;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.RouteElement;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.RouteElementVisitor;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.RoutePass;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.RouteStop;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.StopFacilityInfo;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.TrackSegmentInfo;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.TransitLineInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteDirection;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteElement;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteElementVisitor;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RoutePass;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteStop;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TrackSegmentInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitLineInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.matsim.api.core.v01.Coord;
@@ -104,8 +104,8 @@ class InfrastructureBuilder {
                 }
 
                 @Override
-                public void visit(RoutePass passInfo) {
-                    // nothing to do here
+                public void visit(RoutePass routePass) {
+                    stopFacility[0] = stopFacilities.get(routePass.getStopFacilityInfo().getId());
                 }
 
             });
@@ -126,7 +126,7 @@ class InfrastructureBuilder {
 
         List<Id<Link>> linkIds = new ArrayList<>();
         int count = 0;
-        for (var segment : segments) {
+        for (TrackSegmentInfo segment : segments) {
 
             // check if segment was already added
             if (addedSegments.containsKey(segment.getSegmentId())) {

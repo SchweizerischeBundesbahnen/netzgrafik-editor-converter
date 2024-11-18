@@ -1,7 +1,7 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik;
 
-import ch.sbb.pfi.netzgrafikeditor.converter.TestCase;
-import ch.sbb.pfi.netzgrafikeditor.converter.model.NetworkGraphic;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.TestCase;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.model.NetworkGraphic;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

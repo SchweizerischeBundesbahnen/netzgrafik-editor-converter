@@ -1,18 +1,18 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.matsim;
 
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.DepartureInfo;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.InfrastructureRepository;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.RollingStockRepository;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.RouteDirection;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.RouteElement;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.RoutePass;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.RouteStop;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.StopFacilityInfo;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.SupplyBuilder;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.TransitLineInfo;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.VehicleAllocation;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.VehicleCircuitsPlanner;
-import ch.sbb.pfi.netzgrafikeditor.converter.supply.VehicleTypeInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.DepartureInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RollingStockRepository;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteDirection;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteElement;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RoutePass;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteStop;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.SupplyBuilder;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitLineInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleAllocation;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleTypeInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.pt.transitSchedule.api.Departure;
@@ -50,12 +50,12 @@ public class MatsimSupplyBuilder implements SupplyBuilder {
     }
 
     @Override
-    public SupplyBuilder addStopFacility(String id) {
+    public SupplyBuilder addStopFacility(String id, double x, double y) {
         if (stopFacilityInfos.containsKey(id)) {
             throw new RuntimeException("Stop already existing for id " + id);
         }
 
-        stopFacilityInfos.put(id, infrastructureRepository.getStopFacility(id));
+        stopFacilityInfos.put(id, infrastructureRepository.getStopFacility(id, x, y));
 
         return this;
     }

@@ -58,8 +58,8 @@ public class NetworkGraphicConverterIT {
     private void validate(TestCase testCase) {
         // check scenario
         assertNotNull(scenario);
-        assertEquals(scenario.getTransitSchedule().getTransitLines().size(), 1);
-        assertEquals(scenario.getTransitVehicles().getVehicleTypes().size(), 1);
+        assertEquals(1, scenario.getTransitSchedule().getTransitLines().size());
+        assertEquals(1, scenario.getTransitVehicles().getVehicleTypes().size());
         assertFalse(scenario.getTransitVehicles().getVehicles().isEmpty());
 
         // check transit line
@@ -67,7 +67,7 @@ public class NetworkGraphicConverterIT {
                 .getTransitLines()
                 .get(Id.create(testCase.name(), TransitLine.class));
         assertNotNull(transitLine);
-        assertEquals(transitLine.getRoutes().size(), 2);
+        assertEquals(2, transitLine.getRoutes().size());
 
         // check FORWARD transit route
         TransitRoute transitRoute = transitLine.getRoutes()
@@ -92,12 +92,12 @@ public class NetworkGraphicConverterIT {
     }
 
     private void configure(Path path, String prefix) throws IOException {
+        NetworkGraphicConverterConfig config = NetworkGraphicConverterConfig.builder().useTrainNamesAsIds(true).build();
         NetworkGraphicSource source = new JsonFileReader(path);
-        SupplyBuilder builder = new MatsimSupplyBuilder(scenario, new NoInfrastructureRepository(source.load()),
+        SupplyBuilder builder = new MatsimSupplyBuilder(scenario, new NoInfrastructureRepository(source.load(), config),
                 new NoRollingStockRepository(), new NoVehicleCircuitsPlanner());
         ConverterSink sink = new TransitScheduleXmlWriter(scenario, OUTPUT_PATH, prefix.toLowerCase() + CASE_SEPARATOR);
 
-        converter = new NetworkGraphicConverter(
-                NetworkGraphicConverterConfig.builder().useTrainNamesAsIds(true).build(), source, builder, sink);
+        converter = new NetworkGraphicConverter(config, source, builder, sink);
     }
 }

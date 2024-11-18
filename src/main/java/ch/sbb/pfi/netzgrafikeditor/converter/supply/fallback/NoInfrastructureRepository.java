@@ -1,5 +1,6 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.supply.fallback;
 
+import ch.sbb.pfi.netzgrafikeditor.converter.NetworkGraphicConverterConfig;
 import ch.sbb.pfi.netzgrafikeditor.converter.model.NetworkGraphic;
 import ch.sbb.pfi.netzgrafikeditor.converter.model.Node;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.Coordinate;
@@ -7,6 +8,8 @@ import ch.sbb.pfi.netzgrafikeditor.converter.supply.InfrastructureRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.StopFacilityInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.TrackSegmentInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.TransitLineInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.validation.NetworkGraphicSanitizer;
+import ch.sbb.pfi.netzgrafikeditor.converter.validation.ValidationStrategy;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +19,12 @@ public class NoInfrastructureRepository implements InfrastructureRepository {
 
     private final Map<String, Node> nodes = new HashMap<>();
 
-    public NoInfrastructureRepository(NetworkGraphic networkGraphic) {
+    public NoInfrastructureRepository(NetworkGraphic networkGraphic, NetworkGraphicConverterConfig config) {
+        // If sanitizer runs, it needs to be adjusted also here. This means duplicated computation, but ensures decoupling of supply and nge domain.
+        if (config.getValidationStrategy() == ValidationStrategy.FIX_ISSUES) {
+            networkGraphic = new NetworkGraphicSanitizer(networkGraphic, config.isUseTrainNamesAsIds()).run();
+        }
+
         networkGraphic.getNodes().forEach(node -> nodes.put(node.getBetriebspunktName(), node));
     }
 

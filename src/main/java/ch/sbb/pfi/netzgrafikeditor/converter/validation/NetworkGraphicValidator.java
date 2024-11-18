@@ -1,43 +1,52 @@
-package ch.sbb.pfi.netzgrafikeditor.converter;
+package ch.sbb.pfi.netzgrafikeditor.converter.validation;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.model.Identifiable;
 import ch.sbb.pfi.netzgrafikeditor.converter.model.NetworkGraphic;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
-@RequiredArgsConstructor
+import static ch.sbb.pfi.netzgrafikeditor.converter.validation.ValidationUtils.*;
+
+@AllArgsConstructor
 @Slf4j
 public class NetworkGraphicValidator {
 
-    private final NetworkGraphic networkGraphic;
-    private final boolean validateTrainruns;
-    private final boolean failOnIssue;
     private final List<Issue<Identifiable>> issues = new ArrayList<>();
 
-    void run() {
+    private final ValidationStrategy strategy;
+    private final boolean considerTrainruns;
+    private NetworkGraphic networkGraphic;
 
-        networkGraphic.getNodes().forEach(node -> validate(node.getBetriebspunktName(), IssueTarget.NODE, node));
+    public NetworkGraphic run() {
+        log.info("Apply validation strategy: {}", strategy);
 
-        if (validateTrainruns) {
+        if (!strategy.apply(this)) {
+            throw new IllegalStateException(
+                    "Found issues during network graphic validation and option fail on issue is set.");
+        }
+
+        return networkGraphic;
+    }
+
+    boolean isValid() {
+        networkGraphic.getNodes().forEach(node -> validateId(node.getBetriebspunktName(), IssueTarget.NODE, node));
+
+        if (considerTrainruns) {
             networkGraphic.getTrainruns()
-                    .forEach(trainrun -> validate(trainrun.getName(), IssueTarget.TRAINRUN, trainrun));
+                    .forEach(trainrun -> validateId(trainrun.getName(), IssueTarget.TRAINRUN, trainrun));
         }
 
         for (Issue<Identifiable> issue : issues) {
             log.warn("Validation found issue: {}", issue);
         }
 
-        if (!issues.isEmpty() && failOnIssue) {
-            throw new IllegalStateException(
-                    "Found issues during network graphic validation and option fail on issue is set.");
-        }
+        return issues.isEmpty();
     }
 
-    private void validate(String id, IssueTarget target, Identifiable object) {
+    private void validateId(String id, IssueTarget target, Identifiable object) {
         if (id == null || id.isEmpty()) {
             issues.add(new Issue<>(target, IssueType.MISSING, object));
             return;
@@ -58,17 +67,8 @@ public class NetworkGraphicValidator {
         }
     }
 
-    private boolean containsSpecialCharacter(String input) {
-        Pattern specialCharPattern = Pattern.compile("[^a-zA-Z0-9_\\-\\s]");
-        return specialCharPattern.matcher(input).find();
-    }
-
-    private boolean containsWhitespace(String input) {
-        return input.chars().anyMatch(Character::isWhitespace);
-    }
-
-    private boolean containsTrailingWhitespace(String input) {
-        return !input.equals(input.strip());
+    void fix() {
+        networkGraphic = new NetworkGraphicSanitizer(networkGraphic, considerTrainruns).run();
     }
 
     private enum IssueTarget {

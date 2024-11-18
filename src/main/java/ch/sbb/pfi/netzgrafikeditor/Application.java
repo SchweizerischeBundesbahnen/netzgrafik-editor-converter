@@ -11,6 +11,7 @@ import ch.sbb.pfi.netzgrafikeditor.converter.supply.SupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.fallback.NoInfrastructureRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.fallback.NoRollingStockRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.fallback.NoVehicleCircuitsPlanner;
+import ch.sbb.pfi.netzgrafikeditor.converter.validation.ValidationStrategy;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.scenario.ScenarioUtils;
@@ -47,10 +48,15 @@ public class Application implements CommandLineRunner {
 
     private void convertJsonToMatsimSchedule(Path jsonFilePath) {
         try {
+            NetworkGraphicConverterConfig config = NetworkGraphicConverterConfig.builder()
+                    .validationStrategy(ValidationStrategy.FIX_ISSUES)
+                    .build();
+
             Scenario scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
             NetworkGraphicSource source = new JsonFileReader(jsonFilePath);
-            SupplyBuilder builder = new MatsimSupplyBuilder(scenario, new NoInfrastructureRepository(source.load()),
-                    new NoRollingStockRepository(), new NoVehicleCircuitsPlanner());
+            SupplyBuilder builder = new MatsimSupplyBuilder(scenario,
+                    new NoInfrastructureRepository(source.load(), config), new NoRollingStockRepository(),
+                    new NoVehicleCircuitsPlanner());
 
             String baseFilename = jsonFilePath.getFileName().toString();
             String filenameWithoutExtension = jsonFilePath.getFileName()
@@ -58,9 +64,7 @@ public class Application implements CommandLineRunner {
                     .substring(0, baseFilename.lastIndexOf('.'));
             ConverterSink sink = new TransitScheduleXmlWriter(scenario, outputPath, filenameWithoutExtension + ".");
 
-            NetworkGraphicConverter converter = new NetworkGraphicConverter(
-                    NetworkGraphicConverterConfig.builder().failOnValidationIssue(false).build(), source, builder,
-                    sink);
+            NetworkGraphicConverter converter = new NetworkGraphicConverter(config, source, builder, sink);
             converter.run();
 
             System.out.println("MATSim schedule has been written to: " + outputPath);

@@ -14,6 +14,7 @@ import ch.sbb.pfi.netzgrafikeditor.converter.model.TrainrunTimeCategory;
 import ch.sbb.pfi.netzgrafikeditor.converter.model.Transition;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.RouteDirection;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.SupplyBuilder;
+import ch.sbb.pfi.netzgrafikeditor.converter.validation.NetworkGraphicValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,7 +53,8 @@ public class NetworkGraphicConverter {
 
         if (fachCategory.equals("HaltezeitUncategorized")) {
             Duration dwellTime = Duration.ofSeconds(node.getConnectionTime() * 60L);
-            log.warn("Uncategorized waiting time category, returning connection time instead ({})", dwellTime);
+            log.warn("Uncategorized dwell time category, returning connection time instead ({} s)",
+                    dwellTime.toSeconds());
             return dwellTime;
         }
 
@@ -60,7 +62,7 @@ public class NetworkGraphicConverter {
         if (trainrunCategoryHaltezeit == null) {
             String message = String.format("Invalid fachCategory value %s at node %s.", fachCategory,
                     node.getBetriebspunktName());
-            throw new RuntimeException(message);
+            throw new IllegalStateException(message);
         }
 
         if (trainrunCategoryHaltezeit.isNoHalt()) {
@@ -84,14 +86,23 @@ public class NetworkGraphicConverter {
         }
     }
 
+    private void warnOnDwellTimeInconsistency(Duration dwellTime, Trainrun train, Node targetNode, String fachCategory, String lineId) {
+        Duration dwellTimeFromCategory = getDwellTimeFromCategory(targetNode, fachCategory);
+        if (!dwellTime.equals(dwellTimeFromCategory)) {
+            log.warn(
+                    "Trainrun {} (lineId: {}) has mismatch in dwell time at Stop {} for category {}: expected {}s, but found {}s.",
+                    lookup.trains.get(train.getId()).getName(), lineId, targetNode.getBetriebspunktName(), fachCategory,
+                    dwellTimeFromCategory.toSeconds(), dwellTime.toSeconds());
+        }
+    }
+
     public void run() throws IOException {
         log.info("Converting netzgrafik using source {}, supply builder {} and sink {}",
                 source.getClass().getSimpleName(), builder.getClass().getSimpleName(), sink.getClass().getSimpleName());
 
-        NetworkGraphic networkGraphic = source.load();
-
-        new NetworkGraphicValidator(networkGraphic, config.isUseTrainNamesAsIds(),
-                config.isFailOnValidationIssue()).run();
+        // load and validate network graphic
+        NetworkGraphic networkGraphic = new NetworkGraphicValidator(config.getValidationStrategy(),
+                config.isUseTrainNamesAsIds(), source.load()).run();
 
         initialize(networkGraphic);
         addStops();
@@ -208,16 +219,6 @@ public class NetworkGraphicConverter {
             departures.forEach(departure -> builder.addDeparture(lineId, direction, departure));
         }
 
-    }
-
-    private void warnOnDwellTimeInconsistency(Duration dwellTime, Trainrun train, Node targetNode, String fachCategory, String lineId) {
-        Duration dwellTimeFromCategory = getDwellTimeFromCategory(targetNode, fachCategory);
-        if (!dwellTime.equals(dwellTimeFromCategory)) {
-            log.warn(
-                    "Trainrun {} (lineId: {}) has mismatch in dwell time at Stop {} for category {}: expected {}s, but found {}s.",
-                    lookup.trains.get(train.getId()).getName(), lineId, targetNode.getBetriebspunktName(), fachCategory,
-                    dwellTimeFromCategory.toSeconds(), dwellTime.toSeconds());
-        }
     }
 
     private String createTransitLineId(Trainrun train, List<Node> nodes, String vehicleType) {

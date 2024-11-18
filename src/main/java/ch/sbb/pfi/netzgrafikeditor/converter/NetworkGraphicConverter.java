@@ -120,7 +120,7 @@ public class NetworkGraphicConverter {
         log.info("Adding nodes of network graphic");
         for (Node node : lookup.nodes.values()) {
             log.debug("Adding node {}", node.getBetriebspunktName());
-            builder.addStopFacility(node.getBetriebspunktName());
+            builder.addStopFacility(node.getBetriebspunktName(), node.getPositionX(), node.getPositionY());
         }
     }
 

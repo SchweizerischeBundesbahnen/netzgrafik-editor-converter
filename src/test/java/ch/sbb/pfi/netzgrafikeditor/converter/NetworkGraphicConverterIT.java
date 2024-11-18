@@ -91,10 +91,11 @@ public class NetworkGraphicConverterIT {
                 expectedStopSequenceForward, expectedStopSequenceReverse, actualStopSequence));
     }
 
-    private void configure(Path path, String prefix) throws IOException {
+    private void configure(Path path, String prefix) {
         NetworkGraphicConverterConfig config = NetworkGraphicConverterConfig.builder().useTrainNamesAsIds(true).build();
+
         NetworkGraphicSource source = new JsonFileReader(path);
-        SupplyBuilder builder = new MatsimSupplyBuilder(scenario, new NoInfrastructureRepository(source.load(), config),
+        SupplyBuilder builder = new MatsimSupplyBuilder(scenario, new NoInfrastructureRepository(),
                 new NoRollingStockRepository(), new NoVehicleCircuitsPlanner());
         ConverterSink sink = new TransitScheduleXmlWriter(scenario, OUTPUT_PATH, prefix.toLowerCase() + CASE_SEPARATOR);
 

@@ -34,8 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -108,10 +107,14 @@ class MatsimSupplyBuilderTest {
     @Test
     void addTransitLine_simple() {
         // mock infrastructure
-        when(infrastructureRepository.getStopFacility("A")).thenReturn(Stop.A.getStopFacilityInfo());
-        when(infrastructureRepository.getStopFacility("B")).thenReturn(Stop.B.getStopFacilityInfo());
-        when(infrastructureRepository.getStopFacility("C")).thenReturn(Stop.C.getStopFacilityInfo());
-        when(infrastructureRepository.getStopFacility("D")).thenReturn(Stop.D.getStopFacilityInfo());
+        when(infrastructureRepository.getStopFacility(eq("A"), anyDouble(), anyDouble())).thenReturn(
+                Stop.A.getStopFacilityInfo());
+        when(infrastructureRepository.getStopFacility(eq("B"), anyDouble(), anyDouble())).thenReturn(
+                Stop.B.getStopFacilityInfo());
+        when(infrastructureRepository.getStopFacility(eq("C"), anyDouble(), anyDouble())).thenReturn(
+                Stop.C.getStopFacilityInfo());
+        when(infrastructureRepository.getStopFacility(eq("D"), anyDouble(), anyDouble())).thenReturn(
+                Stop.D.getStopFacilityInfo());
 
         // mock track segments: forward
         mockTrackSegments(Stop.A, Stop.B, Segments.A_B);
@@ -126,10 +129,10 @@ class MatsimSupplyBuilderTest {
         when(vehicleCircuitsPlanner.plan()).thenReturn(mockVehicleAllocations());
 
         // act
-        matsimSupplyBuilder.addStopFacility("A")
-                .addStopFacility("B")
-                .addStopFacility("C")
-                .addStopFacility("D")
+        matsimSupplyBuilder.addStopFacility("A", 0, 0)
+                .addStopFacility("B", 1, 1)
+                .addStopFacility("C", 2, 2)
+                .addStopFacility("D", 3, 3)
                 .addTransitLine("lineSimple", "vehicleType", "A", Default.DWELL_TIME)
                 .addRouteStop("lineSimple", "B", Default.TRAVEL_TIME, Default.DWELL_TIME)
                 .addRoutePass("lineSimple", "C")

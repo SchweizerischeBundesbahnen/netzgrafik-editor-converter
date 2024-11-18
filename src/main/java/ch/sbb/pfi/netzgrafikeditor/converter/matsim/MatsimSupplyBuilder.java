@@ -50,12 +50,12 @@ public class MatsimSupplyBuilder implements SupplyBuilder {
     }
 
     @Override
-    public SupplyBuilder addStopFacility(String id) {
+    public SupplyBuilder addStopFacility(String id, double x, double y) {
         if (stopFacilityInfos.containsKey(id)) {
             throw new RuntimeException("Stop already existing for id " + id);
         }
 
-        stopFacilityInfos.put(id, infrastructureRepository.getStopFacility(id));
+        stopFacilityInfos.put(id, infrastructureRepository.getStopFacility(id, x, y));
 
         return this;
     }

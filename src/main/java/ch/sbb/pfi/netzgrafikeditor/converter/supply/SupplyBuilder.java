@@ -5,7 +5,7 @@ import java.time.LocalTime;
 
 public interface SupplyBuilder {
 
-    SupplyBuilder addStopFacility(String id);
+    SupplyBuilder addStopFacility(String id, double x, double y);
 
     SupplyBuilder addTransitLine(String lineId, String vehicleTypeId, String originStopId, Duration dwellTimeAtOrigin);
 

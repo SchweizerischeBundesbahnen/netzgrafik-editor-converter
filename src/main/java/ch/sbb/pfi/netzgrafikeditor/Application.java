@@ -49,22 +49,12 @@ public class Application implements CommandLineRunner {
     private void convertJsonToMatsimSchedule(Path jsonFilePath) {
         try {
             NetworkGraphicConverterConfig config = NetworkGraphicConverterConfig.builder()
-                    .validationStrategy(ValidationStrategy.FIX_ISSUES)
+                    .validationStrategy(ValidationStrategy.WARN_ON_ISSUES)
                     .build();
 
             Scenario scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
-            NetworkGraphicSource source = new JsonFileReader(jsonFilePath);
-            SupplyBuilder builder = new MatsimSupplyBuilder(scenario,
-                    new NoInfrastructureRepository(source.load(), config), new NoRollingStockRepository(),
-                    new NoVehicleCircuitsPlanner());
+            NetworkGraphicConverter converter = getNetworkGraphicConverter(jsonFilePath, scenario, config);
 
-            String baseFilename = jsonFilePath.getFileName().toString();
-            String filenameWithoutExtension = jsonFilePath.getFileName()
-                    .toString()
-                    .substring(0, baseFilename.lastIndexOf('.'));
-            ConverterSink sink = new TransitScheduleXmlWriter(scenario, outputPath, filenameWithoutExtension + ".");
-
-            NetworkGraphicConverter converter = new NetworkGraphicConverter(config, source, builder, sink);
             converter.run();
 
             System.out.println("MATSim schedule has been written to: " + outputPath);
@@ -73,5 +63,20 @@ public class Application implements CommandLineRunner {
             System.err.println("Error during conversion: " + e.getMessage());
             System.exit(1);
         }
+    }
+
+    private NetworkGraphicConverter getNetworkGraphicConverter(Path jsonFilePath, Scenario scenario, NetworkGraphicConverterConfig config) {
+        NetworkGraphicSource source = new JsonFileReader(jsonFilePath);
+
+        SupplyBuilder builder = new MatsimSupplyBuilder(scenario, new NoInfrastructureRepository(),
+                new NoRollingStockRepository(), new NoVehicleCircuitsPlanner());
+
+        String baseFilename = jsonFilePath.getFileName().toString();
+        String filenameWithoutExtension = jsonFilePath.getFileName()
+                .toString()
+                .substring(0, baseFilename.lastIndexOf('.'));
+        ConverterSink sink = new TransitScheduleXmlWriter(scenario, outputPath, filenameWithoutExtension + ".");
+
+        return new NetworkGraphicConverter(config, source, builder, sink);
     }
 }

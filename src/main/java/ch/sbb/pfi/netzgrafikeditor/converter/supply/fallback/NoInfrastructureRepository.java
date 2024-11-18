@@ -1,15 +1,10 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.supply.fallback;
 
-import ch.sbb.pfi.netzgrafikeditor.converter.NetworkGraphicConverterConfig;
-import ch.sbb.pfi.netzgrafikeditor.converter.model.NetworkGraphic;
-import ch.sbb.pfi.netzgrafikeditor.converter.model.Node;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.Coordinate;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.InfrastructureRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.StopFacilityInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.TrackSegmentInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.supply.TransitLineInfo;
-import ch.sbb.pfi.netzgrafikeditor.converter.validation.NetworkGraphicSanitizer;
-import ch.sbb.pfi.netzgrafikeditor.converter.validation.ValidationStrategy;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,30 +12,20 @@ import java.util.Map;
 
 public class NoInfrastructureRepository implements InfrastructureRepository {
 
-    private final Map<String, Node> nodes = new HashMap<>();
-
-    public NoInfrastructureRepository(NetworkGraphic networkGraphic, NetworkGraphicConverterConfig config) {
-        // If sanitizer runs, it needs to be adjusted also here. This means duplicated computation, but ensures decoupling of supply and nge domain.
-        if (config.getValidationStrategy() == ValidationStrategy.FIX_ISSUES) {
-            networkGraphic = new NetworkGraphicSanitizer(networkGraphic, config.isUseTrainNamesAsIds()).run();
-        }
-
-        networkGraphic.getNodes().forEach(node -> nodes.put(node.getBetriebspunktName(), node));
-    }
+    private final Map<String, Coordinate> coordinates = new HashMap<>();
 
     @Override
-    public StopFacilityInfo getStopFacility(String stopId) {
-        Node node = nodes.get(stopId);
-        return new StopFacilityInfo(stopId, new Coordinate(-node.getPositionY(), node.getPositionX()));
+    public StopFacilityInfo getStopFacility(String stopId, double x, double y) {
+        Coordinate coordinate = new Coordinate(-y, x);
+        coordinates.put(stopId, coordinate);
+        return new StopFacilityInfo(stopId, coordinate);
     }
 
     @Override
     public List<TrackSegmentInfo> getTrack(StopFacilityInfo fromStop, StopFacilityInfo toStop, TransitLineInfo transitLineInfo) {
-        Node fromNode = nodes.get(fromStop.getId());
-        Node toNode = nodes.get(toStop.getId());
+        Coordinate fromCoord = coordinates.get(fromStop.getId());
+        Coordinate toCoord = coordinates.get(toStop.getId());
 
-        Coordinate fromCoord = new Coordinate(fromNode.getPositionX(), fromNode.getPositionY());
-        Coordinate toCoord = new Coordinate(toNode.getPositionX(), toNode.getPositionY());
         double distance = euclideanDistance(fromCoord, toCoord);
 
         return List.of(

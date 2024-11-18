@@ -42,7 +42,7 @@ class NetworkGraphicConverterTest {
         when(config.getServiceDayEnd()).thenReturn(LocalTime.MAX);
         when(config.isUseTrainNamesAsIds()).thenReturn(false);
         when(config.getValidationStrategy()).thenReturn(ValidationStrategy.WARN_ON_ISSUES);
-        when(builder.addStopFacility(anyString())).thenReturn(builder);
+        when(builder.addStopFacility(anyString(), anyDouble(), anyDouble())).thenReturn(builder);
         when(builder.addTransitLine(anyString(), anyString(), anyString(), any())).thenReturn(builder);
         when(builder.addRouteStop(anyString(), anyString(), any(), any())).thenReturn(builder);
         when(builder.addDeparture(anyString(), any(RouteDirection.class), any())).thenReturn(builder);

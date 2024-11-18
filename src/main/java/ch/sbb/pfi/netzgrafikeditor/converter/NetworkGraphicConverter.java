@@ -314,7 +314,6 @@ public class NetworkGraphicConverter {
 
         private final Map<Integer, Node> nodes;
         private final Map<Integer, Port> ports;
-        private final Map<Integer, Transition> transitions;
         private final Map<Integer, Trainrun> trains;
         private final Map<Integer, TrainrunSection> sections;
         private final Map<Integer, TrainrunCategory> categories;
@@ -325,11 +324,6 @@ public class NetworkGraphicConverter {
             this.nodes = listToHashMap(network.getNodes());
             this.ports = listToHashMap(
                     network.getNodes().stream().map(Node::getPorts).flatMap(List::stream).collect(Collectors.toList()));
-            this.transitions = listToHashMap(network.getNodes()
-                    .stream()
-                    .map(Node::getTransitions)
-                    .flatMap(List::stream)
-                    .collect(Collectors.toList()));
             this.trains = listToHashMap(network.getTrainruns());
             this.sections = listToHashMap(network.getTrainrunSections());
             this.categories = listToHashMap(network.getMetadata().getTrainrunCategories());

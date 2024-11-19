@@ -7,6 +7,7 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.model.Transition;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,9 +33,9 @@ class SectionSequenceBuilder {
     }
 
     /**
-     * Traverse the sections and build an ordered sequence.
+     * Traverse the sections and build an ordered, directed sequences.
      */
-    List<TrainrunSection> build() {
+    EnumMap<RouteDirection, List<TrainrunSection>> build() {
         List<TrainrunSection> orderedSections = new LinkedList<>(); // append to start of list
 
         // find first section of the chain
@@ -45,9 +46,15 @@ class SectionSequenceBuilder {
         // traverse from first section and collect sections
         traverse(firstSection.get(), orderedSections::addFirst);
 
+        // align sections: e.g. A-B, C-B becomes A-B, B-C
         SectionAligner.align(orderedSections);
 
-        return orderedSections;
+        // create directed sequences
+        EnumMap<RouteDirection, List<TrainrunSection>> directedSections = new EnumMap<>(RouteDirection.class);
+        directedSections.put(RouteDirection.FORWARD, orderedSections);
+        directedSections.put(RouteDirection.REVERSE, SectionAligner.reverse(orderedSections));
+
+        return directedSections;
     }
 
     private void traverse(TrainrunSection root, Consumer<TrainrunSection> action) {
@@ -151,6 +158,10 @@ class SectionSequenceBuilder {
                     }
                 }
             }
+        }
+
+        private static List<TrainrunSection> reverse(List<TrainrunSection> sections) {
+            return sections.reversed().stream().map(SectionAligner::swap).toList();
         }
 
         private static TrainrunSection swap(TrainrunSection original) {

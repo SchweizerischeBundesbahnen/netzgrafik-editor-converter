@@ -1,6 +1,5 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.core;
 
-import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteDirection;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.SupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback.NoInfrastructureRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback.NoRollingStockRepository;

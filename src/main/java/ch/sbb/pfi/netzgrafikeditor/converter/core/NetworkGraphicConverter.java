@@ -12,7 +12,6 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.model.TrainrunFrequency;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.TrainrunSection;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.TrainrunTimeCategory;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.Transition;
-import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteDirection;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.SupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.validation.NetworkGraphicValidator;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +21,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -129,9 +129,9 @@ public class NetworkGraphicConverter {
     }
 
     private void addTrains() {
-        log.info("Adding trains");
+        log.info("Adding trains of network graphic");
 
-        // setup trainrun section sequence builders
+        // setup trainrun section sequence builders; order and align sections
         HashMap<Integer, SectionSequenceBuilder> sequences = new HashMap<>();
         for (TrainrunSection section : lookup.sections.values()) {
             int trainId = section.getTrainrunId();
@@ -140,7 +140,7 @@ public class NetworkGraphicConverter {
             sequence.add(section);
         }
 
-        // add a transit line with transit routes for each train
+        // add a transit line with a transit route per direction for each train
         for (Map.Entry<Integer, SectionSequenceBuilder> entry : sequences.entrySet()) {
             Trainrun train = lookup.trains.get(entry.getKey());
             SectionSequenceBuilder sequence = entry.getValue();
@@ -149,33 +149,39 @@ public class NetworkGraphicConverter {
             createAndAddTransitLine(train, sequence.build());
         }
 
-        // build transit schedule
         builder.build();
     }
 
-    private void createAndAddTransitLine(Trainrun train, List<TrainrunSection> sections) {
+    private void createAndAddTransitLine(Trainrun train, EnumMap<RouteDirection, List<TrainrunSection>> sequence) {
 
-        // order trainrun nodes
+        // get vehicle type info from train category and create line id based on forward direction or trainrun name
+        String vehicleType = lookup.categories.get(train.getCategoryId()).getShortName();
+        String lineId = createTransitLineId(train, sequence.get(RouteDirection.FORWARD), vehicleType);
+        builder.addTransitLine(lineId, vehicleType);
+
+        // add transit route for each direction
+        for (RouteDirection direction : RouteDirection.values()) {
+            createAndAddTransitRoute(lineId, train, sequence.get(direction), direction);
+        }
+
+    }
+
+    private void createAndAddTransitRoute(String lineId, Trainrun train, List<TrainrunSection> sections, RouteDirection direction) {
+
+        // get ordered trainrun nodes
         List<Node> nodes = new ArrayList<>();
         nodes.addFirst(lookup.nodes.get(sections.getFirst().getSourceNodeId()));
         sections.forEach(section -> nodes.add(lookup.nodes.get(section.getTargetNodeId())));
 
-        // get vehicle type info from train category and create line id
-        String vehicleType = lookup.categories.get(train.getCategoryId()).getShortName();
-        String lineId = createTransitLineId(train, nodes, vehicleType);
-        builder.addTransitLine(lineId, vehicleType);
-
-        // add first route stop to transit line
-        String routeId = createTransitRouteId(lineId, RouteDirection.FORWARD);
-        // TODO: Add route directions!
-
+        // create transit route and add first route stop
+        String routeId = createTransitRouteId(lineId, direction);
         Iterator<Node> nodeIter = nodes.iterator();
         Node sourceNode = nodeIter.next();
         String fachCategory = lookup.categories.get(train.getCategoryId()).getFachCategory();
         Duration dwellTimeAtOrigin = getDwellTimeFromCategory(sourceNode, fachCategory);
         builder.addTransitRoute(routeId, lineId, sourceNode.getBetriebspunktName(), dwellTimeAtOrigin);
 
-        // iterate over nodes and sections of transit line
+        // iterate over nodes and sections of transit route
         Iterator<TrainrunSection> sectionIter = sections.iterator();
         TrainrunSection nextSection = sectionIter.next();
         Duration travelTime = Duration.ofSeconds(0);
@@ -220,17 +226,13 @@ public class NetworkGraphicConverter {
                     .build());
         }
 
-        // TODO: Both directions
-        // create departures in intervals for both directions
-        for (RouteDirection direction : RouteDirection.values()) {
-            List<LocalTime> departures = createDepartureTimes(timeIntervals, train, sections, direction);
-            log.debug("Add departures at: {}", departures);
-            departures.forEach(departure -> builder.addDeparture(routeId, departure));
-        }
-
+        // derive departures in time intervals and add to supply builder
+        List<LocalTime> departures = createDepartureTimes(timeIntervals, train, sections.getFirst());
+        log.debug("Adding departures to {} at: {}", routeId, departures);
+        departures.forEach(departure -> builder.addDeparture(routeId, departure));
     }
 
-    private String createTransitLineId(Trainrun train, List<Node> nodes, String vehicleType) {
+    private String createTransitLineId(Trainrun train, List<TrainrunSection> sections, String vehicleType) {
 
         // check if option is set to use train name; also avoid name if it is empty (optional field in NGE)
         String lineId;
@@ -238,15 +240,16 @@ public class NetworkGraphicConverter {
             lineId = train.getName();
         } else {
             // create id from vehicle type with origin and destination, ignore the train name from nge
-            lineId = String.format("%s_%s_%s", vehicleType, nodes.getFirst().getBetriebspunktName(),
-                    nodes.getLast().getBetriebspunktName());
+            lineId = String.format("%s_%s_%s", vehicleType,
+                    lookup.nodes.get(sections.getFirst().getSourceNodeId()).getBetriebspunktName(),
+                    lookup.nodes.get(sections.getLast().getTargetNodeId()).getBetriebspunktName());
         }
 
         // check if line id is already existing
         int count = lineCounter.getOrDefault(lineId, 0);
         if (count > 0) {
             lineCounter.put(lineId, ++count);
-            log.info("Line with id {} is already existing, adding counter {} to id", lineId, count);
+            log.warn("Line with id {} is already existing, adding counter {} to id", lineId, count);
             lineId = String.format("%s_%d", lineId, count);
         } else {
             lineCounter.put(lineId, 1);
@@ -262,11 +265,8 @@ public class NetworkGraphicConverter {
      *
      * @return a list with a time in seconds from midnight for each departure.
      */
-    private List<LocalTime> createDepartureTimes(List<DayTimeInterval> timeIntervals, Trainrun train, List<TrainrunSection> sections, RouteDirection routeDirection) {
-        final double hourOffset = switch (routeDirection) {
-            case FORWARD -> sections.getFirst().getSourceDeparture().getTime() * 60.;
-            case REVERSE -> sections.getLast().getTargetDeparture().getTime() * 60.;
-        };
+    private List<LocalTime> createDepartureTimes(List<DayTimeInterval> timeIntervals, Trainrun train, TrainrunSection firstSection) {
+        final double hourOffset = firstSection.getSourceDeparture().getTime() * 60.;
         final double frequency = lookup.frequencies.get(train.getFrequencyId()).getFrequency() * 60.;
         final double frequencyOffset = lookup.frequencies.get(train.getFrequencyId()).getOffset() * 60.;
 

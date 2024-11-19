@@ -25,7 +25,7 @@ The class diagram outlines the core classes and their relationships:
 
 ```sh
 # configure arguments
-NETWORK_GRAPHIC_FILE=integration-test/input/networkGraphic.json
+NETWORK_GRAPHIC_FILE=src/test/resources/ng/scenarios/realistic.json
 OUTPUT_DIRECTORY=integration-test/output/
 
 # run spring command line runner app

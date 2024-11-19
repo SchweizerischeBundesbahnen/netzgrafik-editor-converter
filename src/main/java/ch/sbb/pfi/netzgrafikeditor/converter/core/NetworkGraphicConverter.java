@@ -14,6 +14,8 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.model.TrainrunTimeCategory;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.Transition;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.SupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.validation.NetworkGraphicValidator;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,6 +34,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class NetworkGraphicConverter {
 
+    private static final double SECONDS_PER_MINUTE = 60.;
+
     private final NetworkGraphicConverterConfig config;
     private final NetworkGraphicSource source;
     private final SupplyBuilder builder;
@@ -40,64 +44,8 @@ public class NetworkGraphicConverter {
     private Map<String, Integer> lineCounter;
     private Lookup lookup;
 
-    /**
-     * Get the dwell time of a train category at a node
-     * <p>
-     * If the fach category is uncategorized, then the connection time of the node is returned.
-     *
-     * @param node         the stop node.
-     * @param fachCategory the fach category (A, B, C, D, IPV or Uncategorized).
-     * @return the waiting time in seconds.
-     */
-    private static Duration getDwellTimeFromCategory(Node node, String fachCategory) {
-
-        if (fachCategory.equals("HaltezeitUncategorized")) {
-            Duration dwellTime = Duration.ofSeconds(node.getConnectionTime() * 60L);
-            log.warn("Uncategorized dwell time category, returning connection time instead ({} s)",
-                    dwellTime.toSeconds());
-            return dwellTime;
-        }
-
-        TrainrunCategoryHaltezeit trainrunCategoryHaltezeit = node.getTrainrunCategoryHaltezeiten().get(fachCategory);
-        if (trainrunCategoryHaltezeit == null) {
-            String message = String.format("Invalid fachCategory value %s at node %s.", fachCategory,
-                    node.getBetriebspunktName());
-            throw new IllegalStateException(message);
-        }
-
-        if (trainrunCategoryHaltezeit.isNoHalt()) {
-            return Duration.ofSeconds(0);
-        }
-
-        return Duration.ofSeconds(Math.round(trainrunCategoryHaltezeit.getHaltezeit() * 60));
-    }
-
-    private static Duration getDwellTimeFromSections(TrainrunSection currentSection, TrainrunSection nextSection) {
-        double arrivalTime = currentSection.getTargetArrival().getTime();
-        double departureTime = nextSection.getSourceDeparture().getTime();
-
-        if (arrivalTime > departureTime) {
-            // special case: The departure time is in the next hour
-            // example: arrivalTime = 59, departureTime = 1; actual dwell time = 2 minutes
-            return Duration.ofSeconds(Math.round((departureTime + 60 - arrivalTime) * 60.));
-        } else {
-            // normal case: Arrival time is before departure time within the same hour
-            return Duration.ofSeconds(Math.round((departureTime - arrivalTime) * 60.));
-        }
-    }
-
     private static String createTransitRouteId(String lineId, RouteDirection direction) {
         return String.format("%s_%s", lineId, direction.name());
-    }
-
-    private void warnOnDwellTimeInconsistency(Duration dwellTime, Trainrun train, Node targetNode, String fachCategory, String lineId) {
-        Duration dwellTimeFromCategory = getDwellTimeFromCategory(targetNode, fachCategory);
-        if (!dwellTime.equals(dwellTimeFromCategory)) {
-            log.warn(
-                    "Trainrun {} (lineId: {}) has mismatch in dwell time at Stop {} for category {}: expected {}s, but found {}s.",
-                    lookup.trains.get(train.getId()).getName(), lineId, targetNode.getBetriebspunktName(), fachCategory,
-                    dwellTimeFromCategory.toSeconds(), dwellTime.toSeconds());
-        }
     }
 
     public void run() throws IOException {
@@ -178,7 +126,7 @@ public class NetworkGraphicConverter {
         Iterator<Node> nodeIter = nodes.iterator();
         Node sourceNode = nodeIter.next();
         String fachCategory = lookup.categories.get(train.getCategoryId()).getFachCategory();
-        Duration dwellTimeAtOrigin = getDwellTimeFromCategory(sourceNode, fachCategory);
+        Duration dwellTimeAtOrigin = DwellTime.fromCategory(sourceNode, fachCategory);
         builder.addTransitRoute(routeId, lineId, sourceNode.getBetriebspunktName(), dwellTimeAtOrigin);
 
         // iterate over nodes and sections of transit route
@@ -199,10 +147,10 @@ public class NetworkGraphicConverter {
 
             } else {
                 // stop: Add route stop with dwell time from network graphic to transit line
-                Duration dwellTime = getDwellTimeFromSections(currentSection, nextSection);
+                Duration dwellTime = DwellTime.fromSections(currentSection, nextSection);
 
                 // check consistency of dwell time from network graphic against dwell time from category
-                warnOnDwellTimeInconsistency(dwellTime, train, targetNode, fachCategory, lineId);
+                DwellTime.warnOnInconsistency(dwellTime, train, targetNode, fachCategory);
 
                 // add stop and reset travel time
                 builder.addRouteStop(routeId, targetNode.getBetriebspunktName(), travelTime, dwellTime);
@@ -212,7 +160,7 @@ public class NetworkGraphicConverter {
 
         // add last stop
         Node targetNode = nodeIter.next();
-        Duration dwellTimeAtDestination = getDwellTimeFromCategory(targetNode, fachCategory);
+        Duration dwellTimeAtDestination = DwellTime.fromCategory(targetNode, fachCategory);
         travelTime = travelTime.plusMinutes(Math.round(nextSection.getTravelTime().getTime()));
         builder.addRouteStop(routeId, targetNode.getBetriebspunktName(), travelTime, dwellTimeAtDestination);
 
@@ -221,8 +169,8 @@ public class NetworkGraphicConverter {
         if (timeIntervals.isEmpty()) {
             // add interval for full day in minutes if no interval is set in the input
             timeIntervals.add(DayTimeInterval.builder()
-                    .from((int) (Math.round(config.getServiceDayStart().toSecondOfDay() / 60.)))
-                    .to(((int) Math.round(config.getServiceDayEnd().toSecondOfDay() / 60.)))
+                    .from((int) (Math.round(config.getServiceDayStart().toSecondOfDay() / SECONDS_PER_MINUTE)))
+                    .to(((int) Math.round(config.getServiceDayEnd().toSecondOfDay() / SECONDS_PER_MINUTE)))
                     .build());
         }
 
@@ -259,21 +207,17 @@ public class NetworkGraphicConverter {
     }
 
     /**
-     * Create departure times in day time intervals
-     * <p>
-     * For each defined time interval the departure times are calculated in seconds from midnight.
-     *
-     * @return a list with a time in seconds from midnight for each departure.
-     */
+     * Create departure times in day time intervals.
+     **/
     private List<LocalTime> createDepartureTimes(List<DayTimeInterval> timeIntervals, Trainrun train, TrainrunSection firstSection) {
-        final double hourOffset = firstSection.getSourceDeparture().getTime() * 60.;
-        final double frequency = lookup.frequencies.get(train.getFrequencyId()).getFrequency() * 60.;
-        final double frequencyOffset = lookup.frequencies.get(train.getFrequencyId()).getOffset() * 60.;
+        final double hourOffset = firstSection.getSourceDeparture().getTime() * SECONDS_PER_MINUTE;
+        final double frequency = lookup.frequencies.get(train.getFrequencyId()).getFrequency() * SECONDS_PER_MINUTE;
+        final double frequencyOffset = lookup.frequencies.get(train.getFrequencyId()).getOffset() * SECONDS_PER_MINUTE;
 
         List<LocalTime> departures = new ArrayList<>();
         for (DayTimeInterval dti : timeIntervals) {
-            double fromTime = dti.getFrom() * 60;
-            double toTime = dti.getTo() * 60;
+            double fromTime = dti.getFrom() * SECONDS_PER_MINUTE;
+            double toTime = dti.getTo() * SECONDS_PER_MINUTE;
             double departureTime = fromTime + frequencyOffset + hourOffset;
             while (departureTime < toTime) {
                 departures.add(LocalTime.ofSecondOfDay(Math.round(departureTime)));
@@ -287,7 +231,7 @@ public class NetworkGraphicConverter {
     /**
      * Check if a node is a nonstop transit.
      * <p>
-     * Orientation in mapping: Node --> Transition --> Port --> TrainrunSection --> Trainrun
+     * Model: Node --> Transition --> Port --> TrainrunSection --> Trainrun
      *
      * @param node              the node to check.
      * @param trainrunSectionId the trainrun section id.
@@ -314,6 +258,66 @@ public class NetworkGraphicConverter {
         }
 
         return false;
+    }
+
+    @NoArgsConstructor(access = AccessLevel.NONE)
+    private static class DwellTime {
+
+        private static final String UNCATEGORIZED = "HaltezeitUncategorized";
+
+        /**
+         * Get the dwell time of a train category at a node
+         * <p>
+         * If the fach category is uncategorized, then the connection time of the node is returned.
+         */
+        private static Duration fromCategory(Node node, String fachCategory) {
+
+            if (fachCategory.equals(UNCATEGORIZED)) {
+                Duration dwellTime = Duration.ofSeconds(Math.round(node.getConnectionTime() * SECONDS_PER_MINUTE));
+                log.warn("Uncategorized dwell time category, returning connection time instead ({} s)",
+                        dwellTime.toSeconds());
+                return dwellTime;
+            }
+
+            TrainrunCategoryHaltezeit trainrunCategoryHaltezeit = node.getTrainrunCategoryHaltezeiten()
+                    .get(fachCategory);
+            if (trainrunCategoryHaltezeit == null) {
+                String message = String.format("Invalid fachCategory value %s at node %s.", fachCategory,
+                        node.getBetriebspunktName());
+                throw new IllegalStateException(message);
+            }
+
+            if (trainrunCategoryHaltezeit.isNoHalt()) {
+                return Duration.ofSeconds(0);
+            }
+
+            return Duration.ofSeconds(Math.round(trainrunCategoryHaltezeit.getHaltezeit() * SECONDS_PER_MINUTE));
+        }
+
+        private static Duration fromSections(TrainrunSection currentSection, TrainrunSection nextSection) {
+            double arrivalTime = currentSection.getTargetArrival().getTime();
+            double departureTime = nextSection.getSourceDeparture().getTime();
+
+            if (arrivalTime > departureTime) {
+                // special case: The departure time is in the next hour
+                // example: arrivalTime = 59, departureTime = 1; actual dwell time = 2 minutes
+                return Duration.ofSeconds(Math.round((departureTime + 60 - arrivalTime) * SECONDS_PER_MINUTE));
+            } else {
+                // normal case: Arrival time is before departure time within the same hour
+                return Duration.ofSeconds(Math.round((departureTime - arrivalTime) * SECONDS_PER_MINUTE));
+            }
+        }
+
+        private static void warnOnInconsistency(Duration dwellTime, Trainrun train, Node targetNode, String fachCategory) {
+            Duration dwellTimeFromCategory = DwellTime.fromCategory(targetNode, fachCategory);
+            if (!dwellTime.equals(dwellTimeFromCategory)) {
+                log.warn(
+                        "Trainrun {} has mismatch in dwell time at Stop {} for category {}: expected {}s, but found {}s.",
+                        train.getName(), targetNode.getBetriebspunktName(), fachCategory,
+                        dwellTimeFromCategory.toSeconds(), dwellTime.toSeconds());
+            }
+        }
+
     }
 
     /**

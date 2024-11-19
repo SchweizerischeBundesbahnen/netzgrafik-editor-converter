@@ -310,8 +310,7 @@ public class NetworkGraphicConverter {
         private static void warnOnInconsistency(Duration dwellTime, Trainrun train, Node targetNode, String fachCategory) {
             Duration dwellTimeFromCategory = DwellTime.fromCategory(targetNode, fachCategory);
             if (!dwellTime.equals(dwellTimeFromCategory)) {
-                log.warn(
-                        "Trainrun {} has mismatch in dwell time at Stop {} for category {}: expected {}s, but found {}s.",
+                log.warn("Dwell time inconsistency: trainrun={}, node={}, category={}, expected={}s, actual={}s.",
                         train.getName(), targetNode.getBetriebspunktName(), fachCategory,
                         dwellTimeFromCategory.toSeconds(), dwellTime.toSeconds());
             }

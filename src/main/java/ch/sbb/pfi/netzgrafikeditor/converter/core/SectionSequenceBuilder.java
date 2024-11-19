@@ -33,7 +33,7 @@ class SectionSequenceBuilder {
     }
 
     /**
-     * Traverse the sections and build an ordered, directed sequences.
+     * Traverse the sections and build an ordered, directed section sequences.
      */
     EnumMap<RouteDirection, List<TrainrunSection>> build() {
         List<TrainrunSection> orderedSections = new LinkedList<>(); // append to start of list

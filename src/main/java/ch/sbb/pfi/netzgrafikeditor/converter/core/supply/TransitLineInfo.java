@@ -6,6 +6,6 @@ import lombok.Value;
 public class TransitLineInfo {
 
     String id;
-    String productId;
+    String category;
 
 }

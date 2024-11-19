@@ -7,7 +7,7 @@ public interface SupplyBuilder {
 
     SupplyBuilder addStopFacility(String id, double x, double y);
 
-    SupplyBuilder addTransitLine(String id, String productId);
+    SupplyBuilder addTransitLine(String id, String category);
 
     SupplyBuilder addTransitRoute(String id, String lineId, String originStopId, Duration dwellTimeAtOrigin);
 

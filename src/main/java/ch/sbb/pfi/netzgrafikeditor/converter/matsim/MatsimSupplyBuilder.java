@@ -57,12 +57,12 @@ public class MatsimSupplyBuilder implements SupplyBuilder {
     }
 
     @Override
-    public SupplyBuilder addTransitLine(String id, String productId) {
+    public SupplyBuilder addTransitLine(String id, String category) {
         if (transitLineInfos.containsKey(id)) {
             throw new RuntimeException("Transit line already exists for id " + id);
         }
 
-        transitLineInfos.put(id, new TransitLineInfo(id, productId));
+        transitLineInfos.put(id, new TransitLineInfo(id, category));
 
         return this;
     }

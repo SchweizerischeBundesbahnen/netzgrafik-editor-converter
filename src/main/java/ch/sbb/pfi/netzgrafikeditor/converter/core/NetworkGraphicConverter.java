@@ -102,10 +102,9 @@ public class NetworkGraphicConverter {
 
     private void createAndAddTransitLine(Trainrun train, EnumMap<RouteDirection, List<TrainrunSection>> sequence) {
 
-        // get vehicle type info from train category and create line id based on forward direction or trainrun name
-        String vehicleType = lookup.categories.get(train.getCategoryId()).getShortName();
-        String lineId = createTransitLineId(train, sequence.get(RouteDirection.FORWARD), vehicleType);
-        builder.addTransitLine(lineId, vehicleType);
+        String category = lookup.categories.get(train.getCategoryId()).getShortName();
+        String lineId = createTransitLineId(train, sequence.get(RouteDirection.FORWARD), category);
+        builder.addTransitLine(lineId, category);
 
         // add transit route for each direction
         for (RouteDirection direction : RouteDirection.values()) {
@@ -180,15 +179,15 @@ public class NetworkGraphicConverter {
         departures.forEach(departure -> builder.addDeparture(routeId, departure));
     }
 
-    private String createTransitLineId(Trainrun train, List<TrainrunSection> sections, String vehicleType) {
+    private String createTransitLineId(Trainrun train, List<TrainrunSection> sections, String category) {
 
         // check if option is set to use train name; also avoid name if it is empty (optional field in NGE)
         String lineId;
         if (config.isUseTrainNamesAsIds() && !train.getName().isBlank()) {
             lineId = train.getName();
         } else {
-            // create id from vehicle type with origin and destination, ignore the train name from nge
-            lineId = String.format("%s_%s_%s", vehicleType,
+            // create id from category with origin and destination, ignore the train name from nge
+            lineId = String.format("%s_%s_%s", category,
                     lookup.nodes.get(sections.getFirst().getSourceNodeId()).getBetriebspunktName(),
                     lookup.nodes.get(sections.getLast().getTargetNodeId()).getBetriebspunktName());
         }

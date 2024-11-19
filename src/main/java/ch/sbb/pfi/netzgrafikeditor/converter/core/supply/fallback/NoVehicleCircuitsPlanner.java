@@ -34,12 +34,12 @@ public class NoVehicleCircuitsPlanner implements VehicleCircuitsPlanner {
 
         return departureInfos.stream().sorted(Comparator.comparing(DepartureInfo::getTime)).map(departureInfo -> {
 
-            // get vehicle type based on product
-            String productId = departureInfo.getTransitRouteInfo().getTransitLineInfo().getProductId();
-            VehicleTypeInfo vehicleTypeInfo = vehicleTypeInfos.get(productId);
+            // get vehicle type based on category (product)
+            String category = departureInfo.getTransitRouteInfo().getTransitLineInfo().getCategory();
+            VehicleTypeInfo vehicleTypeInfo = vehicleTypeInfos.get(category);
             if (vehicleTypeInfo == null) {
-                vehicleTypeInfo = rollingStockRepository.getVehicleType(productId);
-                vehicleTypeInfos.put(productId, vehicleTypeInfo);
+                vehicleTypeInfo = rollingStockRepository.getVehicleType(category);
+                vehicleTypeInfos.put(category, vehicleTypeInfo);
             }
 
             // update vehicle counts and departure counts

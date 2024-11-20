@@ -139,13 +139,13 @@ public class NetworkGraphicConverter {
             nextSection = sectionIter.next();
             travelTime = travelTime.plusMinutes(Math.round(currentSection.getTravelTime().getTime()));
 
-            // check if it is a not nonstop transit pass or stop
+            // check if nonstop pass or stop at node
             if (isPass(targetNode, currentSection.getId())) {
                 // pass: Add route pass to transit line
                 builder.addRoutePass(routeId, targetNode.getBetriebspunktName());
 
             } else {
-                // stop: Add route stop with dwell time from network graphic to transit line
+                // stop: Add route stop with dwell time from network graphic
                 Duration dwellTime = DwellTime.fromSections(currentSection, nextSection);
 
                 // check consistency of dwell time from network graphic against dwell time from category
@@ -166,7 +166,7 @@ public class NetworkGraphicConverter {
         // prepare daytime intervals
         List<DayTimeInterval> timeIntervals = lookup.times.get(train.getTrainrunTimeCategoryId()).getDayTimeIntervals();
         if (timeIntervals.isEmpty()) {
-            // add interval for full day in minutes if no interval is set in the input
+            // add interval for full day in minutes if no interval is set
             timeIntervals.add(DayTimeInterval.builder()
                     .from((int) (Math.round(config.getServiceDayStart().toSecondOfDay() / SECONDS_PER_MINUTE)))
                     .to(((int) Math.round(config.getServiceDayEnd().toSecondOfDay() / SECONDS_PER_MINUTE)))
@@ -181,7 +181,7 @@ public class NetworkGraphicConverter {
 
     private String createTransitLineId(Trainrun train, List<TrainrunSection> sections, String category) {
 
-        // check if option is set to use train name; also avoid name if it is empty (optional field in NGE)
+        // check if option is set to use train name; avoid name if it is empty (optional field in NGE)
         String lineId;
         if (config.isUseTrainNamesAsIds() && !train.getName().isBlank()) {
             lineId = train.getName();

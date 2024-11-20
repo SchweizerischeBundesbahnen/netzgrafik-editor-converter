@@ -12,8 +12,8 @@ public class NoRollingStockRepository implements RollingStockRepository {
     public static final double DEFAULT_MAX_VELOCITY = 120 / 3.6; // meters per second
 
     @Override
-    public VehicleTypeInfo getVehicleType(String vehicleTypeId) {
-        return new VehicleTypeInfo(vehicleTypeId, DEFAULT_CAPACITY, DEFAULT_LENGTH, DEFAULT_MAX_VELOCITY, Map.of());
+    public VehicleTypeInfo getVehicleType(String category) {
+        return new VehicleTypeInfo(category, DEFAULT_CAPACITY, DEFAULT_LENGTH, DEFAULT_MAX_VELOCITY, Map.of());
     }
 
 }

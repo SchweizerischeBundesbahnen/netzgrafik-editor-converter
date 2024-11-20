@@ -40,7 +40,7 @@ public class NetworkGraphicValidator {
         }
 
         for (Issue<Identifiable> issue : issues) {
-            log.warn("Found: {}", issue);
+            log.warn("Invalid identifier: target={}, type={}, id={}", issue.target, issue.type, issue.id);
         }
 
         return issues.isEmpty();
@@ -48,22 +48,22 @@ public class NetworkGraphicValidator {
 
     private void validateId(String id, IssueTarget target, Identifiable object) {
         if (id == null || id.isEmpty()) {
-            issues.add(new Issue<>(target, IssueType.MISSING, object));
+            issues.add(new Issue<>(target, IssueType.MISSING, id, object));
             return;
         }
 
         if (containsSpecialCharacter(id)) {
-            issues.add(new Issue<>(target, IssueType.SPECIAL_CHARACTER, object));
+            issues.add(new Issue<>(target, IssueType.SPECIAL_CHARACTER, id, object));
             return;
         }
 
         if (containsTrailingWhitespace(id)) {
-            issues.add(new Issue<>(target, IssueType.LEADING_OR_TRAILING_WHITESPACE, object));
+            issues.add(new Issue<>(target, IssueType.LEADING_OR_TRAILING_WHITESPACE, id, object));
             return;
         }
 
         if (containsWhitespace(id)) {
-            issues.add(new Issue<>(target, IssueType.WHITESPACE, object));
+            issues.add(new Issue<>(target, IssueType.WHITESPACE, id, object));
         }
     }
 
@@ -83,7 +83,7 @@ public class NetworkGraphicValidator {
         LEADING_OR_TRAILING_WHITESPACE
     }
 
-    private record Issue<T>(IssueTarget target, IssueType type, T object) {
+    private record Issue<T>(IssueTarget target, IssueType type, String id, T object) {
     }
 
 }

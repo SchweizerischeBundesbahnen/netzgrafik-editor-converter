@@ -7,8 +7,7 @@ import java.time.LocalTime;
 @Value
 public class DepartureInfo {
 
-    TransitLineInfo transitLine;
-    RouteDirection direction;
+    TransitRouteInfo transitRouteInfo;
     LocalTime time;
 
 }

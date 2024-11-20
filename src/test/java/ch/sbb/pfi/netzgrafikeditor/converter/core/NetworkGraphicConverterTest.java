@@ -1,6 +1,5 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.core;
 
-import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteDirection;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.SupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.validation.ValidationStrategy;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonDeserializer;
@@ -43,9 +42,9 @@ class NetworkGraphicConverterTest {
         when(config.isUseTrainNamesAsIds()).thenReturn(false);
         when(config.getValidationStrategy()).thenReturn(ValidationStrategy.WARN_ON_ISSUES);
         when(builder.addStopFacility(anyString(), anyDouble(), anyDouble())).thenReturn(builder);
-        when(builder.addTransitLine(anyString(), anyString(), anyString(), any())).thenReturn(builder);
+        when(builder.addTransitRoute(anyString(), anyString(), anyString(), any())).thenReturn(builder);
         when(builder.addRouteStop(anyString(), anyString(), any(), any())).thenReturn(builder);
-        when(builder.addDeparture(anyString(), any(RouteDirection.class), any())).thenReturn(builder);
+        when(builder.addDeparture(anyString(), any())).thenReturn(builder);
     }
 
     @ParameterizedTest

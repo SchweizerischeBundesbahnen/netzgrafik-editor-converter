@@ -12,9 +12,10 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.model.TrainrunFrequency;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.TrainrunSection;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.TrainrunTimeCategory;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.Transition;
-import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteDirection;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.SupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.validation.NetworkGraphicValidator;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +34,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class NetworkGraphicConverter {
 
+    private static final double SECONDS_PER_MINUTE = 60.;
+
     private final NetworkGraphicConverterConfig config;
     private final NetworkGraphicSource source;
     private final SupplyBuilder builder;
@@ -40,60 +44,8 @@ public class NetworkGraphicConverter {
     private Map<String, Integer> lineCounter;
     private Lookup lookup;
 
-    /**
-     * Get the dwell time of a train category at a node
-     * <p>
-     * If the fach category is uncategorized, then the connection time of the node is returned.
-     *
-     * @param node         the stop node.
-     * @param fachCategory the fach category (A, B, C, D, IPV or Uncategorized).
-     * @return the waiting time in seconds.
-     */
-    private static Duration getDwellTimeFromCategory(Node node, String fachCategory) {
-
-        if (fachCategory.equals("HaltezeitUncategorized")) {
-            Duration dwellTime = Duration.ofSeconds(node.getConnectionTime() * 60L);
-            log.warn("Uncategorized dwell time category, returning connection time instead ({} s)",
-                    dwellTime.toSeconds());
-            return dwellTime;
-        }
-
-        TrainrunCategoryHaltezeit trainrunCategoryHaltezeit = node.getTrainrunCategoryHaltezeiten().get(fachCategory);
-        if (trainrunCategoryHaltezeit == null) {
-            String message = String.format("Invalid fachCategory value %s at node %s.", fachCategory,
-                    node.getBetriebspunktName());
-            throw new IllegalStateException(message);
-        }
-
-        if (trainrunCategoryHaltezeit.isNoHalt()) {
-            return Duration.ofSeconds(0);
-        }
-
-        return Duration.ofSeconds(Math.round(trainrunCategoryHaltezeit.getHaltezeit() * 60));
-    }
-
-    private static Duration getDwellTimeFromSections(TrainrunSection currentSection, TrainrunSection nextSection) {
-        double arrivalTime = currentSection.getTargetArrival().getTime();
-        double departureTime = nextSection.getSourceDeparture().getTime();
-
-        if (arrivalTime > departureTime) {
-            // special case: The departure time is in the next hour
-            // example: arrivalTime = 59, departureTime = 1; actual dwell time = 2 minutes
-            return Duration.ofSeconds(Math.round((departureTime + 60 - arrivalTime) * 60.));
-        } else {
-            // normal case: Arrival time is before departure time within the same hour
-            return Duration.ofSeconds(Math.round((departureTime - arrivalTime) * 60.));
-        }
-    }
-
-    private void warnOnDwellTimeInconsistency(Duration dwellTime, Trainrun train, Node targetNode, String fachCategory, String lineId) {
-        Duration dwellTimeFromCategory = getDwellTimeFromCategory(targetNode, fachCategory);
-        if (!dwellTime.equals(dwellTimeFromCategory)) {
-            log.warn(
-                    "Trainrun {} (lineId: {}) has mismatch in dwell time at Stop {} for category {}: expected {}s, but found {}s.",
-                    lookup.trains.get(train.getId()).getName(), lineId, targetNode.getBetriebspunktName(), fachCategory,
-                    dwellTimeFromCategory.toSeconds(), dwellTime.toSeconds());
-        }
+    private static String createTransitRouteId(String lineId, RouteDirection direction) {
+        return String.format("%s_%s", lineId, direction.name());
     }
 
     public void run() throws IOException {
@@ -125,9 +77,9 @@ public class NetworkGraphicConverter {
     }
 
     private void addTrains() {
-        log.info("Adding trains");
+        log.info("Adding trains of network graphic");
 
-        // setup trainrun section sequence builders
+        // setup trainrun section sequence builders; order and align sections
         HashMap<Integer, SectionSequenceBuilder> sequences = new HashMap<>();
         for (TrainrunSection section : lookup.sections.values()) {
             int trainId = section.getTrainrunId();
@@ -136,7 +88,7 @@ public class NetworkGraphicConverter {
             sequence.add(section);
         }
 
-        // add a transit line with transit routes for each train
+        // add a transit line with a transit route per direction for each train
         for (Map.Entry<Integer, SectionSequenceBuilder> entry : sequences.entrySet()) {
             Trainrun train = lookup.trains.get(entry.getKey());
             SectionSequenceBuilder sequence = entry.getValue();
@@ -145,29 +97,38 @@ public class NetworkGraphicConverter {
             createAndAddTransitLine(train, sequence.build());
         }
 
-        // build transit schedule
         builder.build();
     }
 
-    private void createAndAddTransitLine(Trainrun train, List<TrainrunSection> sections) {
+    private void createAndAddTransitLine(Trainrun train, EnumMap<RouteDirection, List<TrainrunSection>> sequence) {
 
-        // order trainrun nodes
+        String category = lookup.categories.get(train.getCategoryId()).getShortName();
+        String lineId = createTransitLineId(train, sequence.get(RouteDirection.FORWARD), category);
+        builder.addTransitLine(lineId, category);
+
+        // add transit route for each direction
+        for (RouteDirection direction : RouteDirection.values()) {
+            createAndAddTransitRoute(lineId, train, sequence.get(direction), direction);
+        }
+
+    }
+
+    private void createAndAddTransitRoute(String lineId, Trainrun train, List<TrainrunSection> sections, RouteDirection direction) {
+
+        // get ordered trainrun nodes
         List<Node> nodes = new ArrayList<>();
         nodes.addFirst(lookup.nodes.get(sections.getFirst().getSourceNodeId()));
         sections.forEach(section -> nodes.add(lookup.nodes.get(section.getTargetNodeId())));
 
-        // get vehicle type info from train category and create line id
-        String vehicleType = lookup.categories.get(train.getCategoryId()).getShortName();
-        String lineId = createTransitLineId(train, nodes, vehicleType);
-
-        // add first route stop to transit line
+        // create transit route and add first route stop
+        String routeId = createTransitRouteId(lineId, direction);
         Iterator<Node> nodeIter = nodes.iterator();
         Node sourceNode = nodeIter.next();
         String fachCategory = lookup.categories.get(train.getCategoryId()).getFachCategory();
-        Duration dwellTimeAtOrigin = getDwellTimeFromCategory(sourceNode, fachCategory);
-        builder.addTransitLine(lineId, vehicleType, sourceNode.getBetriebspunktName(), dwellTimeAtOrigin);
+        Duration dwellTimeAtOrigin = DwellTime.fromCategory(sourceNode, fachCategory);
+        builder.addTransitRoute(routeId, lineId, sourceNode.getBetriebspunktName(), dwellTimeAtOrigin);
 
-        // iterate over nodes and sections of transit line
+        // iterate over nodes and sections of transit route
         Iterator<TrainrunSection> sectionIter = sections.iterator();
         TrainrunSection nextSection = sectionIter.next();
         Duration travelTime = Duration.ofSeconds(0);
@@ -178,66 +139,64 @@ public class NetworkGraphicConverter {
             nextSection = sectionIter.next();
             travelTime = travelTime.plusMinutes(Math.round(currentSection.getTravelTime().getTime()));
 
-            // check if it is a not nonstop transit pass or stop
+            // check if nonstop pass or stop at node
             if (isPass(targetNode, currentSection.getId())) {
                 // pass: Add route pass to transit line
-                builder.addRoutePass(lineId, targetNode.getBetriebspunktName());
+                builder.addRoutePass(routeId, targetNode.getBetriebspunktName());
 
             } else {
-                // stop: Add route stop with dwell time from network graphic to transit line
-                Duration dwellTime = getDwellTimeFromSections(currentSection, nextSection);
+                // stop: Add route stop with dwell time from network graphic
+                Duration dwellTime = DwellTime.fromSections(currentSection, nextSection);
 
                 // check consistency of dwell time from network graphic against dwell time from category
-                warnOnDwellTimeInconsistency(dwellTime, train, targetNode, fachCategory, lineId);
+                DwellTime.warnOnInconsistency(dwellTime, train, targetNode, fachCategory);
 
                 // add stop and reset travel time
-                builder.addRouteStop(lineId, targetNode.getBetriebspunktName(), travelTime, dwellTime);
+                builder.addRouteStop(routeId, targetNode.getBetriebspunktName(), travelTime, dwellTime);
                 travelTime = Duration.ofSeconds(0);
             }
         }
 
         // add last stop
         Node targetNode = nodeIter.next();
-        Duration dwellTimeAtDestination = getDwellTimeFromCategory(targetNode, fachCategory);
+        Duration dwellTimeAtDestination = DwellTime.fromCategory(targetNode, fachCategory);
         travelTime = travelTime.plusMinutes(Math.round(nextSection.getTravelTime().getTime()));
-        builder.addRouteStop(lineId, targetNode.getBetriebspunktName(), travelTime, dwellTimeAtDestination);
+        builder.addRouteStop(routeId, targetNode.getBetriebspunktName(), travelTime, dwellTimeAtDestination);
 
         // prepare daytime intervals
         List<DayTimeInterval> timeIntervals = lookup.times.get(train.getTrainrunTimeCategoryId()).getDayTimeIntervals();
         if (timeIntervals.isEmpty()) {
-            // add interval for full day in minutes if no interval is set in the input
+            // add interval for full day in minutes if no interval is set
             timeIntervals.add(DayTimeInterval.builder()
-                    .from((int) (Math.round(config.getServiceDayStart().toSecondOfDay() / 60.)))
-                    .to(((int) Math.round(config.getServiceDayEnd().toSecondOfDay() / 60.)))
+                    .from((int) (Math.round(config.getServiceDayStart().toSecondOfDay() / SECONDS_PER_MINUTE)))
+                    .to(((int) Math.round(config.getServiceDayEnd().toSecondOfDay() / SECONDS_PER_MINUTE)))
                     .build());
         }
 
-        // create departures in intervals for both directions
-        for (RouteDirection direction : RouteDirection.values()) {
-            List<LocalTime> departures = createDepartureTimes(timeIntervals, train, sections, direction);
-            log.debug("Add departures at: {}", departures);
-            departures.forEach(departure -> builder.addDeparture(lineId, direction, departure));
-        }
-
+        // derive departures in time intervals and add to supply builder
+        List<LocalTime> departures = createDepartureTimes(timeIntervals, train, sections.getFirst());
+        log.debug("Adding departures to {} at: {}", routeId, departures);
+        departures.forEach(departure -> builder.addDeparture(routeId, departure));
     }
 
-    private String createTransitLineId(Trainrun train, List<Node> nodes, String vehicleType) {
+    private String createTransitLineId(Trainrun train, List<TrainrunSection> sections, String category) {
 
-        // check if option is set to use train name; also avoid name if it is empty (optional field in NGE)
+        // check if option is set to use train name; avoid name if it is empty (optional field in NGE)
         String lineId;
         if (config.isUseTrainNamesAsIds() && !train.getName().isBlank()) {
             lineId = train.getName();
         } else {
-            // create id from vehicle type with origin and destination, ignore the train name from nge
-            lineId = String.format("%s_%s_%s", vehicleType, nodes.getFirst().getBetriebspunktName(),
-                    nodes.getLast().getBetriebspunktName());
+            // create id from category with origin and destination, ignore the train name from nge
+            lineId = String.format("%s_%s_%s", category,
+                    lookup.nodes.get(sections.getFirst().getSourceNodeId()).getBetriebspunktName(),
+                    lookup.nodes.get(sections.getLast().getTargetNodeId()).getBetriebspunktName());
         }
 
         // check if line id is already existing
         int count = lineCounter.getOrDefault(lineId, 0);
         if (count > 0) {
             lineCounter.put(lineId, ++count);
-            log.info("Line with id {} is already existing, adding counter {} to id", lineId, count);
+            log.warn("Line with id {} is already existing, adding counter {} to id", lineId, count);
             lineId = String.format("%s_%d", lineId, count);
         } else {
             lineCounter.put(lineId, 1);
@@ -247,24 +206,17 @@ public class NetworkGraphicConverter {
     }
 
     /**
-     * Create departure times in day time intervals
-     * <p>
-     * For each defined time interval the departure times are calculated in seconds from midnight.
-     *
-     * @return a list with a time in seconds from midnight for each departure.
-     */
-    private List<LocalTime> createDepartureTimes(List<DayTimeInterval> timeIntervals, Trainrun train, List<TrainrunSection> sections, RouteDirection routeDirection) {
-        final double hourOffset = switch (routeDirection) {
-            case FORWARD -> sections.getFirst().getSourceDeparture().getTime() * 60.;
-            case REVERSE -> sections.getLast().getTargetDeparture().getTime() * 60.;
-        };
-        final double frequency = lookup.frequencies.get(train.getFrequencyId()).getFrequency() * 60.;
-        final double frequencyOffset = lookup.frequencies.get(train.getFrequencyId()).getOffset() * 60.;
+     * Create departure times in day time intervals.
+     **/
+    private List<LocalTime> createDepartureTimes(List<DayTimeInterval> timeIntervals, Trainrun train, TrainrunSection firstSection) {
+        final double hourOffset = firstSection.getSourceDeparture().getTime() * SECONDS_PER_MINUTE;
+        final double frequency = lookup.frequencies.get(train.getFrequencyId()).getFrequency() * SECONDS_PER_MINUTE;
+        final double frequencyOffset = lookup.frequencies.get(train.getFrequencyId()).getOffset() * SECONDS_PER_MINUTE;
 
         List<LocalTime> departures = new ArrayList<>();
         for (DayTimeInterval dti : timeIntervals) {
-            double fromTime = dti.getFrom() * 60;
-            double toTime = dti.getTo() * 60;
+            double fromTime = dti.getFrom() * SECONDS_PER_MINUTE;
+            double toTime = dti.getTo() * SECONDS_PER_MINUTE;
             double departureTime = fromTime + frequencyOffset + hourOffset;
             while (departureTime < toTime) {
                 departures.add(LocalTime.ofSecondOfDay(Math.round(departureTime)));
@@ -278,7 +230,7 @@ public class NetworkGraphicConverter {
     /**
      * Check if a node is a nonstop transit.
      * <p>
-     * Orientation in mapping: Node --> Transition --> Port --> TrainrunSection --> Trainrun
+     * Model: Node --> Transition --> Port --> TrainrunSection --> Trainrun
      *
      * @param node              the node to check.
      * @param trainrunSectionId the trainrun section id.
@@ -305,6 +257,65 @@ public class NetworkGraphicConverter {
         }
 
         return false;
+    }
+
+    @NoArgsConstructor(access = AccessLevel.NONE)
+    private static class DwellTime {
+
+        private static final String UNCATEGORIZED = "HaltezeitUncategorized";
+
+        /**
+         * Get the dwell time of a train category at a node
+         * <p>
+         * If the fach category is uncategorized, then the connection time of the node is returned.
+         */
+        private static Duration fromCategory(Node node, String fachCategory) {
+
+            if (fachCategory.equals(UNCATEGORIZED)) {
+                Duration dwellTime = Duration.ofSeconds(Math.round(node.getConnectionTime() * SECONDS_PER_MINUTE));
+                log.warn("Uncategorized dwell time category, returning connection time instead ({} s)",
+                        dwellTime.toSeconds());
+                return dwellTime;
+            }
+
+            TrainrunCategoryHaltezeit trainrunCategoryHaltezeit = node.getTrainrunCategoryHaltezeiten()
+                    .get(fachCategory);
+            if (trainrunCategoryHaltezeit == null) {
+                String message = String.format("Invalid fachCategory value %s at node %s.", fachCategory,
+                        node.getBetriebspunktName());
+                throw new IllegalStateException(message);
+            }
+
+            if (trainrunCategoryHaltezeit.isNoHalt()) {
+                return Duration.ofSeconds(0);
+            }
+
+            return Duration.ofSeconds(Math.round(trainrunCategoryHaltezeit.getHaltezeit() * SECONDS_PER_MINUTE));
+        }
+
+        private static Duration fromSections(TrainrunSection currentSection, TrainrunSection nextSection) {
+            double arrivalTime = currentSection.getTargetArrival().getTime();
+            double departureTime = nextSection.getSourceDeparture().getTime();
+
+            if (arrivalTime > departureTime) {
+                // special case: The departure time is in the next hour
+                // example: arrivalTime = 59, departureTime = 1; actual dwell time = 2 minutes
+                return Duration.ofSeconds(Math.round((departureTime + 60 - arrivalTime) * SECONDS_PER_MINUTE));
+            } else {
+                // normal case: Arrival time is before departure time within the same hour
+                return Duration.ofSeconds(Math.round((departureTime - arrivalTime) * SECONDS_PER_MINUTE));
+            }
+        }
+
+        private static void warnOnInconsistency(Duration dwellTime, Trainrun train, Node targetNode, String fachCategory) {
+            Duration dwellTimeFromCategory = DwellTime.fromCategory(targetNode, fachCategory);
+            if (!dwellTime.equals(dwellTimeFromCategory)) {
+                log.warn("Dwell time inconsistency: trainrun={}, node={}, category={}, expected={}s, actual={}s.",
+                        train.getName(), targetNode.getBetriebspunktName(), fachCategory,
+                        dwellTimeFromCategory.toSeconds(), dwellTime.toSeconds());
+            }
+        }
+
     }
 
     /**

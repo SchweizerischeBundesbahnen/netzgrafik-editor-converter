@@ -2,14 +2,13 @@ package ch.sbb.pfi.netzgrafikeditor.converter.matsim;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.DepartureInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
-import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RollingStockRepository;
-import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteDirection;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteElement;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RoutePass;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteStop;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.SupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitLineInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitRouteInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleAllocation;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleTypeInfo;
@@ -23,7 +22,6 @@ import org.matsim.vehicles.VehicleType;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,18 +31,16 @@ public class MatsimSupplyBuilder implements SupplyBuilder {
 
     private final Scenario scenario;
     private final InfrastructureRepository infrastructureRepository;
-    private final RollingStockRepository rollingStockRepository;
     private final VehicleCircuitsPlanner vehicleCircuitsPlanner;
     private final MatsimSupplyFactory factory;
 
+    private final Map<String, TransitLineInfo> transitLineInfos = new HashMap<>();
     private final Map<String, StopFacilityInfo> stopFacilityInfos = new HashMap<>();
-    private final Map<String, TransitLineContainer> transitLineContainers = new HashMap<>();
-    private final Map<String, VehicleTypeInfo> vehicleTypeInfos = new HashMap<>();
+    private final Map<String, TransitRouteContainer> transitRouteContainers = new HashMap<>();
 
-    public MatsimSupplyBuilder(Scenario scenario, InfrastructureRepository infrastructureRepository, RollingStockRepository rollingStockRepository, VehicleCircuitsPlanner vehicleCircuitsPlanner) {
+    public MatsimSupplyBuilder(Scenario scenario, InfrastructureRepository infrastructureRepository, VehicleCircuitsPlanner vehicleCircuitsPlanner) {
         this.scenario = scenario;
         this.infrastructureRepository = infrastructureRepository;
-        this.rollingStockRepository = rollingStockRepository;
         this.vehicleCircuitsPlanner = vehicleCircuitsPlanner;
         factory = new MatsimSupplyFactory(scenario);
     }
@@ -61,15 +57,25 @@ public class MatsimSupplyBuilder implements SupplyBuilder {
     }
 
     @Override
-    public SupplyBuilder addTransitLine(String lineId, String vehicleTypeId, String originStopId, Duration dwellTimeAtOrigin) {
-        if (transitLineContainers.containsKey(lineId)) {
-            throw new IllegalArgumentException("Transit line already existing for id " + lineId);
+    public SupplyBuilder addTransitLine(String id, String category) {
+        if (transitLineInfos.containsKey(id)) {
+            throw new RuntimeException("Transit line already exists for id " + id);
         }
 
-        VehicleTypeInfo vehicleTypeInfo = vehicleTypeInfos.get(vehicleTypeId);
-        if (vehicleTypeInfo == null) {
-            vehicleTypeInfo = rollingStockRepository.getVehicleType(vehicleTypeId);
-            vehicleTypeInfos.put(vehicleTypeId, vehicleTypeInfo);
+        transitLineInfos.put(id, new TransitLineInfo(id, category));
+
+        return this;
+    }
+
+    @Override
+    public SupplyBuilder addTransitRoute(String id, String lineId, String originStopId, Duration dwellTimeAtOrigin) {
+        TransitLineInfo transitLineInfo = transitLineInfos.get(lineId);
+        if (transitLineInfo == null) {
+            throw new IllegalArgumentException("Transit line not existing for id " + lineId);
+        }
+
+        if (transitRouteContainers.containsKey(id)) {
+            throw new IllegalArgumentException("Transit route already existing for id " + id);
         }
 
         StopFacilityInfo originStop = stopFacilityInfos.get(originStopId);
@@ -78,63 +84,58 @@ public class MatsimSupplyBuilder implements SupplyBuilder {
                     String.format("Route stop for line %s at not existing with id %s", lineId, originStopId));
         }
 
-        transitLineContainers.put(lineId, new TransitLineContainer(new TransitLineInfo(lineId, vehicleTypeInfo),
-                new ArrayList<>(List.of(new RouteStop(originStop, Duration.ZERO, dwellTimeAtOrigin))),
-                new EnumMap<>(RouteDirection.class)));
+        transitRouteContainers.put(id, new TransitRouteContainer(new TransitRouteInfo(id, transitLineInfo),
+                new ArrayList<>(List.of(new RouteStop(originStop, Duration.ZERO, dwellTimeAtOrigin)))));
 
         return this;
     }
 
     @Override
-    public SupplyBuilder addRouteStop(String lineId, String stopId, Duration travelTime, Duration dwellTime) {
-        TransitLineContainer transitLineContainer = transitLineContainers.get(lineId);
-        if (transitLineContainer == null) {
-            throw new IllegalArgumentException("Transit line not existing with id " + lineId);
+    public SupplyBuilder addRouteStop(String routeId, String stopId, Duration travelTime, Duration dwellTime) {
+        TransitRouteContainer transitRouteContainer = transitRouteContainers.get(routeId);
+        if (transitRouteContainer == null) {
+            throw new IllegalArgumentException("Transit route not existing with id " + routeId);
         }
 
         StopFacilityInfo stopFacilityInfo = stopFacilityInfos.get(stopId);
         if (stopFacilityInfo == null) {
             throw new IllegalArgumentException(
-                    String.format("Route stop for line %s at not existing with id %s", lineId, stopId));
+                    String.format("Route stop for route %s at not existing with id %s", routeId, stopId));
         }
 
-        transitLineContainer.routeElements.add(new RouteStop(stopFacilityInfo, travelTime, dwellTime));
+        transitRouteContainer.routeElements.add(new RouteStop(stopFacilityInfo, travelTime, dwellTime));
 
         return this;
     }
 
     @Override
-    public SupplyBuilder addRoutePass(String lineId, String stopId) {
-        TransitLineContainer transitLineContainer = transitLineContainers.get(lineId);
-        if (transitLineContainer == null) {
-            throw new IllegalArgumentException("Transit line not existing with id " + lineId);
+    public SupplyBuilder addRoutePass(String routeId, String stopId) {
+        TransitRouteContainer transitRouteContainer = transitRouteContainers.get(routeId);
+        if (transitRouteContainer == null) {
+            throw new IllegalArgumentException("Transit route not existing with id " + routeId);
         }
 
         StopFacilityInfo stopFacilityInfo = stopFacilityInfos.get(stopId);
         if (stopFacilityInfo == null) {
             throw new IllegalArgumentException(
-                    String.format("Route pass for line %s at not existing with id %s", lineId, stopId));
+                    String.format("Route pass for line %s at not existing with id %s", routeId, stopId));
         }
 
-        transitLineContainer.routeElements.add(new RoutePass(stopFacilityInfo));
+        transitRouteContainer.routeElements.add(new RoutePass(stopFacilityInfo));
 
         return this;
     }
 
     @Override
-    public SupplyBuilder addDeparture(String lineId, RouteDirection direction, LocalTime time) {
-        TransitLineContainer transitLineContainer = transitLineContainers.get(lineId);
-        if (transitLineContainer == null) {
-            throw new IllegalArgumentException("Transit line not existing with id " + lineId);
+    public SupplyBuilder addDeparture(String routeId, LocalTime time) {
+        TransitRouteContainer transitRouteContainer = transitRouteContainers.get(routeId);
+        if (transitRouteContainer == null) {
+            throw new IllegalArgumentException("Transit route not existing with id " + routeId);
         }
 
-        DepartureInfo departure = new DepartureInfo(transitLineContainer.transitLineInfo, direction, time);
-
-        List<DepartureInfo> departures = transitLineContainer.departures.computeIfAbsent(direction,
-                k -> new ArrayList<>());
-        departures.add(departure);
-
-        vehicleCircuitsPlanner.register(departure);
+        // TODO: Add check that all departures are allocated with a vehicle by the circuits planner
+        DepartureInfo departureInfo = new DepartureInfo(transitRouteContainer.transitRouteInfo, time);
+        vehicleCircuitsPlanner.register(departureInfo);
 
         return this;
     }
@@ -149,23 +150,11 @@ public class MatsimSupplyBuilder implements SupplyBuilder {
             infrastructureBuilder.buildTransitStopFacility(stopFacilityInfo);
         }
 
-        // build transit lines with corresponding transit routes
-        EnumMap<RouteDirection, Map<String, TransitRoute>> transitRoutes = new EnumMap<>(RouteDirection.class);
-        for (TransitLineContainer container : transitLineContainers.values()) {
-
-            // forward direction
-            transitRoutes.computeIfAbsent(RouteDirection.FORWARD, k -> new HashMap<>())
-                    .put(container.transitLineInfo.getId(),
-                            infrastructureBuilder.buildTransitRoute(container.transitLineInfo, container.routeElements,
-                                    RouteDirection.FORWARD));
-
-            // reverse direction
-            if (container.hasReverseDepartures()) {
-                transitRoutes.computeIfAbsent(RouteDirection.REVERSE, k -> new HashMap<>())
-                        .put(container.transitLineInfo.getId(),
-                                infrastructureBuilder.buildTransitRoute(container.transitLineInfo,
-                                        container.routeElements, RouteDirection.REVERSE));
-            }
+        // build transit routes
+        Map<String, TransitRoute> transitRoutes = new HashMap<>();
+        for (TransitRouteContainer container : transitRouteContainers.values()) {
+            transitRoutes.put(container.transitRouteInfo.getId(),
+                    infrastructureBuilder.buildTransitRoute(container.transitRouteInfo, container.routeElements));
         }
 
         // add departures
@@ -178,7 +167,9 @@ public class MatsimSupplyBuilder implements SupplyBuilder {
         for (VehicleAllocation vehicleAllocation : vehicleAllocations) {
 
             log.debug("Adding departure {} (line: {} route: {}, vehicle type: {} vehicle: {})",
-                    vehicleAllocation.getDepartureId(), "none", "none",
+                    vehicleAllocation.getDepartureId(),
+                    vehicleAllocation.getDepartureInfo().getTransitRouteInfo().getTransitLineInfo().getId(),
+                    vehicleAllocation.getDepartureInfo().getTransitRouteInfo().getId(),
                     vehicleAllocation.getVehicleInfo().getVehicleTypeInfo().getId(),
                     vehicleAllocation.getVehicleInfo().getId());
 
@@ -196,18 +187,11 @@ public class MatsimSupplyBuilder implements SupplyBuilder {
             departure.setVehicleId(vehicle.getId());
 
             // add departure to the matching transit route
-            transitRoutes.get(departureInfo.getDirection())
-                    .get(departureInfo.getTransitLine().getId())
-                    .addDeparture(departure);
+            transitRoutes.get(departureInfo.getTransitRouteInfo().getId()).addDeparture(departure);
         }
     }
 
-    record TransitLineContainer(TransitLineInfo transitLineInfo, List<RouteElement> routeElements,
-                                EnumMap<RouteDirection, List<DepartureInfo>> departures) {
-
-        boolean hasReverseDepartures() {
-            return departures.containsKey(RouteDirection.REVERSE) && !departures.get(RouteDirection.REVERSE).isEmpty();
-        }
+    record TransitRouteContainer(TransitRouteInfo transitRouteInfo, List<RouteElement> routeElements) {
     }
 
 }

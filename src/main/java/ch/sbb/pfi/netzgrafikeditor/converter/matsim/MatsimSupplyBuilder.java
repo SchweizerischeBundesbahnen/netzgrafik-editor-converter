@@ -15,7 +15,6 @@ import org.matsim.vehicles.Vehicle;
 import org.matsim.vehicles.VehicleType;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -32,44 +31,38 @@ public class MatsimSupplyBuilder extends BaseSupplyBuilder {
     }
 
     @Override
-    protected void addStopFacilities(Map<String, StopFacilityInfo> stopFacilityInfos) {
-        for (StopFacilityInfo stopFacilityInfo : stopFacilityInfos.values()) {
-            infrastructureBuilder.buildTransitStopFacility(stopFacilityInfo);
-        }
+    protected void buildStopFacility(StopFacilityInfo stopFacilityInfo) {
+        infrastructureBuilder.buildTransitStopFacility(stopFacilityInfo);
     }
 
     @Override
-    protected void addTransitRoutes(Map<String, BaseSupplyBuilder.TransitRouteContainer> transitRouteContainers) {
-        for (TransitRouteContainer container : transitRouteContainers.values()) {
-            transitRoutes.put(container.transitRouteInfo().getId(),
-                    infrastructureBuilder.buildTransitRoute(container.transitRouteInfo(), container.routeElements()));
-        }
+    protected void buildTransitRoute(TransitRouteContainer transitRouteContainer) {
+        // store transit route to add departures in later
+        transitRoutes.put(transitRouteContainer.transitRouteInfo().getId(),
+                infrastructureBuilder.buildTransitRoute(transitRouteContainer.transitRouteInfo(),
+                        transitRouteContainer.routeElements()));
     }
 
     @Override
-    protected void addDepartures(List<VehicleAllocation> vehicleAllocations) {
-        for (VehicleAllocation vehicleAllocation : vehicleAllocations) {
-            log.debug("Adding departure {} (line: {} route: {}, vehicle type: {} vehicle: {})",
-                    vehicleAllocation.getDepartureId(),
-                    vehicleAllocation.getDepartureInfo().getTransitRouteInfo().getTransitLineInfo().getId(),
-                    vehicleAllocation.getDepartureInfo().getTransitRouteInfo().getId(),
-                    vehicleAllocation.getVehicleInfo().getVehicleTypeInfo().getId(),
-                    vehicleAllocation.getVehicleInfo().getId());
+    protected void buildDeparture(VehicleAllocation vehicleAllocation) {
+        log.debug("Adding departure {} (line: {} route: {}, vehicle type: {} vehicle: {})",
+                vehicleAllocation.getDepartureId(),
+                vehicleAllocation.getDepartureInfo().getTransitRouteInfo().getTransitLineInfo().getId(),
+                vehicleAllocation.getDepartureInfo().getTransitRouteInfo().getId(),
+                vehicleAllocation.getVehicleInfo().getVehicleTypeInfo().getId(),
+                vehicleAllocation.getVehicleInfo().getId());
 
-            VehicleTypeInfo vehicleTypeInfo = vehicleAllocation.getVehicleInfo().getVehicleTypeInfo();
-            VehicleType vehicleType = factory.getOrCreateVehicleType(vehicleTypeInfo.getId(),
-                    vehicleTypeInfo.getLength(), vehicleTypeInfo.getMaxVelocity(), vehicleTypeInfo.getCapacity(),
-                    vehicleTypeInfo.getAttributes());
-            Vehicle vehicle = factory.getOrCreateVehicle(vehicleType, vehicleAllocation.getVehicleInfo().getId());
+        VehicleTypeInfo vehicleTypeInfo = vehicleAllocation.getVehicleInfo().getVehicleTypeInfo();
+        VehicleType vehicleType = factory.getOrCreateVehicleType(vehicleTypeInfo.getId(), vehicleTypeInfo.getLength(),
+                vehicleTypeInfo.getMaxVelocity(), vehicleTypeInfo.getCapacity(), vehicleTypeInfo.getAttributes());
+        Vehicle vehicle = factory.getOrCreateVehicle(vehicleType, vehicleAllocation.getVehicleInfo().getId());
 
-            DepartureInfo departureInfo = vehicleAllocation.getDepartureInfo();
-            Departure departure = factory.createDeparture(vehicleAllocation.getDepartureId(),
-                    departureInfo.getTime().toSecondOfDay());
-            departure.setVehicleId(vehicle.getId());
+        DepartureInfo departureInfo = vehicleAllocation.getDepartureInfo();
+        Departure departure = factory.createDeparture(vehicleAllocation.getDepartureId(),
+                departureInfo.getTime().toSecondOfDay());
+        departure.setVehicleId(vehicle.getId());
 
-            // add departure to the corresponding transit route
-            transitRoutes.get(departureInfo.getTransitRouteInfo().getId()).addDeparture(departure);
-        }
+        // add departure to the corresponding transit route
+        transitRoutes.get(departureInfo.getTransitRouteInfo().getId()).addDeparture(departure);
     }
-
 }

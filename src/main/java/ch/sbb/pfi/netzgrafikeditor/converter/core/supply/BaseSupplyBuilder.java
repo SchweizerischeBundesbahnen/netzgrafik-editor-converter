@@ -120,16 +120,26 @@ public abstract class BaseSupplyBuilder implements SupplyBuilder {
 
     @Override
     public void build() {
-        addStopFacilities(stopFacilityInfos);
-        addTransitRoutes(transitRouteContainers);
-        addDepartures(vehicleCircuitsPlanner.plan());
+
+        for (StopFacilityInfo stopFacilityInfo : stopFacilityInfos.values()) {
+            buildStopFacility(stopFacilityInfo);
+        }
+
+        for (TransitRouteContainer container : transitRouteContainers.values()) {
+            buildTransitRoute(container);
+        }
+
+        for (VehicleAllocation vehicleAllocation : vehicleCircuitsPlanner.plan()) {
+            buildDeparture(vehicleAllocation);
+        }
+
     }
 
-    protected abstract void addStopFacilities(Map<String, StopFacilityInfo> stopFacilityInfos);
+    protected abstract void buildStopFacility(StopFacilityInfo stopFacilityInfo);
 
-    protected abstract void addTransitRoutes(Map<String, TransitRouteContainer> transitRouteContainers);
+    protected abstract void buildTransitRoute(TransitRouteContainer transitRouteContainer);
 
-    protected abstract void addDepartures(List<VehicleAllocation> plan);
+    protected abstract void buildDeparture(VehicleAllocation vehicleAllocation);
 
     protected record TransitRouteContainer(TransitRouteInfo transitRouteInfo, List<RouteElement> routeElements) {
     }

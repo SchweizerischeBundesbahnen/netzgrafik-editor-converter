@@ -73,9 +73,8 @@ public class NetworkGraphicConverterIT {
                 .get(Id.create(testCase.name() + "_" + RouteDirection.FORWARD, TransitRoute.class));
         assertNotNull(transitRoute);
 
-        // expected stop sequence for FORWARD and REVERSED directions
+        // expected stop sequence
         String expectedStopSequenceForward = String.join("-", testCase.getStopSequence());
-        String expectedStopSequenceReverse = String.join("-", testCase.getStopSequence().reversed());
 
         // actual stop sequence for the transitRoute
         String actualStopSequence = transitRoute.getStops()
@@ -83,11 +82,8 @@ public class NetworkGraphicConverterIT {
                 .map(s -> s.getStopFacility().getId().toString())
                 .collect(Collectors.joining("-"));
 
-        // ensure the actual stop sequence matches either the forward or reversed sequence
-        assertTrue(actualStopSequence.equals(expectedStopSequenceForward) || actualStopSequence.equals(
-                expectedStopSequenceReverse), () -> String.format(
-                "The stop sequence does not match either the forward or reversed sequence.%n" + "Expected forward: %s%n" + "Expected reverse: %s%n" + "Actual: %s",
-                expectedStopSequenceForward, expectedStopSequenceReverse, actualStopSequence));
+        // ensure the actual stop sequence matches either the actual sequence
+        assertEquals(expectedStopSequenceForward, actualStopSequence);
     }
 
     private void configure(Path path, String prefix) {

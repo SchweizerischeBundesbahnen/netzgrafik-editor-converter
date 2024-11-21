@@ -11,8 +11,8 @@ public class Stop {
 
     String stopName;
 
-    double stop_lat;
+    double stopLat;
 
-    double stop_lon;
+    double stopLon;
 
 }

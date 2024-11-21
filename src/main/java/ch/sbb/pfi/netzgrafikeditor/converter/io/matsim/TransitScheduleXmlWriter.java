@@ -13,25 +13,24 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @RequiredArgsConstructor
-public class TransitScheduleXmlWriter implements ConverterSink {
+public class TransitScheduleXmlWriter implements ConverterSink<Scenario> {
 
     private static final String CONFIG_FILE = "config.xml";
     private static final String NETWORK_FILE = "network.xml.gz";
     private static final String TRANSIT_SCHEDULE_FILE = "transitSchedule.xml.gz";
     private static final String TRANSIT_VEHICLE_FILE = "transitVehicles.xml.gz";
 
-    private final Scenario scenario;
     private final Path directory;
     private final String prefix;
 
     @Override
-    public void save() throws IOException {
+    public void save(Scenario result) throws IOException {
         Files.createDirectories(directory);
 
-        writeFile(CONFIG_FILE, new ConfigWriter(scenario.getConfig())::write);
-        writeFile(NETWORK_FILE, new NetworkWriter(scenario.getNetwork())::write);
-        writeFile(TRANSIT_SCHEDULE_FILE, new TransitScheduleWriter(scenario.getTransitSchedule())::writeFile);
-        writeFile(TRANSIT_VEHICLE_FILE, new MatsimVehicleWriter(scenario.getTransitVehicles())::writeFile);
+        writeFile(CONFIG_FILE, new ConfigWriter(result.getConfig())::write);
+        writeFile(NETWORK_FILE, new NetworkWriter(result.getNetwork())::write);
+        writeFile(TRANSIT_SCHEDULE_FILE, new TransitScheduleWriter(result.getTransitSchedule())::writeFile);
+        writeFile(TRANSIT_VEHICLE_FILE, new MatsimVehicleWriter(result.getTransitVehicles())::writeFile);
     }
 
     private void writeFile(String fileName, FileWriterAction writerAction) throws IOException {

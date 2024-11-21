@@ -13,8 +13,6 @@ import ch.sbb.pfi.netzgrafikeditor.converter.io.matsim.TransitScheduleXmlWriter;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonFileReader;
 import ch.sbb.pfi.netzgrafikeditor.converter.matsim.MatsimSupplyBuilder;
 import org.matsim.api.core.v01.Scenario;
-import org.matsim.core.config.ConfigUtils;
-import org.matsim.core.scenario.ScenarioUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -33,7 +31,7 @@ public class Application implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         if (args.length < 2) {
             System.err.println("Please provide the path to the network graphic JSON file and the output directory.");
             System.exit(1);
@@ -52,8 +50,7 @@ public class Application implements CommandLineRunner {
                     .validationStrategy(ValidationStrategy.WARN_ON_ISSUES)
                     .build();
 
-            Scenario scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
-            NetworkGraphicConverter converter = getNetworkGraphicConverter(jsonFilePath, scenario, config);
+            NetworkGraphicConverter<Scenario> converter = getNetworkGraphicConverter(jsonFilePath, config);
 
             converter.run();
 
@@ -65,18 +62,18 @@ public class Application implements CommandLineRunner {
         }
     }
 
-    private NetworkGraphicConverter getNetworkGraphicConverter(Path jsonFilePath, Scenario scenario, NetworkGraphicConverterConfig config) {
+    private NetworkGraphicConverter<Scenario> getNetworkGraphicConverter(Path jsonFilePath, NetworkGraphicConverterConfig config) {
         NetworkGraphicSource source = new JsonFileReader(jsonFilePath);
 
-        SupplyBuilder builder = new MatsimSupplyBuilder(scenario, new NoInfrastructureRepository(),
+        SupplyBuilder<Scenario> builder = new MatsimSupplyBuilder(new NoInfrastructureRepository(),
                 new NoVehicleCircuitsPlanner(new NoRollingStockRepository()));
 
         String baseFilename = jsonFilePath.getFileName().toString();
         String filenameWithoutExtension = jsonFilePath.getFileName()
                 .toString()
                 .substring(0, baseFilename.lastIndexOf('.'));
-        ConverterSink sink = new TransitScheduleXmlWriter(scenario, outputPath, filenameWithoutExtension + ".");
+        ConverterSink<Scenario> sink = new TransitScheduleXmlWriter(outputPath, filenameWithoutExtension + ".");
 
-        return new NetworkGraphicConverter(config, source, builder, sink);
+        return new NetworkGraphicConverter<>(config, source, builder, sink);
     }
 }

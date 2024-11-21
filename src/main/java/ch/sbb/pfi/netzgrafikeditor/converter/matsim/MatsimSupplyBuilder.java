@@ -9,6 +9,8 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleTypeInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.pt.transitSchedule.api.Departure;
 import org.matsim.pt.transitSchedule.api.TransitRoute;
 import org.matsim.vehicles.Vehicle;
@@ -18,14 +20,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-public class MatsimSupplyBuilder extends BaseSupplyBuilder {
+public class MatsimSupplyBuilder extends BaseSupplyBuilder<Scenario> {
 
     private final Map<String, TransitRoute> transitRoutes = new HashMap<>();
     private final MatsimSupplyFactory factory;
     private final InfrastructureBuilder infrastructureBuilder;
+    private final Scenario scenario;
 
-    public MatsimSupplyBuilder(Scenario scenario, InfrastructureRepository infrastructureRepository, VehicleCircuitsPlanner vehicleCircuitsPlanner) {
+    public MatsimSupplyBuilder(InfrastructureRepository infrastructureRepository, VehicleCircuitsPlanner vehicleCircuitsPlanner) {
         super(infrastructureRepository, vehicleCircuitsPlanner);
+        this.scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
         factory = new MatsimSupplyFactory(scenario);
         infrastructureBuilder = new InfrastructureBuilder(scenario, factory, infrastructureRepository);
     }
@@ -65,4 +69,10 @@ public class MatsimSupplyBuilder extends BaseSupplyBuilder {
         // add departure to the corresponding transit route
         transitRoutes.get(departureInfo.getTransitRouteInfo().getId()).addDeparture(departure);
     }
+
+    @Override
+    protected Scenario getResult() {
+        return scenario;
+    }
+
 }

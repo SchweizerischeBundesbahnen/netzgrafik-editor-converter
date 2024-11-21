@@ -3,20 +3,20 @@ package ch.sbb.pfi.netzgrafikeditor.converter.core.supply;
 import java.time.Duration;
 import java.time.LocalTime;
 
-public interface SupplyBuilder {
+public interface SupplyBuilder<T> {
 
-    SupplyBuilder addStopFacility(String id, double x, double y);
+    SupplyBuilder<T> addStopFacility(String id, double x, double y);
 
-    SupplyBuilder addTransitLine(String id, String category);
+    SupplyBuilder<T> addTransitLine(String id, String category);
 
-    SupplyBuilder addTransitRoute(String id, String lineId, String originStopId, Duration dwellTimeAtOrigin);
+    SupplyBuilder<T> addTransitRoute(String id, String lineId, String originStopId, Duration dwellTimeAtOrigin);
 
-    SupplyBuilder addRouteStop(String routeId, String stopId, Duration travelTime, Duration dwellTime);
+    SupplyBuilder<T> addRouteStop(String routeId, String stopId, Duration travelTime, Duration dwellTime);
 
-    SupplyBuilder addRoutePass(String routeId, String stopId);
+    SupplyBuilder<T> addRoutePass(String routeId, String stopId);
 
-    SupplyBuilder addDeparture(String routeId, LocalTime time);
+    SupplyBuilder<T> addDeparture(String routeId, LocalTime time);
 
-    void build();
+    T build();
 
 }

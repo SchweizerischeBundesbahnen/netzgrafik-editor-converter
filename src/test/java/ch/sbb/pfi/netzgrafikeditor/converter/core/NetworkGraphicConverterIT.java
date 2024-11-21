@@ -7,13 +7,10 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback.NoVehicleCircu
 import ch.sbb.pfi.netzgrafikeditor.converter.io.matsim.TransitScheduleXmlWriter;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonFileReader;
 import ch.sbb.pfi.netzgrafikeditor.converter.matsim.MatsimSupplyBuilder;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
-import org.matsim.core.config.ConfigUtils;
-import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.pt.transitSchedule.api.TransitLine;
 import org.matsim.pt.transitSchedule.api.TransitRoute;
 
@@ -31,12 +28,7 @@ public class NetworkGraphicConverterIT {
     public static final String CASE_SEPARATOR = ".";
 
     private Scenario scenario;
-    private NetworkGraphicConverter converter;
-
-    @BeforeEach
-    void setUp() {
-        scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
-    }
+    private NetworkGraphicConverter<Scenario> converter;
 
     @ParameterizedTest
     @EnumSource(TestScenario.class)
@@ -90,11 +82,16 @@ public class NetworkGraphicConverterIT {
         NetworkGraphicConverterConfig config = NetworkGraphicConverterConfig.builder().useTrainNamesAsIds(true).build();
 
         NetworkGraphicSource source = new JsonFileReader(path);
-        SupplyBuilder builder = new MatsimSupplyBuilder(scenario, new NoInfrastructureRepository(),
+        SupplyBuilder<Scenario> builder = new MatsimSupplyBuilder(new NoInfrastructureRepository(),
                 new NoVehicleCircuitsPlanner(new NoRollingStockRepository()));
-        ConverterSink sink = new TransitScheduleXmlWriter(scenario, OUTPUT_PATH.resolve(prefix.toLowerCase()),
-                prefix.toLowerCase() + CASE_SEPARATOR);
 
-        converter = new NetworkGraphicConverter(config, source, builder, sink);
+        // store scenario and write schedule
+        ConverterSink<Scenario> sink = result -> {
+            scenario = result;
+            new TransitScheduleXmlWriter(OUTPUT_PATH.resolve(prefix.toLowerCase()),
+                    prefix.toLowerCase() + CASE_SEPARATOR);
+        };
+
+        converter = new NetworkGraphicConverter<>(config, source, builder, sink);
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public abstract class BaseSupplyBuilder implements SupplyBuilder {
+public abstract class BaseSupplyBuilder<T> implements SupplyBuilder<T> {
 
     private final InfrastructureRepository infrastructureRepository;
     private final VehicleCircuitsPlanner vehicleCircuitsPlanner;
@@ -25,18 +25,23 @@ public abstract class BaseSupplyBuilder implements SupplyBuilder {
     }
 
     @Override
-    public SupplyBuilder addStopFacility(String id, double x, double y) {
+    public SupplyBuilder<T> addStopFacility(String id, double x, double y) {
         if (stopFacilityInfos.containsKey(id)) {
             throw new RuntimeException("Stop already existing for id " + id);
         }
 
-        stopFacilityInfos.put(id, infrastructureRepository.getStopFacility(id, x, y));
+        StopFacilityInfo stopFacilityInfo = infrastructureRepository.getStopFacility(id, x, y);
+        if (stopFacilityInfo == null) {
+            throw new RuntimeException("Stop with id " + id + " does not exist in infrastructure repository");
+        }
+
+        stopFacilityInfos.put(id, stopFacilityInfo);
 
         return this;
     }
 
     @Override
-    public SupplyBuilder addTransitLine(String id, String category) {
+    public SupplyBuilder<T> addTransitLine(String id, String category) {
         if (transitLineInfos.containsKey(id)) {
             throw new RuntimeException("Transit line already exists for id " + id);
         }
@@ -47,7 +52,7 @@ public abstract class BaseSupplyBuilder implements SupplyBuilder {
     }
 
     @Override
-    public SupplyBuilder addTransitRoute(String id, String lineId, String originStopId, Duration dwellTimeAtOrigin) {
+    public SupplyBuilder<T> addTransitRoute(String id, String lineId, String originStopId, Duration dwellTimeAtOrigin) {
         TransitLineInfo transitLineInfo = transitLineInfos.get(lineId);
         if (transitLineInfo == null) {
             throw new IllegalArgumentException("Transit line not existing for id " + lineId);
@@ -70,7 +75,7 @@ public abstract class BaseSupplyBuilder implements SupplyBuilder {
     }
 
     @Override
-    public SupplyBuilder addRouteStop(String routeId, String stopId, Duration travelTime, Duration dwellTime) {
+    public SupplyBuilder<T> addRouteStop(String routeId, String stopId, Duration travelTime, Duration dwellTime) {
         TransitRouteContainer transitRouteContainer = transitRouteContainers.get(routeId);
         if (transitRouteContainer == null) {
             throw new IllegalArgumentException("Transit route not existing with id " + routeId);
@@ -88,7 +93,7 @@ public abstract class BaseSupplyBuilder implements SupplyBuilder {
     }
 
     @Override
-    public SupplyBuilder addRoutePass(String routeId, String stopId) {
+    public SupplyBuilder<T> addRoutePass(String routeId, String stopId) {
         TransitRouteContainer transitRouteContainer = transitRouteContainers.get(routeId);
         if (transitRouteContainer == null) {
             throw new IllegalArgumentException("Transit route not existing with id " + routeId);
@@ -106,7 +111,7 @@ public abstract class BaseSupplyBuilder implements SupplyBuilder {
     }
 
     @Override
-    public SupplyBuilder addDeparture(String routeId, LocalTime time) {
+    public SupplyBuilder<T> addDeparture(String routeId, LocalTime time) {
         TransitRouteContainer transitRouteContainer = transitRouteContainers.get(routeId);
         if (transitRouteContainer == null) {
             throw new IllegalArgumentException("Transit route not existing with id " + routeId);
@@ -119,7 +124,7 @@ public abstract class BaseSupplyBuilder implements SupplyBuilder {
     }
 
     @Override
-    public void build() {
+    public T build() {
 
         for (StopFacilityInfo stopFacilityInfo : stopFacilityInfos.values()) {
             buildStopFacility(stopFacilityInfo);
@@ -129,10 +134,16 @@ public abstract class BaseSupplyBuilder implements SupplyBuilder {
             buildTransitRoute(container);
         }
 
-        for (VehicleAllocation vehicleAllocation : vehicleCircuitsPlanner.plan()) {
+        List<VehicleAllocation> vehicleAllocations = vehicleCircuitsPlanner.plan();
+        if (vehicleAllocations == null || vehicleAllocations.isEmpty()) {
+            throw new IllegalStateException("No vehicle allocations received from vehicle circuit planer");
+        }
+
+        for (VehicleAllocation vehicleAllocation : vehicleAllocations) {
             buildDeparture(vehicleAllocation);
         }
 
+        return getResult();
     }
 
     protected abstract void buildStopFacility(StopFacilityInfo stopFacilityInfo);
@@ -140,6 +151,8 @@ public abstract class BaseSupplyBuilder implements SupplyBuilder {
     protected abstract void buildTransitRoute(TransitRouteContainer transitRouteContainer);
 
     protected abstract void buildDeparture(VehicleAllocation vehicleAllocation);
+
+    protected abstract T getResult();
 
     protected record TransitRouteContainer(TransitRouteInfo transitRouteInfo, List<RouteElement> routeElements) {
     }

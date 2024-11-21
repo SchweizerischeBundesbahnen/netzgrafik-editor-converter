@@ -19,8 +19,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
-import org.matsim.core.config.ConfigUtils;
-import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.pt.transitSchedule.api.TransitLine;
 import org.matsim.pt.transitSchedule.api.TransitSchedule;
 import org.matsim.vehicles.Vehicles;
@@ -44,8 +42,6 @@ class MatsimSupplyBuilderTest {
 
     @Mock
     private VehicleCircuitsPlanner vehicleCircuitsPlanner;
-
-    private Scenario scenario;
 
     private MatsimSupplyBuilder matsimSupplyBuilder;
 
@@ -85,8 +81,7 @@ class MatsimSupplyBuilderTest {
 
     @BeforeEach
     void setUp() {
-        scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
-        matsimSupplyBuilder = new MatsimSupplyBuilder(scenario, infrastructureRepository, vehicleCircuitsPlanner);
+        matsimSupplyBuilder = new MatsimSupplyBuilder(infrastructureRepository, vehicleCircuitsPlanner);
     }
 
     /**
@@ -101,7 +96,7 @@ class MatsimSupplyBuilderTest {
      * A -- B -- (C) -- D
      */
     @Test
-    void addTransitRoute_simple() {
+    void testBuild() {
         // mock infrastructure
         when(infrastructureRepository.getStopFacility(eq("A"), anyDouble(), anyDouble())).thenReturn(
                 Stop.A.getStopFacilityInfo());
@@ -125,7 +120,7 @@ class MatsimSupplyBuilderTest {
         when(vehicleCircuitsPlanner.plan()).thenReturn(mockVehicleAllocations());
 
         // act
-        matsimSupplyBuilder.addStopFacility("A", 0, 0)
+        Scenario scenario = matsimSupplyBuilder.addStopFacility("A", 0, 0)
                 .addStopFacility("B", 1, 1)
                 .addStopFacility("C", 2, 2)
                 .addStopFacility("D", 3, 3)

@@ -1,8 +1,9 @@
-# Netzgrafik-Editor MATSim Converter
+# Netzgrafik-Editor Converter
 
-This tool converts network graphics from
-the [Netzgrafik-Editor](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-frontend) into MATSim transit
-schedules.
+Converter to expand network graphics from
+the [Netzgrafik-Editor](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-frontend) into timetables for
+the entire service
+day in different formats, as for example GTFS static or MATSim transit schedules.
 
 ## Design
 

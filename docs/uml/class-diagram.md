@@ -6,7 +6,7 @@ set namespaceSeparator none
 top to bottom direction
 
 package netzgrafikeditor.converter.core {
-    class NetzgrafikConverter {
+    class NetzgrafikConverter<T> {
         +run()
     }
 
@@ -21,18 +21,24 @@ package netzgrafikeditor.converter.core {
         +load()
     }
 
-    interface ConverterSink {
-        +save()
+    interface ConverterSink<T> {
+        +save(...)
     }
 
     package supply {
-        interface SupplyBuilder {
+        interface SupplyBuilder<T> {
             +addStopFacility(...)
             +addTransitLine(...)
             +addRouteStop(...)
             +addRoutePass(...)
             +addDeparture(...)
-            +build()
+            +build(): T
+        }
+
+        abstract class BaseSupplyBuilder<T> {
+            #{abstract}buildStopFacility(...)
+            #{abstract}buildTransitRoute(...)
+            #{abstract}buildDeparture(...)
         }
 
         interface InfrastructureRepository {
@@ -51,13 +57,22 @@ package netzgrafikeditor.converter.core {
     }
 }
 
-package matsim {
+package adapter {
     class MatsimSupplyBuilder {
+    }
+    
+    class GtfsSupplyBuilder {
     }
 }
 
-package io.matsim {
+package io {
+    class GtfsScheduleWriter {
+    }
+
     class TransitScheduleXmlWriter {
+    }
+
+    class JsonFileReader {
     }
 }
 
@@ -65,13 +80,22 @@ NetzgrafikConverter *- NetzgrafikConverterConfig : has
 NetzgrafikConverter *-- NetworkGraphicSource : has
 NetzgrafikConverter *--- SupplyBuilder : has
 NetzgrafikConverter *-- ConverterSink : has
-NetzgrafikConverter .> MatsimSupplyBuilder : <<runtime>>
-NetzgrafikConverter .> TransitScheduleXmlWriter : <<runtime>>
 
-MatsimSupplyBuilder .|> SupplyBuilder: <<implements>>
-TransitScheduleXmlWriter ..|> ConverterSink: <<implements>>
-MatsimSupplyBuilder *-- InfrastructureRepository : has
-MatsimSupplyBuilder *-- RollingStockRepository : has
-MatsimSupplyBuilder *-- VehicleCircuitsPlanner : has
+BaseSupplyBuilder .|> SupplyBuilder: <<implements>>
+BaseSupplyBuilder *-- InfrastructureRepository : has
+BaseSupplyBuilder *-- RollingStockRepository : has
+BaseSupplyBuilder *-- VehicleCircuitsPlanner : has
+
+MatsimSupplyBuilder --|> BaseSupplyBuilder : <<extends>>
+note on link: T = Scenario
+GtfsSupplyBuilder -|> BaseSupplyBuilder : <<extends>>
+note on link: T = GtfsSchedule
+
+GtfsScheduleWriter ..|> ConverterSink: <<implements>>
+note on link: T = GtfsSchedule
+TransitScheduleXmlWriter .|> ConverterSink: <<implements>>
+note on link: T = Scenario
+JsonFileReader .|> NetworkGraphicSource: <<implements>>
+
 @enduml
 ```

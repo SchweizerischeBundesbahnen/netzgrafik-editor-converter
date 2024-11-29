@@ -111,10 +111,15 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
                     Duration travelTime = routeStop.getTravelTime();
                     Duration dwellTime = routeStop.getDwellTime();
 
+                    // set time to arrival time
+                    if (count[0] == 0) {
+                        time[0] = time[0].minus(dwellTime);
+                    }
+
                     time[0] = time[0].plus(travelTime);
                     LocalTime arrivalTime = time[0];
                     time[0] = time[0].plus(dwellTime);
-                    LocalTime departureTime = time[0].plus(dwellTime);
+                    LocalTime departureTime = time[0];
 
                     stopTimes.add(StopTime.builder()
                             .tripId(tripId)

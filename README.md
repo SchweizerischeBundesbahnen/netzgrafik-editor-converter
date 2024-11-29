@@ -15,7 +15,7 @@ The converter has a modular design (DI):
         - **supply**: A generic supply builder interface. Defines infrastructure and rolling stock repositories, as well
           as vehicle circuits planner interfaces used in the builder.
         - **validation**: Network graphic ID validator and sanitizer.
-    - **matsim**: MATSim-specific transit schedule builder, implementing the supply builder interface.
+    - **adapter**: Format-specific transit schedule builder, implementing the supply builder interface.
     - **io**: Provides implementations for network graphic sources and converter output sinks.
 
 The class diagram outlines the core classes and their relationships:

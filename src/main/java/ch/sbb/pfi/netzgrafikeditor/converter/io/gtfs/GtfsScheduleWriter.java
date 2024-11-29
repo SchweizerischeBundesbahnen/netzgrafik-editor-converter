@@ -1,7 +1,7 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.io.gtfs;
 
+import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.GtfsSchedule;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.ConverterSink;
-import ch.sbb.pfi.netzgrafikeditor.converter.gtfs.model.GtfsSchedule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

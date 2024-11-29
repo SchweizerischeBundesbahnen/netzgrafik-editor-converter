@@ -1,4 +1,4 @@
-package ch.sbb.pfi.netzgrafikeditor.converter.matsim;
+package ch.sbb.pfi.netzgrafikeditor.converter.adapter.matsim;
 
 
 import lombok.Getter;

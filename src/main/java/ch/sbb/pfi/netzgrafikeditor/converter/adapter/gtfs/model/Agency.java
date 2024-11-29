@@ -1,4 +1,4 @@
-package ch.sbb.pfi.netzgrafikeditor.converter.gtfs.model;
+package ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model;
 
 import lombok.Builder;
 import lombok.Value;

@@ -1,4 +1,4 @@
-package ch.sbb.pfi.netzgrafikeditor.converter.matsim;
+package ch.sbb.pfi.netzgrafikeditor.converter.adapter.matsim;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.BaseSupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.DepartureInfo;

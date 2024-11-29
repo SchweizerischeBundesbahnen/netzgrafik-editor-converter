@@ -1,5 +1,6 @@
 package ch.sbb.pfi.netzgrafikeditor;
 
+import ch.sbb.pfi.netzgrafikeditor.converter.adapter.matsim.MatsimSupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.ConverterSink;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.NetworkGraphicConverter;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.NetworkGraphicConverterConfig;
@@ -11,7 +12,6 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback.NoVehicleCircu
 import ch.sbb.pfi.netzgrafikeditor.converter.core.validation.ValidationStrategy;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.matsim.TransitScheduleXmlWriter;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonFileReader;
-import ch.sbb.pfi.netzgrafikeditor.converter.matsim.MatsimSupplyBuilder;
 import org.matsim.api.core.v01.Scenario;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

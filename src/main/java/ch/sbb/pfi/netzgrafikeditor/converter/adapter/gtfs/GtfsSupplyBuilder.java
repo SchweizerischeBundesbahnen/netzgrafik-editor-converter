@@ -1,5 +1,12 @@
-package ch.sbb.pfi.netzgrafikeditor.converter.gtfs;
+package ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs;
 
+import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Agency;
+import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Calendar;
+import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.GtfsSchedule;
+import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Route;
+import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Stop;
+import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.StopTime;
+import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Trip;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.BaseSupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteElement;
@@ -9,13 +16,6 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteStop;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleAllocation;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
-import ch.sbb.pfi.netzgrafikeditor.converter.gtfs.model.Agency;
-import ch.sbb.pfi.netzgrafikeditor.converter.gtfs.model.Calendar;
-import ch.sbb.pfi.netzgrafikeditor.converter.gtfs.model.GtfsSchedule;
-import ch.sbb.pfi.netzgrafikeditor.converter.gtfs.model.Route;
-import ch.sbb.pfi.netzgrafikeditor.converter.gtfs.model.Stop;
-import ch.sbb.pfi.netzgrafikeditor.converter.gtfs.model.StopTime;
-import ch.sbb.pfi.netzgrafikeditor.converter.gtfs.model.Trip;
 
 import java.time.Duration;
 import java.time.LocalDate;

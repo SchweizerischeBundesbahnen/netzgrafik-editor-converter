@@ -32,14 +32,14 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
-public class NetworkGraphicConverter {
+public class NetworkGraphicConverter<T> {
 
     private static final double SECONDS_PER_MINUTE = 60.;
 
     private final NetworkGraphicConverterConfig config;
     private final NetworkGraphicSource source;
-    private final SupplyBuilder builder;
-    private final ConverterSink sink;
+    private final SupplyBuilder<T> builder;
+    private final ConverterSink<T> sink;
 
     private Map<String, Integer> lineCounter;
     private Lookup lookup;
@@ -52,7 +52,6 @@ public class NetworkGraphicConverter {
         log.info("Converting netzgrafik using source {}, supply builder {} and sink {}",
                 source.getClass().getSimpleName(), builder.getClass().getSimpleName(), sink.getClass().getSimpleName());
 
-        // load and validate network graphic
         NetworkGraphic networkGraphic = new NetworkGraphicValidator(config.getValidationStrategy(),
                 config.isUseTrainNamesAsIds(), source.load()).run();
 
@@ -60,7 +59,7 @@ public class NetworkGraphicConverter {
         addStops();
         addTrains();
 
-        sink.save();
+        sink.save(builder.build());
     }
 
     private void initialize(NetworkGraphic network) {
@@ -96,8 +95,6 @@ public class NetworkGraphicConverter {
             log.debug("Adding train {}", train.getName());
             createAndAddTransitLine(train, sequence.build());
         }
-
-        builder.build();
     }
 
     private void createAndAddTransitLine(Trainrun train, EnumMap<RouteDirection, List<TrainrunSection>> sequence) {

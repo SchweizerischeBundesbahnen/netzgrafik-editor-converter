@@ -1,8 +1,9 @@
-# Netzgrafik-Editor MATSim Converter
+# Netzgrafik-Editor Converter
 
-This tool converts network graphics from
-the [Netzgrafik-Editor](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-frontend) into MATSim transit
-schedules.
+Converter to expand network graphics from
+the [Netzgrafik-Editor](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-frontend) into timetables for
+the entire service
+day in different formats, as for example GTFS static or MATSim transit schedules.
 
 ## Design
 
@@ -14,7 +15,7 @@ The converter has a modular design (DI):
         - **supply**: A generic supply builder interface. Defines infrastructure and rolling stock repositories, as well
           as vehicle circuits planner interfaces used in the builder.
         - **validation**: Network graphic ID validator and sanitizer.
-    - **matsim**: MATSim-specific transit schedule builder, implementing the supply builder interface.
+    - **adapter**: Format-specific transit schedule builder, implementing the supply builder interface.
     - **io**: Provides implementations for network graphic sources and converter output sinks.
 
 The class diagram outlines the core classes and their relationships:

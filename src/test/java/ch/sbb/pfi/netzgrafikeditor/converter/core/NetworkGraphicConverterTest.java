@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.matsim.api.core.v01.Scenario;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -27,13 +28,13 @@ class NetworkGraphicConverterTest {
     private NetworkGraphicSource source;
 
     @Mock
-    private SupplyBuilder builder;
+    private SupplyBuilder<Scenario> builder;
 
     @Mock
-    private ConverterSink sink;
+    private ConverterSink<Scenario> sink;
 
     @InjectMocks
-    private NetworkGraphicConverter converter;
+    private NetworkGraphicConverter<Scenario> converter;
 
     @BeforeEach
     void setUp() {
@@ -58,7 +59,7 @@ class NetworkGraphicConverterTest {
     private void verifyConversionSteps() throws IOException {
         verify(source, times(1)).load();
         verify(builder, times(1)).build();
-        verify(sink, times(1)).save();
+        verify(sink, times(1)).save(any());
     }
 
 }

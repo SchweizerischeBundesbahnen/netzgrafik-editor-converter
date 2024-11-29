@@ -2,8 +2,8 @@ package ch.sbb.pfi.netzgrafikeditor.converter.core;
 
 import java.io.IOException;
 
-public interface ConverterSink {
+public interface ConverterSink<T> {
 
-    void save() throws IOException;
+    void save(T result) throws IOException;
 
 }

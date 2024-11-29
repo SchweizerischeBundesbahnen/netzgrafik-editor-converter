@@ -1,4 +1,4 @@
-package ch.sbb.pfi.netzgrafikeditor.converter.matsim;
+package ch.sbb.pfi.netzgrafikeditor.converter.adapter.matsim;
 
 import lombok.extern.slf4j.Slf4j;
 import org.matsim.api.core.v01.Coord;

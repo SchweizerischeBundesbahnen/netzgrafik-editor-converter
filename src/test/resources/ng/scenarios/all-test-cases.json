@@ -1419,14 +1419,14 @@
       },
       "sourceArrival": {
         "time": 55,
-        "consecutiveTime": 175,
+        "consecutiveTime": 55,
         "lock": false,
         "warning": null,
         "timeFormatter": null
       },
       "targetDeparture": {
         "time": 40,
-        "consecutiveTime": 160,
+        "consecutiveTime": 40,
         "lock": false,
         "warning": null,
         "timeFormatter": null
@@ -1508,29 +1508,29 @@
         "timeFormatter": null
       },
       "sourceDeparture": {
-        "time": 17,
-        "consecutiveTime": 77,
+        "time": 22,
+        "consecutiveTime": 22,
         "lock": false,
         "warning": null,
         "timeFormatter": null
       },
       "sourceArrival": {
-        "time": 43,
-        "consecutiveTime": 103,
+        "time": 38,
+        "consecutiveTime": 38,
         "lock": false,
         "warning": null,
         "timeFormatter": null
       },
       "targetDeparture": {
-        "time": 23,
-        "consecutiveTime": 83,
+        "time": 18,
+        "consecutiveTime": 18,
         "lock": false,
         "warning": null,
         "timeFormatter": null
       },
       "targetArrival": {
-        "time": 37,
-        "consecutiveTime": 97,
+        "time": 42,
+        "consecutiveTime": 42,
         "lock": false,
         "warning": null,
         "timeFormatter": null
@@ -1605,29 +1605,29 @@
         "timeFormatter": null
       },
       "sourceDeparture": {
-        "time": 39,
-        "consecutiveTime": 99,
+        "time": 44,
+        "consecutiveTime": 44,
         "lock": false,
         "warning": null,
         "timeFormatter": null
       },
       "sourceArrival": {
-        "time": 21,
-        "consecutiveTime": 81,
+        "time": 16,
+        "consecutiveTime": 16,
         "lock": false,
         "warning": null,
         "timeFormatter": null
       },
       "targetDeparture": {
-        "time": 6,
-        "consecutiveTime": 66,
+        "time": 1,
+        "consecutiveTime": 1,
         "lock": false,
         "warning": null,
         "timeFormatter": null
       },
       "targetArrival": {
-        "time": 54,
-        "consecutiveTime": 114,
+        "time": 59,
+        "consecutiveTime": 59,
         "lock": false,
         "warning": null,
         "timeFormatter": null

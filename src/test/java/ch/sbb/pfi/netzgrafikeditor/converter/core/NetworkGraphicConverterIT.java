@@ -2,6 +2,7 @@ package ch.sbb.pfi.netzgrafikeditor.converter.core;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.GtfsSupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.GtfsSchedule;
+import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.StopTime;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.matsim.MatsimSupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.SupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback.NoInfrastructureRepository;
@@ -30,6 +31,7 @@ public class NetworkGraphicConverterIT {
     public static final Path OUTPUT_PATH = Path.of(
             OUTPUT_ROOT + NetworkGraphicConverterIT.class.getCanonicalName().replace(".", "/"));
     public static final String CASE_SEPARATOR = ".";
+    public static final String DELIMITER = "-";
 
     @Nested
     class MatsimTransitSchedule {
@@ -72,13 +74,13 @@ public class NetworkGraphicConverterIT {
             assertNotNull(transitRoute);
 
             // expected stop sequence
-            String expectedStopSequenceForward = String.join("-", testCase.getStopSequence());
+            String expectedStopSequenceForward = String.join(DELIMITER, testCase.getStopSequence());
 
             // actual stop sequence for the transitRoute
             String actualStopSequence = transitRoute.getStops()
                     .stream()
                     .map(s -> s.getStopFacility().getId().toString())
-                    .collect(Collectors.joining("-"));
+                    .collect(Collectors.joining(DELIMITER));
 
             // ensure the actual stop sequence matches either the actual sequence
             assertEquals(expectedStopSequenceForward, actualStopSequence);
@@ -109,6 +111,13 @@ public class NetworkGraphicConverterIT {
         private GtfsSchedule schedule;
         private NetworkGraphicConverter<GtfsSchedule> converter;
 
+        private static void validateCurrentSequence(TestCase testCase, String actualSequence, boolean reversed) {
+            String expectedSequence = reversed ? String.join(DELIMITER,
+                    testCase.getStopSequence().reversed()) : String.join(DELIMITER, testCase.getStopSequence());
+
+            assertEquals(expectedSequence, actualSequence);
+        }
+
         @ParameterizedTest
         @EnumSource(TestScenario.class)
         void run(TestScenario testScenario) throws IOException {
@@ -127,6 +136,39 @@ public class NetworkGraphicConverterIT {
 
         private void validate(TestCase testCase) {
             assertNotNull(schedule);
+            assertEquals(1, schedule.getAgencies().size());
+            assertEquals(1, schedule.getCalendars().size());
+            assertEquals(1, schedule.getRoutes().size());
+            assertEquals(2, schedule.getTrips().size());
+
+            StringBuilder sb = new StringBuilder();
+            boolean first = true;
+            boolean reversed = false;
+            for (StopTime stopTime : schedule.getStopTimes()) {
+
+                // end of current sequence
+                if (stopTime.getStopSequence() == 0 && !first) {
+                    validateCurrentSequence(testCase, sb.toString(), reversed);
+
+                    // reset
+                    first = true;
+                    sb.setLength(0);
+                }
+
+                // store direction
+                reversed = stopTime.getTripId().endsWith(RouteDirection.REVERSE.name());
+
+                // add new stop id
+                if (!sb.isEmpty()) {
+                    sb.append(DELIMITER);
+                    first = false;
+                }
+                sb.append(stopTime.getStopId());
+            }
+
+            // validate the last sequence after the loop
+            validateCurrentSequence(testCase, sb.toString(), reversed);
+
         }
 
         private void configure(Path path, String prefix) {

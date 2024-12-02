@@ -1,10 +1,9 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.core;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.core.validation.ValidationStrategy;
+import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 import lombok.Builder;
 import lombok.Value;
-
-import java.time.LocalTime;
 
 @Value
 @Builder
@@ -33,18 +32,16 @@ public class NetworkGraphicConverterConfig {
     @Builder.Default
     ValidationStrategy validationStrategy = ValidationStrategy.WARN_ON_ISSUES;
 
-    // TODO: Introduce a service day class supporting more than 24 hours, e.g. 02:00 the next day.
-    //  Example: https://github.com/naviqore/public-transit-service/blob/d42be281701ed9c34cbdb83dcbf2e3fc3dc31ce1/src/main/java/ch/naviqore/gtfs/schedule/type/ServiceDayTime.java
     /**
      * Time when the operation day starts, default is 05:00, this day.
      */
     @Builder.Default
-    LocalTime serviceDayStart = LocalTime.of(5, 0);
+    ServiceDayTime serviceDayStart = ServiceDayTime.of(5, 0, 0);
 
     /**
      * Time when the operation day ends, default is 23:00, this day.
      */
     @Builder.Default
-    LocalTime serviceDayEnd = LocalTime.of(23, 0);
+    ServiceDayTime serviceDayEnd = ServiceDayTime.of(25, 0, 0);
 
 }

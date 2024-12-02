@@ -11,6 +11,7 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleAllocation;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleTypeInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +27,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Duration;
-import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 
@@ -57,17 +58,17 @@ class MatsimSupplyBuilderTest {
         VehicleInfo vehicleInfo4 = new VehicleInfo("vehicle4", vehicleTypeInfo2);
 
         DepartureInfo departureInfo1 = new DepartureInfo(new TransitRouteInfo("lineSimple_F", transitLineInfo),
-                Default.SERVICE_DAY_START.plusMinutes(0));
+                Default.SERVICE_DAY_START.plus(0, ChronoUnit.MINUTES));
         DepartureInfo departureInfo2 = new DepartureInfo(new TransitRouteInfo("lineSimple_F", transitLineInfo),
-                Default.SERVICE_DAY_START.plusMinutes(5));
+                Default.SERVICE_DAY_START.plus(5, ChronoUnit.MINUTES));
         DepartureInfo departureInfo3 = new DepartureInfo(new TransitRouteInfo("lineSimple_F", transitLineInfo),
-                Default.SERVICE_DAY_START.plusMinutes(10));
+                Default.SERVICE_DAY_START.plus(10, ChronoUnit.MINUTES));
         DepartureInfo departureInfo4 = new DepartureInfo(new TransitRouteInfo("lineSimple_R", transitLineInfo),
-                Default.SERVICE_DAY_START.plusMinutes(1));
+                Default.SERVICE_DAY_START.plus(1, ChronoUnit.MINUTES));
         DepartureInfo departureInfo5 = new DepartureInfo(new TransitRouteInfo("lineSimple_R", transitLineInfo),
-                Default.SERVICE_DAY_START.plusMinutes(6));
+                Default.SERVICE_DAY_START.plus(6, ChronoUnit.MINUTES));
         DepartureInfo departureInfo6 = new DepartureInfo(new TransitRouteInfo("lineSimple_R", transitLineInfo),
-                Default.SERVICE_DAY_START.plusMinutes(11));
+                Default.SERVICE_DAY_START.plus(11, ChronoUnit.MINUTES));
 
         VehicleAllocation allocation1 = new VehicleAllocation("departure1", departureInfo1, vehicleInfo1);
         VehicleAllocation allocation2 = new VehicleAllocation("departure2", departureInfo2, vehicleInfo2);
@@ -133,12 +134,12 @@ class MatsimSupplyBuilderTest {
                 .addRouteStop("lineSimple_R", "C", Default.TRAVEL_TIME, Default.DWELL_TIME)
                 .addRoutePass("lineSimple_R", "B")
                 .addRouteStop("lineSimple_R", "A", Default.TRAVEL_TIME.plus(Default.TRAVEL_TIME), Default.DWELL_TIME)
-                .addDeparture("lineSimple_F", Default.SERVICE_DAY_START.plusMinutes(0))
-                .addDeparture("lineSimple_F", Default.SERVICE_DAY_START.plusMinutes(5))
-                .addDeparture("lineSimple_F", Default.SERVICE_DAY_START.plusMinutes(10))
-                .addDeparture("lineSimple_R", Default.SERVICE_DAY_START.plusMinutes(1))
-                .addDeparture("lineSimple_R", Default.SERVICE_DAY_START.plusMinutes(6))
-                .addDeparture("lineSimple_R", Default.SERVICE_DAY_START.plusMinutes(11))
+                .addDeparture("lineSimple_F", Default.SERVICE_DAY_START.plus(0, ChronoUnit.MINUTES))
+                .addDeparture("lineSimple_F", Default.SERVICE_DAY_START.plus(5, ChronoUnit.MINUTES))
+                .addDeparture("lineSimple_F", Default.SERVICE_DAY_START.plus(10, ChronoUnit.MINUTES))
+                .addDeparture("lineSimple_R", Default.SERVICE_DAY_START.plus(1, ChronoUnit.MINUTES))
+                .addDeparture("lineSimple_R", Default.SERVICE_DAY_START.plus(6, ChronoUnit.MINUTES))
+                .addDeparture("lineSimple_R", Default.SERVICE_DAY_START.plus(11, ChronoUnit.MINUTES))
                 .build();
 
         // assert
@@ -200,7 +201,7 @@ class MatsimSupplyBuilderTest {
     static class Default {
         private static final Duration DWELL_TIME = Duration.ofSeconds(2 * 60);
         private static final Duration TRAVEL_TIME = Duration.ofSeconds(5 * 60);
-        private static final LocalTime SERVICE_DAY_START = LocalTime.of(6, 0);
+        private static final ServiceDayTime SERVICE_DAY_START = ServiceDayTime.of(6, 0, 0);
     }
 
 }

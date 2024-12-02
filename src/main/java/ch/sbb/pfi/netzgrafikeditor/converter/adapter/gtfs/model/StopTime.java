@@ -1,9 +1,8 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model;
 
+import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 import lombok.Builder;
 import lombok.Value;
-
-import java.time.LocalTime;
 
 @Value
 @Builder
@@ -11,9 +10,9 @@ public class StopTime {
 
     String tripId;
 
-    LocalTime arrivalTime;
+    ServiceDayTime arrivalTime;
 
-    LocalTime departureTime;
+    ServiceDayTime departureTime;
 
     String stopId;
 

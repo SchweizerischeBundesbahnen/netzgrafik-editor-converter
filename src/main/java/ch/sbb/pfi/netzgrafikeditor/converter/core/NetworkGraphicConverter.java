@@ -14,6 +14,7 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.model.TrainrunTimeCategory;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.Transition;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.SupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.validation.NetworkGraphicValidator;
+import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -171,7 +171,7 @@ public class NetworkGraphicConverter<T> {
         }
 
         // derive departures in time intervals and add to supply builder
-        List<LocalTime> departures = createDepartureTimes(timeIntervals, train, sections.getFirst());
+        List<ServiceDayTime> departures = createDepartureTimes(timeIntervals, train, sections.getFirst());
         log.debug("Adding departures to {} at: {}", routeId, departures);
         departures.forEach(departure -> builder.addDeparture(routeId, departure));
     }
@@ -205,18 +205,18 @@ public class NetworkGraphicConverter<T> {
     /**
      * Create departure times in day time intervals.
      **/
-    private List<LocalTime> createDepartureTimes(List<DayTimeInterval> timeIntervals, Trainrun train, TrainrunSection firstSection) {
+    private List<ServiceDayTime> createDepartureTimes(List<DayTimeInterval> timeIntervals, Trainrun train, TrainrunSection firstSection) {
         final double hourOffset = firstSection.getSourceDeparture().getTime() * SECONDS_PER_MINUTE;
         final double frequency = lookup.frequencies.get(train.getFrequencyId()).getFrequency() * SECONDS_PER_MINUTE;
         final double frequencyOffset = lookup.frequencies.get(train.getFrequencyId()).getOffset() * SECONDS_PER_MINUTE;
 
-        List<LocalTime> departures = new ArrayList<>();
+        List<ServiceDayTime> departures = new ArrayList<>();
         for (DayTimeInterval dti : timeIntervals) {
             double fromTime = dti.getFrom() * SECONDS_PER_MINUTE;
             double toTime = dti.getTo() * SECONDS_PER_MINUTE;
             double departureTime = fromTime + frequencyOffset + hourOffset;
             while (departureTime < toTime) {
-                departures.add(LocalTime.ofSecondOfDay(Math.round(departureTime)));
+                departures.add(new ServiceDayTime((int) Math.round(departureTime)));
                 departureTime += frequency;
             }
         }

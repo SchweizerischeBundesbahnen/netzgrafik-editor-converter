@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,18 +20,19 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GtfsScheduleWriter implements ConverterSink<GtfsSchedule> {
 
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
     private final Path directory;
 
     @Override
     public void save(GtfsSchedule result) throws IOException {
         Files.createDirectories(directory);
 
-        writeListToFile(result.getRoutes(), "routes.txt");
-        writeListToFile(result.getAgencies(), "agencies.txt");
+        writeListToFile(result.getAgencies(), "agency.txt");
         writeListToFile(result.getStops(), "stops.txt");
+        writeListToFile(result.getRoutes(), "routes.txt");
         writeListToFile(result.getTrips(), "trips.txt");
         writeListToFile(result.getStopTimes(), "stop_times.txt");
-        writeListToFile(result.getCalendars(), "calendars.txt");
+        writeListToFile(result.getCalendars(), "calendar.txt");
     }
 
     private <T> void writeListToFile(List<T> list, String fileName) throws IOException {
@@ -64,7 +67,11 @@ public class GtfsScheduleWriter implements ConverterSink<GtfsSchedule> {
         return Arrays.stream(fields).map(field -> {
             field.setAccessible(true);
             try {
-                return field.get(item) != null ? field.get(item).toString() : "";
+                Object value = field.get(item);
+                if (value instanceof LocalDate) {
+                    return ((LocalDate) value).format(DATE_FORMATTER);
+                }
+                return value != null ? value.toString() : "";
             } catch (IllegalAccessException e) {
                 log.error("Error accessing field value", e);
                 return "";

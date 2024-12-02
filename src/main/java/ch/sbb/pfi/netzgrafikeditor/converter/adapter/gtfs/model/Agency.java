@@ -13,6 +13,6 @@ public class Agency {
 
     String agencyUrl;
 
-    String agencyTimeZone;
+    String agencyTimezone;
 
 }

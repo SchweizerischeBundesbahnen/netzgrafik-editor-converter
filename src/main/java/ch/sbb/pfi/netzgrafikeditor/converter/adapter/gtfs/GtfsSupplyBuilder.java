@@ -33,7 +33,7 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
     private static final Agency AGENCY = Agency.builder()
             .agencyId("nge")
             .agencyName("Netzgrafik Editor")
-            .agencyTimeZone("UTC")
+            .agencyTimezone("UTC")
             .agencyUrl("https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-frontend")
             .build();
     private static final Calendar CALENDAR = Calendar.builder()
@@ -43,8 +43,8 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
             .wednesday(Calendar.Type.AVAILABLE)
             .thursday(Calendar.Type.AVAILABLE)
             .friday(Calendar.Type.AVAILABLE)
-            .startDate(LocalDate.MAX)
-            .endDate(LocalDate.MAX)
+            .startDate(LocalDate.of(1970, 1, 1))
+            .endDate(LocalDate.of(9999, 12, 31))
             .build();
     private final List<Stop> stops = new ArrayList<>();
     private final List<Route> routes = new ArrayList<>();

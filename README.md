@@ -7,6 +7,8 @@ day in different formats, as for example GTFS static or MATSim transit schedules
 
 ## Usage
 
+### Command line
+
 Run the command line tool to convert a network graphic to either a GTFS or MATSim timetable:
 
 ```text
@@ -44,6 +46,64 @@ OUTPUT_DIRECTORY=integration-test/output/cmd
 ./mvnw spring-boot:run -Dspring-boot.run.arguments="$NETWORK_GRAPHIC_FILE $OUTPUT_DIRECTORY -f MATSIM -s 04:30 -e 26:00"
 ```
 
+### Converter in Java
+
+In most cases, the repositories for infrastructure, rolling stock, and vehicle circuits used by the supply builder will
+be custom. To configure the converter with these custom repositories, inject them into the supply builder of the
+selected timetable output format (refer to the Design section for details) and run the conversion:
+
+```java
+
+public class Example {
+
+    public static final Path NETWORK_GRAPHIC_FILE = Path.of("path/to/your/networkGraphicFile.json");
+    public static final Path OUTPUT_DIRECTORY = Path.of("path/to/your/outputDirectory");
+
+    public static final NetworkGraphicConverterConfig CONFIG = NetworkGraphicConverterConfig.builder()
+            .validationStrategy(ValidationStrategy.WARN_ON_ISSUES) // Example strategy
+            .useTrainNamesAsIds(true)
+            .serviceDayStart(ServiceDayTime.of(4, 30, 0))
+            .serviceDayEnd(ServiceDayTime.of(25, 0, 0))
+            .build();
+
+    public static void main(String[] args) throws IOException {
+
+        // define network graphic source
+        NetworkGraphicSource source = new JsonFileReader(NETWORK_GRAPHIC_FILE);
+
+        // instantiate custom implementations of the repositories
+        RollingStockRepository customRollingStockRepository = new CustomRollingStockRepository();
+        InfrastructureRepository customInfrastructureRepository = new CustomInfrastructureRepository();
+        VehicleCircuitsPlanner customVehicleCircuitsPlanner = new CustomVehicleCircuitsPlanner(
+                customRollingStockRepository);
+
+        // GTFS
+        setupGtfsConverter(customInfrastructureRepository, customVehicleCircuitsPlanner, source).run();
+
+        // MATSim
+        setupMatsimConverter(customInfrastructureRepository, customVehicleCircuitsPlanner, source).run();
+    }
+
+    private static NetworkGraphicConverter<Scenario> setupMatsimConverter(InfrastructureRepository customInfrastructureRepository, VehicleCircuitsPlanner customVehicleCircuitsPlanner, NetworkGraphicSource source) {
+        SupplyBuilder<Scenario> builder = new MatsimSupplyBuilder(customInfrastructureRepository,
+                customVehicleCircuitsPlanner);
+        ConverterSink<Scenario> sink = new TransitScheduleXmlWriter(Example.OUTPUT_DIRECTORY, "");
+
+        return new NetworkGraphicConverter<>(CONFIG, source, builder, sink);
+    }
+
+    private static NetworkGraphicConverter<GtfsSchedule> setupGtfsConverter(InfrastructureRepository customInfrastructureRepository, VehicleCircuitsPlanner customVehicleCircuitsPlanner, NetworkGraphicSource source) {
+        SupplyBuilder<GtfsSchedule> builder = new GtfsSupplyBuilder(customInfrastructureRepository,
+                customVehicleCircuitsPlanner);
+        ConverterSink<GtfsSchedule> sink = new GtfsScheduleWriter(Example.OUTPUT_DIRECTORY);
+
+        return new NetworkGraphicConverter<>(CONFIG, source, builder, sink);
+    }
+
+}
+
+```
+
 ## Design
 
 The converter has a modular design (DI):
@@ -56,6 +116,8 @@ The converter has a modular design (DI):
         - **validation**: Network graphic ID validator and sanitizer.
     - **adapter**: Format-specific transit schedule builder, implementing the supply builder interface.
     - **io**: Provides implementations for network graphic sources and converter output sinks.
+    - **app**: Command line application.
+    - **utils**: Utilities used across multiple domains.
 
 The class diagram outlines the core classes and their relationships:
 

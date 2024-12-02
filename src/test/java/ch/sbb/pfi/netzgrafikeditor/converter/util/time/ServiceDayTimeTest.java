@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.ValueRange;
 
 import static ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -112,6 +113,37 @@ class ServiceDayTimeTest {
             assertEquals(0, noonNextDay.get(ChronoField.MINUTE_OF_HOUR));
             assertEquals(0, noonNextDay.get(ChronoField.SECOND_OF_MINUTE));
         }
+
+        @Nested
+        class Range {
+
+            @Test
+            void shouldBeValidFor_hourOfDay() {
+                assertEquals(ValueRange.of(0, Integer.MAX_VALUE / (SECONDS_IN_MINUTE * MINUTES_IN_HOUR)),
+                        midnight.range(ChronoField.HOUR_OF_DAY));
+            }
+
+            @Test
+            void shouldBeValidFor_minuteOfDay() {
+                assertEquals(ValueRange.of(0, Integer.MAX_VALUE / SECONDS_IN_MINUTE),
+                        midnight.range(ChronoField.MINUTE_OF_DAY));
+            }
+
+            @Test
+            void shouldBeValidFor_secondOfDay() {
+                assertEquals(ValueRange.of(0, Integer.MAX_VALUE), midnight.range(ChronoField.SECOND_OF_DAY));
+            }
+
+            @Test
+            void shouldBeValidFor_minuteOfHour() {
+                assertEquals(ValueRange.of(0, 59), midnight.range(ChronoField.MINUTE_OF_HOUR));
+            }
+
+            @Test
+            void shouldBeValidFor_secondOfMinute() {
+                assertEquals(ValueRange.of(0, 59), midnight.range(ChronoField.SECOND_OF_MINUTE));
+            }
+        }
     }
 
     @Nested
@@ -197,21 +229,21 @@ class ServiceDayTimeTest {
         class Plus {
             @Test
             void shouldAdd_hours() {
-                ServiceDayTime result = (ServiceDayTime) endOfDay.plus(1, ChronoUnit.HOURS);
+                ServiceDayTime result = endOfDay.plus(1, ChronoUnit.HOURS);
                 assertEquals(89999, result.getLong(ChronoField.SECOND_OF_DAY));
                 assertEquals("24:59:59", result.toString());
             }
 
             @Test
             void shouldAdd_minutes() {
-                ServiceDayTime result = (ServiceDayTime) endOfDay.plus(1, ChronoUnit.MINUTES);
+                ServiceDayTime result = endOfDay.plus(1, ChronoUnit.MINUTES);
                 assertEquals(86459, result.getLong(ChronoField.SECOND_OF_DAY));
                 assertEquals("24:00:59", result.toString());
             }
 
             @Test
             void shouldAdd_seconds() {
-                ServiceDayTime result = (ServiceDayTime) endOfDay.plus(1, ChronoUnit.SECONDS);
+                ServiceDayTime result = endOfDay.plus(1, ChronoUnit.SECONDS);
                 assertEquals(86400, result.getLong(ChronoField.SECOND_OF_DAY));
                 assertEquals("24:00:00", result.toString());
             }
@@ -221,21 +253,21 @@ class ServiceDayTimeTest {
         class Minus {
             @Test
             void shouldSubtract_hours() {
-                ServiceDayTime result = (ServiceDayTime) midnightNextDay.minus(1, ChronoUnit.HOURS);
+                ServiceDayTime result = midnightNextDay.minus(1, ChronoUnit.HOURS);
                 assertEquals(82800, result.getLong(ChronoField.SECOND_OF_DAY));
                 assertEquals("23:00:00", result.toString());
             }
 
             @Test
             void shouldSubtract_minutes() {
-                ServiceDayTime result = (ServiceDayTime) midnightNextDay.minus(1, ChronoUnit.MINUTES);
+                ServiceDayTime result = midnightNextDay.minus(1, ChronoUnit.MINUTES);
                 assertEquals(86340, result.getLong(ChronoField.SECOND_OF_DAY));
                 assertEquals("23:59:00", result.toString());
             }
 
             @Test
             void shouldSubtract_seconds() {
-                ServiceDayTime result = (ServiceDayTime) midnightNextDay.minus(1, ChronoUnit.SECONDS);
+                ServiceDayTime result = midnightNextDay.minus(1, ChronoUnit.SECONDS);
                 assertEquals(86399, result.getLong(ChronoField.SECOND_OF_DAY));
                 assertEquals("23:59:59", result.toString());
             }

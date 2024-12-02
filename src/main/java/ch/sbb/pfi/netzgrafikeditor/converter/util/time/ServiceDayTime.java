@@ -6,9 +6,11 @@ import java.io.Serializable;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
+import java.time.temporal.ValueRange;
 
 /**
  * The service day time starts at "noon minus 12 hours" and can extend into the next day. This approach allows night
@@ -30,12 +32,15 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 @EqualsAndHashCode
 public class ServiceDayTime implements Temporal, Comparable<ServiceDayTime>, Serializable {
 
-    public static final int SECONDS_IN_MINUTE = 60;
-    public static final int MINUTES_IN_HOUR = 60;
-    public static final int HOURS_IN_DAY = 24;
-    public static final int SECONDS_IN_HOUR = SECONDS_IN_MINUTE * MINUTES_IN_HOUR;
-    public static final int SECONDS_IN_DAY = HOURS_IN_DAY * SECONDS_IN_HOUR;
-
+    public static final ServiceDayTime MIN = new ServiceDayTime(0);
+    public static final ServiceDayTime MAX = new ServiceDayTime(Integer.MAX_VALUE);
+    public static final ServiceDayTime MIDNIGHT = MIN;
+    static final int SECONDS_IN_MINUTE = 60;
+    static final int MINUTES_IN_HOUR = 60;
+    static final int HOURS_IN_DAY = 24;
+    static final int SECONDS_IN_HOUR = SECONDS_IN_MINUTE * MINUTES_IN_HOUR;
+    static final int SECONDS_IN_DAY = HOURS_IN_DAY * SECONDS_IN_HOUR;
+    public static final ServiceDayTime NOON = MIDNIGHT.plus(12, ChronoUnit.HOURS);
     private final int totalSeconds;
 
     public ServiceDayTime(int seconds) {
@@ -80,7 +85,12 @@ public class ServiceDayTime implements Temporal, Comparable<ServiceDayTime>, Ser
     }
 
     @Override
-    public Temporal plus(long amountToAdd, TemporalUnit unit) {
+    public ServiceDayTime plus(TemporalAmount amount) {
+        return (ServiceDayTime) amount.addTo(this);
+    }
+
+    @Override
+    public ServiceDayTime plus(long amountToAdd, TemporalUnit unit) {
         long addedSeconds = switch (unit) {
             case ChronoUnit.SECONDS -> amountToAdd;
             case ChronoUnit.MINUTES -> amountToAdd * SECONDS_IN_MINUTE;
@@ -93,7 +103,12 @@ public class ServiceDayTime implements Temporal, Comparable<ServiceDayTime>, Ser
     }
 
     @Override
-    public Temporal minus(long amountToSubtract, TemporalUnit unit) {
+    public ServiceDayTime minus(TemporalAmount amount) {
+        return (ServiceDayTime) amount.subtractFrom(this);
+    }
+
+    @Override
+    public ServiceDayTime minus(long amountToSubtract, TemporalUnit unit) {
         return this.plus(-amountToSubtract, unit);
     }
 
@@ -120,7 +135,7 @@ public class ServiceDayTime implements Temporal, Comparable<ServiceDayTime>, Ser
     }
 
     @Override
-    public Temporal with(TemporalField field, long newValue) {
+    public ServiceDayTime with(TemporalField field, long newValue) {
         int hours = totalSeconds / SECONDS_IN_HOUR;
         int minutes = (totalSeconds % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE;
         int seconds = totalSeconds % SECONDS_IN_MINUTE;
@@ -160,4 +175,21 @@ public class ServiceDayTime implements Temporal, Comparable<ServiceDayTime>, Ser
                 getLong(ChronoField.SECOND_OF_MINUTE));
     }
 
+    public int toSecondOfDay() {
+        return totalSeconds;
+    }
+
+    @Override
+    public ValueRange range(TemporalField field) {
+        if (field == ChronoField.HOUR_OF_DAY) {
+            return ValueRange.of(0, MAX.getLong(ChronoField.HOUR_OF_DAY));
+        } else if (field == ChronoField.MINUTE_OF_DAY) {
+            return ValueRange.of(0, MAX.getLong(ChronoField.MINUTE_OF_DAY));
+        } else if (field == ChronoField.SECOND_OF_DAY) {
+            return ValueRange.of(0, MAX.getLong(ChronoField.SECOND_OF_DAY));
+        }
+
+        // delegate to a default implementation for other fields
+        return Temporal.super.range(field);
+    }
 }

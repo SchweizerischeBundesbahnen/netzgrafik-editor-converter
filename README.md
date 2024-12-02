@@ -56,15 +56,9 @@ selected timetable output format (refer to the Design section for details) and r
 
 public class Example {
 
-    public static final Path NETWORK_GRAPHIC_FILE = Path.of("path/to/your/networkGraphicFile.json");
-    public static final Path OUTPUT_DIRECTORY = Path.of("path/to/your/outputDirectory");
-
-    public static final NetworkGraphicConverterConfig CONFIG = NetworkGraphicConverterConfig.builder()
-            .validationStrategy(ValidationStrategy.WARN_ON_ISSUES) // Example strategy
-            .useTrainNamesAsIds(true)
-            .serviceDayStart(ServiceDayTime.of(4, 30, 0))
-            .serviceDayEnd(ServiceDayTime.of(25, 0, 0))
-            .build();
+    public static final Path NETWORK_GRAPHIC_FILE = Path.of("path/to/networkGraphic.json");
+    public static final Path OUTPUT_DIRECTORY = Path.of("path/to/outputDirectory");
+    public static final NetworkGraphicConverterConfig CONFIG = NetworkGraphicConverterConfig.builder().build();
 
     public static void main(String[] args) throws IOException {
 
@@ -77,10 +71,10 @@ public class Example {
         VehicleCircuitsPlanner customVehicleCircuitsPlanner = new CustomVehicleCircuitsPlanner(
                 customRollingStockRepository);
 
-        // GTFS
+        // convert to GTFS
         setupGtfsConverter(customInfrastructureRepository, customVehicleCircuitsPlanner, source).run();
 
-        // MATSim
+        // convert to MATSim
         setupMatsimConverter(customInfrastructureRepository, customVehicleCircuitsPlanner, source).run();
     }
 
@@ -119,7 +113,7 @@ The converter has a modular design (DI):
     - **app**: Command line application.
     - **utils**: Utilities used across multiple domains.
 
-The class diagram outlines the core classes and their relationships:
+The class diagram outlines core classes and their relationships:
 
 ![Class diagram](docs/uml/class-diagram.svg)
 

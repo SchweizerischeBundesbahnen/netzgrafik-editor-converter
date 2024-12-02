@@ -1,9 +1,9 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.core.supply;
 
+import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -111,7 +111,7 @@ public abstract class BaseSupplyBuilder<T> implements SupplyBuilder<T> {
     }
 
     @Override
-    public SupplyBuilder<T> addDeparture(String routeId, LocalTime time) {
+    public SupplyBuilder<T> addDeparture(String routeId, ServiceDayTime time) {
         TransitRouteContainer transitRouteContainer = transitRouteContainers.get(routeId);
         if (transitRouteContainer == null) {
             throw new IllegalArgumentException("Transit route not existing with id " + routeId);

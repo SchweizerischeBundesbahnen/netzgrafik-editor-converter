@@ -16,10 +16,10 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteStop;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleAllocation;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
+import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -100,7 +100,7 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
     protected void buildDeparture(VehicleAllocation vehicleAllocation) {
 
         String tripId = vehicleAllocation.getDepartureInfo().getTransitRouteInfo().getId();
-        final LocalTime[] time = {vehicleAllocation.getDepartureInfo().getTime()};
+        final ServiceDayTime[] time = {vehicleAllocation.getDepartureInfo().getTime()};
         final int[] count = {0};
 
         for (RouteElement routeElement : routeElements.get(tripId)) {
@@ -117,9 +117,9 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
                     }
 
                     time[0] = time[0].plus(travelTime);
-                    LocalTime arrivalTime = time[0];
+                    ServiceDayTime arrivalTime = time[0];
                     time[0] = time[0].plus(dwellTime);
-                    LocalTime departureTime = time[0];
+                    ServiceDayTime departureTime = time[0];
 
                     stopTimes.add(StopTime.builder()
                             .tripId(tripId)

@@ -8,6 +8,7 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitRouteInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleAllocation;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
+import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Duration;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -50,7 +50,7 @@ class GtfsSupplyBuilderTest {
                 new StopFacilityInfo("d", new Coordinate(4, 4)));
 
         TransitRouteInfo transitRouteInfo = new TransitRouteInfo("routeId", null);
-        DepartureInfo departureInfo = new DepartureInfo(transitRouteInfo, LocalTime.MIN);
+        DepartureInfo departureInfo = new DepartureInfo(transitRouteInfo, ServiceDayTime.NOON);
         VehicleAllocation vehicleAllocation = new VehicleAllocation(null, departureInfo, null);
 
         when(vehicleCircuitsPlanner.plan()).thenReturn(List.of(vehicleAllocation));
@@ -67,7 +67,7 @@ class GtfsSupplyBuilderTest {
                 .addRoutePass("routeId", "b")
                 .addRouteStop("routeId", "c", Duration.of(10, ChronoUnit.MINUTES), Duration.of(5, ChronoUnit.MINUTES))
                 .addRouteStop("routeId", "d", Duration.of(10, ChronoUnit.MINUTES), Duration.of(5, ChronoUnit.MINUTES))
-                .addDeparture("routeId", LocalTime.MIN)
+                .addDeparture("routeId", ServiceDayTime.NOON)
                 .build();
 
         assertNotNull(schedule);

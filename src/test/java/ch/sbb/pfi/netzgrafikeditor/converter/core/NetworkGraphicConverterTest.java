@@ -3,6 +3,7 @@ package ch.sbb.pfi.netzgrafikeditor.converter.core;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.SupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.validation.ValidationStrategy;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonDeserializer;
+import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
-import java.time.LocalTime;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -38,8 +38,8 @@ class NetworkGraphicConverterTest {
 
     @BeforeEach
     void setUp() {
-        when(config.getServiceDayStart()).thenReturn(LocalTime.MIN);
-        when(config.getServiceDayEnd()).thenReturn(LocalTime.MAX);
+        when(config.getServiceDayStart()).thenReturn(ServiceDayTime.MIN);
+        when(config.getServiceDayEnd()).thenReturn(ServiceDayTime.NOON);
         when(config.isUseTrainNamesAsIds()).thenReturn(false);
         when(config.getValidationStrategy()).thenReturn(ValidationStrategy.WARN_ON_ISSUES);
         when(builder.addStopFacility(anyString(), anyDouble(), anyDouble())).thenReturn(builder);

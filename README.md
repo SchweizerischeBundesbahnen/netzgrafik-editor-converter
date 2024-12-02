@@ -35,4 +35,6 @@ OUTPUT_DIRECTORY=integration-test/output/
 
 ## License
 
-This project is licensed under [Apache 2.0](LICENSE).
+This project is licensed under GNU [GPL-3.0](LICENSE).
+
+© 2024 Swiss Federal Railways SBB AG.

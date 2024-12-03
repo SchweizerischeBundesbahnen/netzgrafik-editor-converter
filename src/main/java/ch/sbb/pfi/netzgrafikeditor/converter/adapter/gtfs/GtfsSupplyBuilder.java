@@ -19,7 +19,6 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
 import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,29 +28,15 @@ import java.util.Set;
 
 public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
 
-    public static final int ROUTE_TYPE = 0;
-    private static final Agency AGENCY = Agency.builder()
-            .agencyId("nge")
-            .agencyName("Netzgrafik Editor")
-            .agencyTimeZone("UTC")
-            .agencyUrl("https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-frontend")
-            .build();
-    private static final Calendar CALENDAR = Calendar.builder()
-            .serviceId("always")
-            .monday(Calendar.Type.AVAILABLE)
-            .tuesday(Calendar.Type.AVAILABLE)
-            .wednesday(Calendar.Type.AVAILABLE)
-            .thursday(Calendar.Type.AVAILABLE)
-            .friday(Calendar.Type.AVAILABLE)
-            .startDate(LocalDate.MAX)
-            .endDate(LocalDate.MAX)
-            .build();
+    public static final int ROUTE_TYPE = 2; // rail
+
     private final List<Stop> stops = new ArrayList<>();
     private final List<Route> routes = new ArrayList<>();
     private final List<Trip> trips = new ArrayList<>();
     private final List<StopTime> stopTimes = new ArrayList<>();
 
     private final Set<String> createdRoutes = new HashSet<>();
+    private final Map<String, Integer> tripCounts = new HashMap<>();
     private final Map<String, List<RouteElement>> routeElements = new HashMap<>();
 
     public GtfsSupplyBuilder(InfrastructureRepository infrastructureRepository, VehicleCircuitsPlanner vehicleCircuitsPlanner) {
@@ -74,36 +59,47 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
         // store route elements for stop time creation
         routeElements.put(transitRouteContainer.transitRouteInfo().getId(), transitRouteContainer.routeElements());
 
+        // build transit route names
+        String routeShortName = String.format("%s - %s",
+                transitRouteContainer.routeElements().getFirst().getStopFacilityInfo().getId(),
+                transitRouteContainer.routeElements().getLast().getStopFacilityInfo().getId());
+        String routeLongName = String.format("%s: %s",
+                transitRouteContainer.transitRouteInfo().getTransitLineInfo().getCategory(), routeShortName);
+
         // create and add GTFS route (transit line in the context of the supply builder) if not yet added
         String routeId = transitRouteContainer.transitRouteInfo().getTransitLineInfo().getId();
         if (!createdRoutes.contains(routeId)) {
             routes.add(Route.builder()
                     .routeId(routeId)
-                    .agencyId(AGENCY.getAgencyId())
-                    .routeLongName(routeId)
-                    .routeShortName(routeId)
+                    .agencyId(Agency.DEFAULT_ID)
+                    .routeLongName(routeLongName)
+                    .routeShortName(routeShortName)
                     .routeType(ROUTE_TYPE)
                     .build());
             createdRoutes.add(routeId);
         }
-
-        // create and add trip
-        trips.add(Trip.builder()
-                .routeId(routeId)
-                .serviceId(CALENDAR.getServiceId())
-                .tripId(transitRouteContainer.transitRouteInfo().getId())
-                .tripHeadsign(transitRouteContainer.routeElements().getLast().getStopFacilityInfo().getId())
-                .build());
     }
 
     @Override
     protected void buildDeparture(VehicleAllocation vehicleAllocation) {
 
-        String tripId = vehicleAllocation.getDepartureInfo().getTransitRouteInfo().getId();
-        final ServiceDayTime[] time = {vehicleAllocation.getDepartureInfo().getTime()};
-        final int[] count = {0};
+        String routeId = vehicleAllocation.getDepartureInfo().getTransitRouteInfo().getId();
+        String tripId = String.format("%s_%d", routeId, tripCounts.merge(routeId, 1, Integer::sum));
+        List<RouteElement> currentRouteElements = routeElements.get(routeId);
 
-        for (RouteElement routeElement : routeElements.get(tripId)) {
+        // create and add trip
+        trips.add(Trip.builder()
+                .routeId(vehicleAllocation.getDepartureInfo().getTransitRouteInfo().getTransitLineInfo().getId())
+                .serviceId(Calendar.DEFAULT_ID)
+                .tripId(tripId)
+                .tripHeadsign(currentRouteElements.getLast().getStopFacilityInfo().getId())
+                .build());
+
+        // create and add stop times: gtfs stop time sequence starts with 1 not 0
+        final int[] count = {1};
+        final ServiceDayTime[] time = {vehicleAllocation.getDepartureInfo().getTime()};
+
+        for (RouteElement routeElement : currentRouteElements) {
             routeElement.accept(new RouteElementVisitor() {
 
                 @Override
@@ -112,7 +108,7 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
                     Duration dwellTime = routeStop.getDwellTime();
 
                     // set time to arrival time if at start of stop time sequence
-                    if (count[0] == 0) {
+                    if (count[0] == 1) {
                         time[0] = time[0].minus(dwellTime);
                     }
 
@@ -142,13 +138,6 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
 
     @Override
     protected GtfsSchedule getResult() {
-        return GtfsSchedule.builder()
-                .agencies(List.of(AGENCY))
-                .stops(stops)
-                .routes(routes)
-                .trips(trips)
-                .stopTimes(stopTimes)
-                .calendars(List.of(CALENDAR))
-                .build();
+        return GtfsSchedule.builder().stops(stops).routes(routes).trips(trips).stopTimes(stopTimes).build();
     }
 }

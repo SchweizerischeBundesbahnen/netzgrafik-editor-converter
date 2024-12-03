@@ -5,29 +5,44 @@ import lombok.Value;
 
 import java.time.LocalDate;
 
+import static ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.FeedInfo.DEFAULT_END_DATE;
+import static ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.FeedInfo.DEFAULT_START_DATE;
+
 @Value
 @Builder
 public class Calendar {
 
-    String serviceId;
+    public static final String DEFAULT_ID = "always";
 
-    Type monday;
+    @Builder.Default
+    String serviceId = DEFAULT_ID;
 
-    Type tuesday;
+    @Builder.Default
+    Type monday = Type.AVAILABLE;
 
-    Type wednesday;
+    @Builder.Default
+    Type tuesday = Type.AVAILABLE;
 
-    Type thursday;
+    @Builder.Default
+    Type wednesday = Type.AVAILABLE;
 
-    Type friday;
+    @Builder.Default
+    Type thursday = Type.AVAILABLE;
 
-    Type saturday;
+    @Builder.Default
+    Type friday = Type.AVAILABLE;
 
-    Type sunday;
+    @Builder.Default
+    Type saturday = Type.AVAILABLE;
 
-    LocalDate startDate;
+    @Builder.Default
+    Type sunday = Type.AVAILABLE;
 
-    LocalDate endDate;
+    @Builder.Default
+    LocalDate startDate = DEFAULT_START_DATE;
+
+    @Builder.Default
+    LocalDate endDate = DEFAULT_END_DATE;
 
     public enum Type {
         AVAILABLE,

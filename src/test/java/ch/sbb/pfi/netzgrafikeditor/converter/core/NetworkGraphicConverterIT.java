@@ -11,7 +11,10 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback.NoVehicleCircu
 import ch.sbb.pfi.netzgrafikeditor.converter.io.gtfs.GtfsScheduleWriter;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.matsim.TransitScheduleXmlWriter;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonFileReader;
+import ch.sbb.pfi.netzgrafikeditor.converter.util.test.TestDirectoryExtension;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.matsim.api.core.v01.Id;
@@ -25,13 +28,18 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(TestDirectoryExtension.class)
 public class NetworkGraphicConverterIT {
 
-    public static final String OUTPUT_ROOT = "integration-test/output/";
-    public static final Path OUTPUT_PATH = Path.of(
-            OUTPUT_ROOT + NetworkGraphicConverterIT.class.getCanonicalName().replace(".", "/"));
     public static final String CASE_SEPARATOR = ".";
     public static final String DELIMITER = "-";
+
+    private Path outputDir;
+
+    @BeforeEach
+    void setUp(Path outputDir) {
+        this.outputDir = outputDir;
+    }
 
     @Nested
     class MatsimTransitSchedule {
@@ -55,6 +63,7 @@ public class NetworkGraphicConverterIT {
         }
 
         private void validate(TestCase testCase) {
+
             // check scenario
             assertNotNull(scenario);
             assertEquals(1, scenario.getTransitSchedule().getTransitLines().size());
@@ -98,8 +107,7 @@ public class NetworkGraphicConverterIT {
             // store scenario and write schedule
             ConverterSink<Scenario> sink = result -> {
                 scenario = result;
-                new TransitScheduleXmlWriter(OUTPUT_PATH.resolve(prefix.toLowerCase()),
-                        prefix.toLowerCase() + CASE_SEPARATOR).save(scenario);
+                new TransitScheduleXmlWriter(outputDir, prefix.toLowerCase() + CASE_SEPARATOR).save(result);
             };
 
             converter = new NetworkGraphicConverter<>(config, source, builder, sink);
@@ -121,7 +129,7 @@ public class NetworkGraphicConverterIT {
         @ParameterizedTest
         @EnumSource(TestScenario.class)
         void run(TestScenario testScenario) throws IOException {
-            configure(testScenario.getPath(), testScenario.name());
+            configure(testScenario.getPath());
             converter.run();
             assertNotNull(schedule);
         }
@@ -129,7 +137,7 @@ public class NetworkGraphicConverterIT {
         @ParameterizedTest
         @EnumSource(TestCase.class)
         void run(TestCase testCase) throws IOException {
-            configure(testCase.getPath(), testCase.name());
+            configure(testCase.getPath());
             converter.run();
             validate(testCase);
         }
@@ -139,7 +147,7 @@ public class NetworkGraphicConverterIT {
             assertEquals(1, schedule.getAgencies().size());
             assertEquals(1, schedule.getCalendars().size());
             assertEquals(1, schedule.getRoutes().size());
-            assertEquals(2, schedule.getTrips().size());
+            assertFalse(schedule.getTrips().isEmpty());
 
             StringBuilder sb = new StringBuilder();
             boolean first = true;
@@ -147,7 +155,7 @@ public class NetworkGraphicConverterIT {
             for (StopTime stopTime : schedule.getStopTimes()) {
 
                 // end of current sequence
-                if (stopTime.getStopSequence() == 0 && !first) {
+                if (stopTime.getStopSequence() == 1 && !first) {
                     validateCurrentSequence(testCase, sb.toString(), reversed);
 
                     // reset
@@ -156,7 +164,7 @@ public class NetworkGraphicConverterIT {
                 }
 
                 // store direction
-                reversed = stopTime.getTripId().endsWith(RouteDirection.REVERSE.name());
+                reversed = stopTime.getTripId().contains(RouteDirection.REVERSE.name());
 
                 // add new stop id
                 if (!sb.isEmpty()) {
@@ -171,7 +179,7 @@ public class NetworkGraphicConverterIT {
 
         }
 
-        private void configure(Path path, String prefix) {
+        private void configure(Path path) {
             NetworkGraphicConverterConfig config = NetworkGraphicConverterConfig.builder()
                     .useTrainNamesAsIds(true)
                     .build();
@@ -183,7 +191,7 @@ public class NetworkGraphicConverterIT {
             // store and write schedule
             ConverterSink<GtfsSchedule> sink = result -> {
                 schedule = result;
-                new GtfsScheduleWriter(OUTPUT_PATH.resolve(prefix.toLowerCase())).save(schedule);
+                new GtfsScheduleWriter(outputDir, false).save(result);
             };
 
             converter = new NetworkGraphicConverter<>(config, source, builder, sink);

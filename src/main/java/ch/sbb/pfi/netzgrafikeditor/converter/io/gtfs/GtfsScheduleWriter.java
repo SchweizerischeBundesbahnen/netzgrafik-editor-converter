@@ -128,8 +128,10 @@ public class GtfsScheduleWriter implements ConverterSink<GtfsSchedule> {
 
             try {
                 Object value = field.get(item);
-                if (value instanceof LocalDate) {
-                    return ((LocalDate) value).format(DATE_FORMATTER);
+                if (value instanceof LocalDate casted) {
+                    return casted.format(DATE_FORMATTER);
+                } else if (value instanceof Calendar.Type casted) {
+                    return casted == Calendar.Type.AVAILABLE ? "1" : "0";
                 }
 
                 return value != null ? value.toString() : NA_VALUE;

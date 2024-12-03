@@ -43,6 +43,8 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
             .wednesday(Calendar.Type.AVAILABLE)
             .thursday(Calendar.Type.AVAILABLE)
             .friday(Calendar.Type.AVAILABLE)
+            .saturday(Calendar.Type.AVAILABLE)
+            .sunday(Calendar.Type.AVAILABLE)
             .startDate(LocalDate.of(1970, 1, 1))
             .endDate(LocalDate.of(9999, 12, 31))
             .build();
@@ -52,6 +54,7 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
     private final List<StopTime> stopTimes = new ArrayList<>();
 
     private final Set<String> createdRoutes = new HashSet<>();
+    private final Map<String, Integer> tripCounts = new HashMap<>();
     private final Map<String, List<RouteElement>> routeElements = new HashMap<>();
 
     public GtfsSupplyBuilder(InfrastructureRepository infrastructureRepository, VehicleCircuitsPlanner vehicleCircuitsPlanner) {
@@ -86,24 +89,28 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
                     .build());
             createdRoutes.add(routeId);
         }
-
-        // create and add trip
-        trips.add(Trip.builder()
-                .routeId(routeId)
-                .serviceId(CALENDAR.getServiceId())
-                .tripId(transitRouteContainer.transitRouteInfo().getId())
-                .tripHeadsign(transitRouteContainer.routeElements().getLast().getStopFacilityInfo().getId())
-                .build());
     }
 
     @Override
     protected void buildDeparture(VehicleAllocation vehicleAllocation) {
 
-        String tripId = vehicleAllocation.getDepartureInfo().getTransitRouteInfo().getId();
-        final ServiceDayTime[] time = {vehicleAllocation.getDepartureInfo().getTime()};
-        final int[] count = {0};
+        String routeId = vehicleAllocation.getDepartureInfo().getTransitRouteInfo().getId();
+        String tripId = String.format("%s_%d", routeId, tripCounts.merge(routeId, 1, Integer::sum));
+        List<RouteElement> currentRouteElements = routeElements.get(routeId);
 
-        for (RouteElement routeElement : routeElements.get(tripId)) {
+        // create and add trip
+        trips.add(Trip.builder()
+                .routeId(vehicleAllocation.getDepartureInfo().getTransitRouteInfo().getTransitLineInfo().getId())
+                .serviceId(CALENDAR.getServiceId())
+                .tripId(tripId)
+                .tripHeadsign(currentRouteElements.getLast().getStopFacilityInfo().getId())
+                .build());
+
+        // create and add stop times: gtfs stop time sequence starts with 1 not 0
+        final int[] count = {1};
+        final ServiceDayTime[] time = {vehicleAllocation.getDepartureInfo().getTime()};
+
+        for (RouteElement routeElement : currentRouteElements) {
             routeElement.accept(new RouteElementVisitor() {
 
                 @Override
@@ -112,7 +119,7 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
                     Duration dwellTime = routeStop.getDwellTime();
 
                     // set time to arrival time if at start of stop time sequence
-                    if (count[0] == 0) {
+                    if (count[0] == 1) {
                         time[0] = time[0].minus(dwellTime);
                     }
 

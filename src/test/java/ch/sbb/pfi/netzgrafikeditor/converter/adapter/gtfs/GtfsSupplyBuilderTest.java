@@ -5,6 +5,7 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.Coordinate;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.DepartureInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitLineInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitRouteInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleAllocation;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
@@ -49,7 +50,8 @@ class GtfsSupplyBuilderTest {
         when(infrastructureRepository.getStopFacility(eq("d"), any(Double.class), any(Double.class))).thenReturn(
                 new StopFacilityInfo("d", new Coordinate(4, 4)));
 
-        TransitRouteInfo transitRouteInfo = new TransitRouteInfo("routeId", null);
+        TransitLineInfo transitLineInfo = new TransitLineInfo("lineId", null);
+        TransitRouteInfo transitRouteInfo = new TransitRouteInfo("routeId", transitLineInfo);
         DepartureInfo departureInfo = new DepartureInfo(transitRouteInfo, ServiceDayTime.NOON);
         VehicleAllocation vehicleAllocation = new VehicleAllocation(null, departureInfo, null);
 

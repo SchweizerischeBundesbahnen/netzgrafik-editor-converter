@@ -18,9 +18,13 @@ public class ConvertCommand implements Callable<Integer> {
 
     private final BuildProperties buildProperties;
     private final ConversionService conversionService;
+
+    // positional arguments
     @CommandLine.Parameters(index = "0", description = "The network graphic file to convert.")
     private Path networkGraphicFile;
     @CommandLine.Parameters(index = "1", description = "The output directory for the converted timetable.")
+
+    // converter configuration
     private Path outputDirectory;
     @CommandLine.Option(names = {"-v", "--validation"}, description = "Validation strategy (SKIP_VALIDATION, WARN_ON_ISSUES, FAIL_ON_ISSUES, FIX_ISSUES).", defaultValue = "WARN_ON_ISSUES")
     private ValidationStrategy validationStrategy;
@@ -30,12 +34,17 @@ public class ConvertCommand implements Callable<Integer> {
     private ServiceDayTime serviceDayStart;
     @CommandLine.Option(names = {"-e", "--service-day-end"}, description = "Service day end time (HH:mm).", converter = ServiceDayTimeConverter.class, defaultValue = "25:00")
     private ServiceDayTime serviceDayEnd;
+
+    // format and repositories
     @CommandLine.Option(names = {"-f", "--format"}, description = "Output format (GTFS or MATSim).", defaultValue = "GTFS")
     private OutputFormat outputFormat;
+    @CommandLine.Option(names = {"-i", "--stop-facility-csv"}, description = "File which contains the coordinates of the stop facilities.")
+    private Path stopFacilityCsv;
 
     @Override
     public Integer call() throws Exception {
-        conversionService.convert(networkGraphicFile, outputDirectory, deriveNetworkGraphicConfig(), outputFormat);
+        conversionService.convert(networkGraphicFile, outputDirectory, deriveNetworkGraphicConfig(), outputFormat,
+                stopFacilityCsv);
         return 0;
     }
 

@@ -46,7 +46,7 @@ class InfrastructureBuilder {
                 stopFacilityInfo.getCoordinate().getLatitude());
         Node node = factory.createNode(String.format("%s", stopId), coord);
         Link stopLink = factory.createLink(LinkType.STOP, node, node, STOP_LINK_LENGTH,
-                stopFacilityInfo.getLinkAttributes());
+                stopFacilityInfo.getAttributes());
 
         TransitStopFacility stop = factory.createTransitStopFacility(stopId, stopLink);
         stopFacilities.put(stopId, stop);

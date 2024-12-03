@@ -1,6 +1,5 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.adapter.matsim;
 
-import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.Coordinate;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.DepartureInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
@@ -11,6 +10,7 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleAllocation;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleTypeInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.util.spatial.Coordinate;
 import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

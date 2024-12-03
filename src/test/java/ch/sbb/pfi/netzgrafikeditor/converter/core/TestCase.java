@@ -7,7 +7,6 @@ import java.util.List;
 
 @Getter
 public enum TestCase {
-
     SHORT("short.json", StopSequence.SHORT),
     SIMPLE("simple.json", StopSequence.SIMPLE),
     SIMPLE_PASS("simple-pass.json", StopSequence.SIMPLE_PASS),
@@ -23,6 +22,8 @@ public enum TestCase {
     SELF_OVERLAY_RANDOM_ORDER("self-overlay-random-order.json", StopSequence.SELF_OVERLAY);
 
     private static final String FOLDER = "ng/cases";
+
+    public static final TestFile STOP_INFO_CSV = new TestFile(FOLDER, "stop_facility_info.csv");
 
     private final TestFile testFile;
     private final List<String> stopSequence;

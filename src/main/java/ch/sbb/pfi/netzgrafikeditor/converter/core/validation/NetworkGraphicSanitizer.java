@@ -68,6 +68,7 @@ public class NetworkGraphicSanitizer {
             throw new IllegalArgumentException("Cannot fix id which is null or empty.");
         }
 
+        // TODO: Provide more options, FIX_WHITE_SPACE, FIX_SPECIAL_CHARACTERS (includes whitespace)
         return removeWhitespace(removeSpecialCharacters(id));
     }
 }

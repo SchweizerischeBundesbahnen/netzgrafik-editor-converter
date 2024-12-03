@@ -15,7 +15,6 @@ class JsonDeserializerTest {
 
     private JsonDeserializer deserializer;
 
-
     @BeforeEach
     void setUp() {
         deserializer = new JsonDeserializer();

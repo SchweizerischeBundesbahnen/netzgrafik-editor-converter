@@ -9,7 +9,11 @@ import java.util.List;
 @Builder
 public class GtfsSchedule {
 
-    List<Agency> agencies;
+    @Builder.Default
+    FeedInfo feedInfo = FeedInfo.builder().build();
+
+    @Builder.Default
+    List<Agency> agencies = List.of(Agency.builder().build());
 
     List<Stop> stops;
 
@@ -19,6 +23,7 @@ public class GtfsSchedule {
 
     List<StopTime> stopTimes;
 
-    List<Calendar> calendars;
+    @Builder.Default
+    List<Calendar> calendars = List.of(Calendar.builder().build());
 
 }

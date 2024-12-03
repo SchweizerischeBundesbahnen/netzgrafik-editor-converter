@@ -7,12 +7,18 @@ import lombok.Value;
 @Builder
 public class Agency {
 
-    String agencyId;
+    public static final String DEFAULT_ID = "nge";
 
-    String agencyName;
+    @Builder.Default
+    String agencyId = DEFAULT_ID;
 
-    String agencyUrl;
+    @Builder.Default
+    String agencyName = "Netzgrafik Editor";
 
-    String agencyTimezone;
+    @Builder.Default
+    String agencyUrl = "https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-frontend";
+
+    @Builder.Default
+    String agencyTimezone = "UTC";
 
 }

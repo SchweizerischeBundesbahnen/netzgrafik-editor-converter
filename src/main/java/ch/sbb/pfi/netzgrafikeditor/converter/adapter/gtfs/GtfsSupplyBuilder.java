@@ -19,7 +19,6 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
 import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,25 +28,8 @@ import java.util.Set;
 
 public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
 
-    public static final int ROUTE_TYPE = 0;
-    private static final Agency AGENCY = Agency.builder()
-            .agencyId("nge")
-            .agencyName("Netzgrafik Editor")
-            .agencyTimezone("UTC")
-            .agencyUrl("https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-frontend")
-            .build();
-    private static final Calendar CALENDAR = Calendar.builder()
-            .serviceId("always")
-            .monday(Calendar.Type.AVAILABLE)
-            .tuesday(Calendar.Type.AVAILABLE)
-            .wednesday(Calendar.Type.AVAILABLE)
-            .thursday(Calendar.Type.AVAILABLE)
-            .friday(Calendar.Type.AVAILABLE)
-            .saturday(Calendar.Type.AVAILABLE)
-            .sunday(Calendar.Type.AVAILABLE)
-            .startDate(LocalDate.of(1970, 1, 1))
-            .endDate(LocalDate.of(9999, 12, 31))
-            .build();
+    public static final int ROUTE_TYPE = 2; // rail
+
     private final List<Stop> stops = new ArrayList<>();
     private final List<Route> routes = new ArrayList<>();
     private final List<Trip> trips = new ArrayList<>();
@@ -77,14 +59,21 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
         // store route elements for stop time creation
         routeElements.put(transitRouteContainer.transitRouteInfo().getId(), transitRouteContainer.routeElements());
 
+        // build transit route names
+        String routeShortName = String.format("%s - %s",
+                transitRouteContainer.routeElements().getFirst().getStopFacilityInfo().getId(),
+                transitRouteContainer.routeElements().getLast().getStopFacilityInfo().getId());
+        String routeLongName = String.format("%s: %s",
+                transitRouteContainer.transitRouteInfo().getTransitLineInfo().getCategory(), routeShortName);
+
         // create and add GTFS route (transit line in the context of the supply builder) if not yet added
         String routeId = transitRouteContainer.transitRouteInfo().getTransitLineInfo().getId();
         if (!createdRoutes.contains(routeId)) {
             routes.add(Route.builder()
                     .routeId(routeId)
-                    .agencyId(AGENCY.getAgencyId())
-                    .routeLongName(routeId)
-                    .routeShortName(routeId)
+                    .agencyId(Agency.DEFAULT_ID)
+                    .routeLongName(routeLongName)
+                    .routeShortName(routeShortName)
                     .routeType(ROUTE_TYPE)
                     .build());
             createdRoutes.add(routeId);
@@ -101,7 +90,7 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
         // create and add trip
         trips.add(Trip.builder()
                 .routeId(vehicleAllocation.getDepartureInfo().getTransitRouteInfo().getTransitLineInfo().getId())
-                .serviceId(CALENDAR.getServiceId())
+                .serviceId(Calendar.DEFAULT_ID)
                 .tripId(tripId)
                 .tripHeadsign(currentRouteElements.getLast().getStopFacilityInfo().getId())
                 .build());
@@ -149,13 +138,6 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
 
     @Override
     protected GtfsSchedule getResult() {
-        return GtfsSchedule.builder()
-                .agencies(List.of(AGENCY))
-                .stops(stops)
-                .routes(routes)
-                .trips(trips)
-                .stopTimes(stopTimes)
-                .calendars(List.of(CALENDAR))
-                .build();
+        return GtfsSchedule.builder().stops(stops).routes(routes).trips(trips).stopTimes(stopTimes).build();
     }
 }

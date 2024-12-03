@@ -1,5 +1,6 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.app;
 
+import ch.sbb.pfi.netzgrafikeditor.converter.util.test.TestDirectoryExtension;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,42 +15,29 @@ import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith(TestDirectoryExtension.class)
 @ExtendWith(OutputCaptureExtension.class)
 @SpringBootTest(classes = CommandLineConverter.class)
 @ActiveProfiles("test")
 class CommandLineConverterIT {
 
     private static final Path NETWORK_GRAPHIC_FILE = Path.of("src/test/resources/ng/scenarios/realistic.json");
-    private static final String OUTPUT_ROOT = "integration-test/output/";
-    private static final Path OUTPUT_PATH = Path.of(
-            OUTPUT_ROOT + CommandLineConverterIT.class.getCanonicalName().replace(".", "/"));
 
     private final List<String> args = new ArrayList<>();
-
-    private static void cleanup(Path path) throws IOException {
-        if (Files.exists(path)) {
-            try (Stream<Path> paths = Files.walk(path)) {
-                paths.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(file -> {
-                    if (!file.delete()) {
-                        throw new RuntimeException("Failed to delete " + file);
-                    }
-                });
-            }
-        }
-    }
+    private Path outputDir;
 
     @BeforeEach
-    void setUp() {
+    void setUp(Path outputDir) {
+        this.outputDir = outputDir;
         args.add(NETWORK_GRAPHIC_FILE.toString());
     }
 
@@ -69,9 +57,7 @@ class CommandLineConverterIT {
 
     private void runConverter(TestCase testCase, CapturedOutput output, String format) throws IOException {
         // arrange
-        Path outputPath = OUTPUT_PATH.resolve(format.toLowerCase()).resolve(testCase.name().toLowerCase());
-        cleanup(outputPath);
-        args.add(outputPath.toString());
+        args.add(outputDir.toString());
         args.addAll(List.of("-f", format));
         args.addAll(Arrays.asList(testCase.args));
 
@@ -82,11 +68,13 @@ class CommandLineConverterIT {
         // assert
         if (testCase.success) {
             assertThat(exitCode).isEqualTo(0);
-            assertThat(Files.exists(outputPath)).isTrue();
-            assertThat(Files.list(outputPath)).isNotEmpty();
+            assertThat(Files.exists(outputDir)).isTrue();
+            assertThat(Files.list(outputDir)).isNotEmpty();
         } else {
             assertThat(exitCode).isEqualTo(1);
-            assertThat(Files.exists(outputPath)).isFalse();
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(outputDir)) {
+                assertThat(stream.iterator().hasNext()).isFalse();
+            }
             assertThat(output).contains(testCase.exception);
         }
     }

@@ -183,7 +183,7 @@ public class NetworkGraphicConverterIT {
             // store and write schedule
             ConverterSink<GtfsSchedule> sink = result -> {
                 schedule = result;
-                new GtfsScheduleWriter(OUTPUT_PATH.resolve(prefix.toLowerCase())).save(schedule);
+                new GtfsScheduleWriter(OUTPUT_PATH.resolve(prefix.toLowerCase()), false).save(schedule);
             };
 
             converter = new NetworkGraphicConverter<>(config, source, builder, sink);

@@ -30,7 +30,7 @@ public class ConversionService {
             case GTFS -> {
                 SupplyBuilder<GtfsSchedule> builder = new GtfsSupplyBuilder(new NoInfrastructureRepository(),
                         new NoVehicleCircuitsPlanner(new NoRollingStockRepository()));
-                ConverterSink<GtfsSchedule> sink = new GtfsScheduleWriter(outputDirectory);
+                ConverterSink<GtfsSchedule> sink = new GtfsScheduleWriter(outputDirectory, true);
 
                 yield new NetworkGraphicConverter<>(config, source, builder, sink);
             }

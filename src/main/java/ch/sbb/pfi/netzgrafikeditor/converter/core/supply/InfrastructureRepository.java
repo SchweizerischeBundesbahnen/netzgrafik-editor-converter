@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface InfrastructureRepository {
 
-    StopFacilityInfo getStopFacility(String stopId, double x, double y);
+    StopFacilityInfo getStopFacility(String stopId, String stopName, double x, double y);
 
     List<TrackSegmentInfo> getTrack(StopFacilityInfo fromStop, StopFacilityInfo toStop, TransitRouteInfo transitRouteInfo);
 

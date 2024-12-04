@@ -25,12 +25,12 @@ public abstract class BaseSupplyBuilder<T> implements SupplyBuilder<T> {
     }
 
     @Override
-    public SupplyBuilder<T> addStopFacility(String id, double x, double y) {
+    public SupplyBuilder<T> addStopFacility(String id, String name, double x, double y) {
         if (stopFacilityInfos.containsKey(id)) {
             throw new RuntimeException("Stop already existing for id " + id);
         }
 
-        StopFacilityInfo stopFacilityInfo = infrastructureRepository.getStopFacility(id, x, y);
+        StopFacilityInfo stopFacilityInfo = infrastructureRepository.getStopFacility(id, name, x, y);
         if (stopFacilityInfo == null) {
             throw new RuntimeException("Stop with id " + id + " does not exist in infrastructure repository");
         }

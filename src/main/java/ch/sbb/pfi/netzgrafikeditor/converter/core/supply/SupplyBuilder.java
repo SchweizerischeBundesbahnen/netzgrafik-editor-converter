@@ -6,7 +6,7 @@ import java.time.Duration;
 
 public interface SupplyBuilder<T> {
 
-    SupplyBuilder<T> addStopFacility(String id, double x, double y);
+    SupplyBuilder<T> addStopFacility(String id, String name, double x, double y);
 
     SupplyBuilder<T> addTransitLine(String id, String category);
 

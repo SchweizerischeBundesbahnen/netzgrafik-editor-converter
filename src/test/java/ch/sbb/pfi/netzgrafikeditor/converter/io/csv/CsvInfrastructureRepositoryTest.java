@@ -22,7 +22,7 @@ class CsvInfrastructureRepositoryTest {
 
     @Test
     void getStopFacility() {
-        StopFacilityInfo stopFacilityInfo = repo.getStopFacility("A", 0., 0.);
+        StopFacilityInfo stopFacilityInfo = repo.getStopFacility("A", "Stop A", 0., 0.);
         assertEquals("A", stopFacilityInfo.getId());
         assertEquals(46.948, stopFacilityInfo.getCoordinate().getLatitude());
         assertEquals(7.4474, stopFacilityInfo.getCoordinate().getLongitude());

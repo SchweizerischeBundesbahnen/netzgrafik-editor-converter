@@ -99,13 +99,13 @@ class MatsimSupplyBuilderTest {
     @Test
     void testBuild() {
         // mock infrastructure
-        when(infrastructureRepository.getStopFacility(eq("A"), anyDouble(), anyDouble())).thenReturn(
+        when(infrastructureRepository.getStopFacility(eq("A"), anyString(), anyDouble(), anyDouble())).thenReturn(
                 Stop.A.getStopFacilityInfo());
-        when(infrastructureRepository.getStopFacility(eq("B"), anyDouble(), anyDouble())).thenReturn(
+        when(infrastructureRepository.getStopFacility(eq("B"), anyString(), anyDouble(), anyDouble())).thenReturn(
                 Stop.B.getStopFacilityInfo());
-        when(infrastructureRepository.getStopFacility(eq("C"), anyDouble(), anyDouble())).thenReturn(
+        when(infrastructureRepository.getStopFacility(eq("C"), anyString(), anyDouble(), anyDouble())).thenReturn(
                 Stop.C.getStopFacilityInfo());
-        when(infrastructureRepository.getStopFacility(eq("D"), anyDouble(), anyDouble())).thenReturn(
+        when(infrastructureRepository.getStopFacility(eq("D"), anyString(), anyDouble(), anyDouble())).thenReturn(
                 Stop.D.getStopFacilityInfo());
 
         // mock track segments: forward
@@ -121,10 +121,10 @@ class MatsimSupplyBuilderTest {
         when(vehicleCircuitsPlanner.plan()).thenReturn(mockVehicleAllocations());
 
         // act
-        Scenario scenario = matsimSupplyBuilder.addStopFacility("A", 0, 0)
-                .addStopFacility("B", 1, 1)
-                .addStopFacility("C", 2, 2)
-                .addStopFacility("D", 3, 3)
+        Scenario scenario = matsimSupplyBuilder.addStopFacility("A", "Stop A", 0, 0)
+                .addStopFacility("B", "Stop B", 1, 1)
+                .addStopFacility("C", "Stop C", 2, 2)
+                .addStopFacility("D", "Stop D", 3, 3)
                 .addTransitLine("lineSimple", "vehicleType")
                 .addTransitRoute("lineSimple_F", "lineSimple", "A", Default.DWELL_TIME)
                 .addRouteStop("lineSimple_F", "B", Default.TRAVEL_TIME, Default.DWELL_TIME)

@@ -41,14 +41,14 @@ class GtfsSupplyBuilderTest {
 
     @BeforeEach
     void setUp() {
-        when(infrastructureRepository.getStopFacility(eq("a"), any(Double.class), any(Double.class))).thenReturn(
-                new StopFacilityInfo("a", "Stop A", new Coordinate(1, 1)));
-        when(infrastructureRepository.getStopFacility(eq("b"), any(Double.class), any(Double.class))).thenReturn(
-                new StopFacilityInfo("b", "Stop B", new Coordinate(2, 2)));
-        when(infrastructureRepository.getStopFacility(eq("c"), any(Double.class), any(Double.class))).thenReturn(
-                new StopFacilityInfo("c", "Stop C", new Coordinate(3, 3)));
-        when(infrastructureRepository.getStopFacility(eq("d"), any(Double.class), any(Double.class))).thenReturn(
-                new StopFacilityInfo("d", "Stop D", new Coordinate(4, 4)));
+        when(infrastructureRepository.getStopFacility(eq("a"), any(String.class), any(Double.class),
+                any(Double.class))).thenReturn(new StopFacilityInfo("a", "Stop A", new Coordinate(1, 1)));
+        when(infrastructureRepository.getStopFacility(eq("b"), any(String.class), any(Double.class),
+                any(Double.class))).thenReturn(new StopFacilityInfo("b", "Stop B", new Coordinate(2, 2)));
+        when(infrastructureRepository.getStopFacility(eq("c"), any(String.class), any(Double.class),
+                any(Double.class))).thenReturn(new StopFacilityInfo("c", "Stop C", new Coordinate(3, 3)));
+        when(infrastructureRepository.getStopFacility(eq("d"), any(String.class), any(Double.class),
+                any(Double.class))).thenReturn(new StopFacilityInfo("d", "Stop D", new Coordinate(4, 4)));
 
         TransitLineInfo transitLineInfo = new TransitLineInfo("lineId", null);
         TransitRouteInfo transitRouteInfo = new TransitRouteInfo("routeId", transitLineInfo);
@@ -60,10 +60,10 @@ class GtfsSupplyBuilderTest {
 
     @Test
     void testBuild() {
-        GtfsSchedule schedule = gtfsSupplyBuilder.addStopFacility("a", 0, 0)
-                .addStopFacility("b", 1, 0)
-                .addStopFacility("c", 2, 0)
-                .addStopFacility("d", 3, 0)
+        GtfsSchedule schedule = gtfsSupplyBuilder.addStopFacility("a", "Stop A", 0, 0)
+                .addStopFacility("b", "Stop B", 1, 0)
+                .addStopFacility("c", "Stop C", 2, 0)
+                .addStopFacility("d", "Stop D", 3, 0)
                 .addTransitLine("lineId", "IC")
                 .addTransitRoute("routeId", "lineId", "a", Duration.of(5, ChronoUnit.MINUTES))
                 .addRoutePass("routeId", "b")

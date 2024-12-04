@@ -49,6 +49,7 @@ class InfrastructureBuilder {
                 stopFacilityInfo.getAttributes());
 
         TransitStopFacility stop = factory.createTransitStopFacility(stopId, stopLink);
+        stop.setName(stopFacilityInfo.getName());
         stopFacilities.put(stopId, stop);
 
         return stop;

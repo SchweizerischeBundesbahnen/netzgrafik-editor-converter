@@ -15,11 +15,11 @@ public class NoInfrastructureRepository implements InfrastructureRepository {
     private final Map<String, Coordinate> coordinates = new HashMap<>();
 
     @Override
-    public StopFacilityInfo getStopFacility(String stopId, double x, double y) {
+    public StopFacilityInfo getStopFacility(String stopId, String stopName, double x, double y) {
         Coordinate coordinate = new Coordinate(-y, x);
         coordinates.put(stopId, coordinate);
-        // TODO: Pass also stop name
-        return new StopFacilityInfo(stopId, "", coordinate);
+
+        return new StopFacilityInfo(stopId, stopName, coordinate);
     }
 
     @Override

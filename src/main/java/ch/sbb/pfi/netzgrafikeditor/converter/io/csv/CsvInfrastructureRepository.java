@@ -53,7 +53,9 @@ public class CsvInfrastructureRepository implements InfrastructureRepository {
     }
 
     @Override
-    public StopFacilityInfo getStopFacility(String stopId, double x, double y) {
+    public StopFacilityInfo getStopFacility(String stopId, String stopName, double x, double y) {
+        // ignore stop name, x and y screen coordinate from network graphic
+
         return getStopFacility(stopId);
     }
 

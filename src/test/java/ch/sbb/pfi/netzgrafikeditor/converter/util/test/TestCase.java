@@ -23,8 +23,6 @@ public enum TestCase {
 
     private static final String FOLDER = "ng/cases";
 
-    public static final TestFile STOP_INFO_CSV = new TestFile(FOLDER, "stop_facility_info.csv");
-
     private final TestFile testFile;
     private final List<String> stopSequence;
 

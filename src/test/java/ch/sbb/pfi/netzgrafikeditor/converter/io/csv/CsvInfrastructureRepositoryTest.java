@@ -2,13 +2,13 @@ package ch.sbb.pfi.netzgrafikeditor.converter.io.csv;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TrackSegmentInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.util.test.TestScenario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
 
-import static ch.sbb.pfi.netzgrafikeditor.converter.util.test.TestCase.STOP_INFO_CSV;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CsvInfrastructureRepositoryTest {
@@ -17,7 +17,7 @@ class CsvInfrastructureRepositoryTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        repo = new CsvInfrastructureRepository(STOP_INFO_CSV.getPath());
+        repo = new CsvInfrastructureRepository(TestScenario.ALL_TEST_CASES.getStopFacilityInfoCsvFilePath());
     }
 
     @Test

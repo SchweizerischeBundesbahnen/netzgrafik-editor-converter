@@ -51,7 +51,7 @@ public class NetworkGraphicConverterIT {
         @ParameterizedTest
         @EnumSource(TestScenario.class)
         void run(TestScenario testScenario) throws IOException {
-            configure(testScenario.getPath(), testScenario.name());
+            configure(testScenario.getNetworkGraphicFilePath(), testScenario.name());
             converter.run();
             assertNotNull(scenario);
         }
@@ -131,7 +131,7 @@ public class NetworkGraphicConverterIT {
         @ParameterizedTest
         @EnumSource(TestScenario.class)
         void run(TestScenario testScenario) throws IOException {
-            configure(testScenario.getPath());
+            configure(testScenario.getNetworkGraphicFilePath());
             converter.run();
             assertNotNull(schedule);
         }

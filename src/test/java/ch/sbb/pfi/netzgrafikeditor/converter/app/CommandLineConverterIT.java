@@ -1,6 +1,7 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.app;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.util.test.TestDirectoryExtension;
+import ch.sbb.pfi.netzgrafikeditor.converter.util.test.TestScenario;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 class CommandLineConverterIT {
 
-    private static final Path NETWORK_GRAPHIC_FILE = Path.of("src/test/resources/ng/scenarios/realistic.json");
+    private static final TestScenario TEST_SCENARIO = TestScenario.REALISTIC_SCENARIO;
 
     private final List<String> args = new ArrayList<>();
     private Path outputDir;
@@ -38,7 +39,7 @@ class CommandLineConverterIT {
     @BeforeEach
     void setUp(Path outputDir) {
         this.outputDir = outputDir;
-        args.add(NETWORK_GRAPHIC_FILE.toString());
+        args.add(TEST_SCENARIO.getNetworkGraphicFilePath().toString());
     }
 
     @ParameterizedTest
@@ -59,6 +60,7 @@ class CommandLineConverterIT {
         // arrange
         args.add(outputDir.toString());
         args.addAll(List.of("-f", format));
+        args.addAll(List.of("-i", TEST_SCENARIO.getStopFacilityInfoCsvFilePath().toString()));
         args.addAll(Arrays.asList(testCase.args));
 
         // act

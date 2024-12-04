@@ -4,20 +4,24 @@ import java.nio.file.Path;
 
 public enum TestScenario {
 
-    ALL_TEST_CASES("all-test-cases.json"),
-    REALISTIC_SCENARIO("realistic.json");
+    ALL_TEST_CASES("all-test-cases"),
+    REALISTIC_SCENARIO("realistic");
 
     private static final String FOLDER = "ng/scenarios";
 
-    public static final TestFile STOP_INFO_CSV = new TestFile(FOLDER, "stop_facility_info.csv");
+    private final TestFile networkGraphicFile;
+    private final TestFile stopFacilityInfoCsvFile;
 
-    private final TestFile testFile;
-
-    TestScenario(String fileName) {
-        this.testFile = new TestFile(FOLDER, fileName);
+    TestScenario(String name) {
+        this.networkGraphicFile = new TestFile(FOLDER, String.format("%s.json", name));
+        this.stopFacilityInfoCsvFile = new TestFile(FOLDER, String.format("%s-stop-facility-info.csv", name));
     }
 
-    public Path getPath() {
-        return testFile.getPath();
+    public Path getNetworkGraphicFilePath() {
+        return networkGraphicFile.getPath();
+    }
+
+    public Path getStopFacilityInfoCsvFilePath() {
+        return stopFacilityInfoCsvFile.getPath();
     }
 }

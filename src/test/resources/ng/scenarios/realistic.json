@@ -2,7 +2,7 @@
   "nodes": [
     {
       "id": 128,
-      "betriebspunktName": "Lausanne",
+      "betriebspunktName": "LS",
       "fullName": "Lausanne",
       "positionX": -3072,
       "positionY": 544,
@@ -82,7 +82,7 @@
     },
     {
       "id": 129,
-      "betriebspunktName": "Bern",
+      "betriebspunktName": "BN",
       "fullName": "Bern",
       "positionX": -2144,
       "positionY": 128,
@@ -240,8 +240,8 @@
     },
     {
       "id": 130,
-      "betriebspunktName": "Biel",
-      "fullName": "Biel",
+      "betriebspunktName": "BI",
+      "fullName": "Biel/Bienne",
       "positionX": -2528,
       "positionY": -32,
       "ports": [
@@ -302,8 +302,8 @@
     },
     {
       "id": 131,
-      "betriebspunktName": "Interlaken ",
-      "fullName": "Interlaken Ost",
+      "betriebspunktName": "IO",
+      "fullName": "Interlaken OST",
       "positionX": -1088,
       "positionY": 928,
       "ports": [
@@ -357,7 +357,7 @@
     },
     {
       "id": 132,
-      "betriebspunktName": "Visp",
+      "betriebspunktName": "VI",
       "fullName": "Visp",
       "positionX": -2144,
       "positionY": 1440,
@@ -412,7 +412,7 @@
     },
     {
       "id": 133,
-      "betriebspunktName": "Olten",
+      "betriebspunktName": "OL",
       "fullName": "Olten",
       "positionX": 64,
       "positionY": 96,
@@ -654,7 +654,7 @@
     },
     {
       "id": 134,
-      "betriebspunktName": "Basel",
+      "betriebspunktName": "BS",
       "fullName": "Basel",
       "positionX": 64,
       "positionY": -1888,
@@ -751,8 +751,8 @@
     },
     {
       "id": 135,
-      "betriebspunktName": "Zürich",
-      "fullName": "Zürich",
+      "betriebspunktName": "ZUE",
+      "fullName": "Zürich HB",
       "positionX": 2656,
       "positionY": 32,
       "ports": [
@@ -975,7 +975,7 @@
     },
     {
       "id": 136,
-      "betriebspunktName": "Bellinz.",
+      "betriebspunktName": "BEL",
       "fullName": "Bellinzona",
       "positionX": 2592,
       "positionY": 3232,
@@ -1091,8 +1091,8 @@
     },
     {
       "id": 137,
-      "betriebspunktName": "St. Gallen",
-      "fullName": "Sankt Gallen",
+      "betriebspunktName": "SG",
+      "fullName": "St. Gallen",
       "positionX": 4640,
       "positionY": 96,
       "ports": [
@@ -1177,7 +1177,7 @@
     },
     {
       "id": 138,
-      "betriebspunktName": "Schaffh.",
+      "betriebspunktName": "SH",
       "fullName": "Schaffhausen",
       "positionX": 2624,
       "positionY": -1120,
@@ -1232,7 +1232,7 @@
     },
     {
       "id": 139,
-      "betriebspunktName": "Konstanz",
+      "betriebspunktName": "KO",
       "fullName": "Konstanz",
       "positionX": 4256,
       "positionY": -416,
@@ -1281,7 +1281,7 @@
     },
     {
       "id": 140,
-      "betriebspunktName": "Sargans",
+      "betriebspunktName": "SA",
       "fullName": "Sargans",
       "positionX": 4640,
       "positionY": 1184,
@@ -1379,7 +1379,7 @@
     },
     {
       "id": 141,
-      "betriebspunktName": "Sursee",
+      "betriebspunktName": "SS",
       "fullName": "Sursee",
       "positionX": 64,
       "positionY": 1184,
@@ -1513,7 +1513,7 @@
     },
     {
       "id": 142,
-      "betriebspunktName": "Luzern",
+      "betriebspunktName": "LZ",
       "fullName": "Luzern",
       "positionX": 64,
       "positionY": 1728,
@@ -1623,7 +1623,7 @@
     },
     {
       "id": 143,
-      "betriebspunktName": "Zofingen",
+      "betriebspunktName": "ZF",
       "fullName": "Zofingen",
       "positionX": 64,
       "positionY": 736,
@@ -1757,7 +1757,7 @@
     },
     {
       "id": 144,
-      "betriebspunktName": "Gelterk.",
+      "betriebspunktName": "GKD",
       "fullName": "Gelterkinden",
       "positionX": 64,
       "positionY": -448,
@@ -1945,7 +1945,7 @@
     },
     {
       "id": 145,
-      "betriebspunktName": "Sissach",
+      "betriebspunktName": "SIS",
       "fullName": "Sissach",
       "positionX": 64,
       "positionY": -928,
@@ -2133,7 +2133,7 @@
     },
     {
       "id": 146,
-      "betriebspunktName": "Liestal",
+      "betriebspunktName": "LST",
       "fullName": "Liestal",
       "positionX": 64,
       "positionY": -1408,
@@ -2321,7 +2321,7 @@
     },
     {
       "id": 147,
-      "betriebspunktName": "Aarau",
+      "betriebspunktName": "AA",
       "fullName": "Aarau",
       "positionX": 960,
       "positionY": 32,
@@ -2497,7 +2497,7 @@
     },
     {
       "id": 148,
-      "betriebspunktName": "Lenzburg",
+      "betriebspunktName": "LB",
       "fullName": "Lenzburg",
       "positionX": 1344,
       "positionY": 32,
@@ -2685,7 +2685,7 @@
     },
     {
       "id": 149,
-      "betriebspunktName": "Baden",
+      "betriebspunktName": "BD",
       "fullName": "Baden",
       "positionX": 2240,
       "positionY": 32,
@@ -2891,7 +2891,7 @@
     },
     {
       "id": 150,
-      "betriebspunktName": "Zürich ✈",
+      "betriebspunktName": "ZFH",
       "fullName": "Zürich Flughafen",
       "positionX": 3296,
       "positionY": 32,
@@ -3043,7 +3043,7 @@
     },
     {
       "id": 151,
-      "betriebspunktName": "Wintert.",
+      "betriebspunktName": "W",
       "fullName": "Winterthur",
       "positionX": 3872,
       "positionY": 32,
@@ -3195,7 +3195,7 @@
     },
     {
       "id": 152,
-      "betriebspunktName": "Chur",
+      "betriebspunktName": "CH",
       "fullName": "Chur",
       "positionX": 4640,
       "positionY": 1888,
@@ -3256,7 +3256,7 @@
     },
     {
       "id": 153,
-      "betriebspunktName": "Zug",
+      "betriebspunktName": "ZG",
       "fullName": "Zug",
       "positionX": 2656,
       "positionY": 1312,
@@ -3372,7 +3372,7 @@
     },
     {
       "id": 154,
-      "betriebspunktName": "Arth-G.",
+      "betriebspunktName": "GD",
       "fullName": "Arth-Goldau",
       "positionX": 2656,
       "positionY": 1792,
@@ -3488,8 +3488,8 @@
     },
     {
       "id": 155,
-      "betriebspunktName": "Altdorf",
-      "fullName": "Altdorf",
+      "betriebspunktName": "AL",
+      "fullName": "Altdorf UR",
       "positionX": 2656,
       "positionY": 2176,
       "ports": [
@@ -3604,7 +3604,7 @@
     },
     {
       "id": 156,
-      "betriebspunktName": "Lugano",
+      "betriebspunktName": "LG",
       "fullName": "Lugano",
       "positionX": 2592,
       "positionY": 3712,
@@ -3659,7 +3659,7 @@
     },
     {
       "id": 157,
-      "betriebspunktName": "Locarno",
+      "betriebspunktName": "LO",
       "fullName": "Locarno",
       "positionX": 2208,
       "positionY": 3232,
@@ -3714,7 +3714,7 @@
     },
     {
       "id": 158,
-      "betriebspunktName": "Biasca",
+      "betriebspunktName": "BIA",
       "fullName": "Biasca",
       "positionX": 2592,
       "positionY": 2688,
@@ -3830,7 +3830,7 @@
     },
     {
       "id": 159,
-      "betriebspunktName": "Göschn.",
+      "betriebspunktName": "GOE",
       "fullName": "Göschenen",
       "positionX": 2272,
       "positionY": 2240,
@@ -3910,8 +3910,8 @@
     },
     {
       "id": 160,
-      "betriebspunktName": "Genf",
-      "fullName": "Genf",
+      "betriebspunktName": "GE",
+      "fullName": "Genève",
       "positionX": -3936,
       "positionY": 608,
       "ports": [
@@ -4008,8 +4008,8 @@
     },
     {
       "id": 161,
-      "betriebspunktName": "Genf ✈",
-      "fullName": "Aiport",
+      "betriebspunktName": "GEAP",
+      "fullName": "Genève-Aéroport",
       "positionX": -4352,
       "positionY": 608,
       "ports": [
@@ -4069,7 +4069,7 @@
     },
     {
       "id": 162,
-      "betriebspunktName": "Romansh.",
+      "betriebspunktName": "RH",
       "fullName": "Romanshorn",
       "positionX": 4640,
       "positionY": -192,
@@ -4124,7 +4124,7 @@
     },
     {
       "id": 163,
-      "betriebspunktName": "Bülach",
+      "betriebspunktName": "BUE",
       "fullName": "Bülach",
       "positionX": 2784,
       "positionY": -544,
@@ -4186,7 +4186,7 @@
     },
     {
       "id": 164,
-      "betriebspunktName": "Reihnf.",
+      "betriebspunktName": "RF",
       "fullName": "Reihnfelden",
       "positionX": 1056,
       "positionY": -960,
@@ -4248,7 +4248,7 @@
     },
     {
       "id": 165,
-      "betriebspunktName": "Frick",
+      "betriebspunktName": "FCK",
       "fullName": "Frick",
       "positionX": 1792,
       "positionY": -672,
@@ -4310,8 +4310,8 @@
     },
     {
       "id": 166,
-      "betriebspunktName": "Brugg",
-      "fullName": "Brugg",
+      "betriebspunktName": "BG",
+      "fullName": "Brugg AG",
       "positionX": 1792,
       "positionY": 32,
       "ports": [
@@ -4516,7 +4516,7 @@
     },
     {
       "id": 167,
-      "betriebspunktName": "Thun",
+      "betriebspunktName": "TH",
       "fullName": "Thun",
       "positionX": -2144,
       "positionY": 640,
@@ -4632,7 +4632,7 @@
     },
     {
       "id": 168,
-      "betriebspunktName": "Spiez",
+      "betriebspunktName": "SP",
       "fullName": "Spiez",
       "positionX": -2144,
       "positionY": 928,
@@ -4748,8 +4748,8 @@
     },
     {
       "id": 169,
-      "betriebspunktName": "Rothkr.",
-      "fullName": "Rothkreuz",
+      "betriebspunktName": "RK",
+      "fullName": "Rotkreuz",
       "positionX": 1856,
       "positionY": 1728,
       "ports": [
@@ -4864,7 +4864,7 @@
     },
     {
       "id": 170,
-      "betriebspunktName": "Thalwil",
+      "betriebspunktName": "TW",
       "fullName": "Thalwil",
       "positionX": 2656,
       "positionY": 736,
@@ -5016,7 +5016,7 @@
     },
     {
       "id": 171,
-      "betriebspunktName": "Fribourg",
+      "betriebspunktName": "FRI",
       "fullName": "Fribourg",
       "positionX": -2560,
       "positionY": 288,
@@ -5266,7 +5266,7 @@
     },
     {
       "id": 173,
-      "betriebspunktName": "Burgdorf",
+      "betriebspunktName": "BDF",
       "fullName": "Burgdorf",
       "positionX": -1344,
       "positionY": 352,
@@ -5328,7 +5328,7 @@
     },
     {
       "id": 174,
-      "betriebspunktName": "Langent.",
+      "betriebspunktName": "LTH",
       "fullName": "Langenthal",
       "positionX": -992,
       "positionY": 352,
@@ -5390,7 +5390,7 @@
     },
     {
       "id": 175,
-      "betriebspunktName": "Solothurn",
+      "betriebspunktName": "SO",
       "fullName": "Solothurn",
       "positionX": -1696,
       "positionY": -32,
@@ -5452,7 +5452,7 @@
     },
     {
       "id": 176,
-      "betriebspunktName": "Rohrsch.",
+      "betriebspunktName": "RS",
       "fullName": "Rohrschach",
       "positionX": 5376,
       "positionY": 96,
@@ -5501,7 +5501,7 @@
     },
     {
       "id": 177,
-      "betriebspunktName": "Morges",
+      "betriebspunktName": "MOR",
       "fullName": "Morges",
       "positionX": -3520,
       "positionY": 544,
@@ -12584,7 +12584,7 @@
         "time": 56,
         "warning": {
           "title": "Source Arrival Warning",
-          "description": "Source arrival time cannot be reached"
+          "description": "Target arrival time cannot be reached"
         },
         "timeFormatter": null,
         "consecutiveTime": 176
@@ -25006,7 +25006,7 @@
         "time": 5,
         "warning": {
           "title": "Source Arrival Warning",
-          "description": "Source arrival time cannot be reached"
+          "description": "Target arrival time cannot be reached"
         },
         "timeFormatter": null,
         "consecutiveTime": 185

@@ -9,6 +9,8 @@ public enum TestScenario {
 
     private static final String FOLDER = "ng/scenarios";
 
+    public static final TestFile STOP_INFO_CSV = new TestFile(FOLDER, "stop_facility_info.csv");
+
     private final TestFile testFile;
 
     TestScenario(String fileName) {

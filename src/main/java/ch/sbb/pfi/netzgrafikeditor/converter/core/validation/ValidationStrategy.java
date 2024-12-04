@@ -27,12 +27,21 @@ public enum ValidationStrategy {
         }
     },
 
-    FIX_ISSUES {
+    REPLACE_WHITESPACE {
         @Override
         public boolean apply(NetworkGraphicValidator validator) {
             if (!validator.isValid()) {
-                log.info("Fixing invalid IDs in network graphic");
-                validator.fix();
+                validator.replaceWhitespace();
+            }
+            return true;
+        }
+    },
+
+    REMOVE_SPECIAL_CHARACTERS {
+        @Override
+        public boolean apply(NetworkGraphicValidator validator) {
+            if (!validator.isValid()) {
+                validator.removeSpecialCharacters();
             }
             return true;
         }

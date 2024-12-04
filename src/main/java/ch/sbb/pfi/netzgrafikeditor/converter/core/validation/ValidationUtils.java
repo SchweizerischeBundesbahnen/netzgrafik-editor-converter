@@ -26,7 +26,7 @@ class ValidationUtils {
         return SPECIAL_CHAR_PATTERN.matcher(input).replaceAll(SPECIAL_CHAR_REPLACEMENT);
     }
 
-    static String removeWhitespace(String input) {
-        return WHITESPACE_PATTERN.matcher(input).replaceAll(WHITESPACE_REPLACEMENT).strip();
+    static String replaceWhitespace(String input) {
+        return WHITESPACE_PATTERN.matcher(input.strip()).replaceAll(WHITESPACE_REPLACEMENT);
     }
 }

@@ -86,7 +86,8 @@ class CommandLineConverterIT {
         VALIDATION_WARN_ON_ISSUES(new String[]{"-v", "WARN_ON_ISSUES"}, true, ""),
         VALIDATION_FAIL_ON_ISSUES(new String[]{"-v", "FAIL_ON_ISSUES"}, false,
                 "Found issues during network graphic validation and option fail on issue is set"),
-        VALIDATION_FIX_ISSUES(new String[]{"-v", "FIX_ISSUES"}, true, ""),
+        VALIDATION_REPLACE_WHITESPACE(new String[]{"-v", "REPLACE_WHITESPACE"}, true, ""),
+        VALIDATION_REMOVE_SPECIAL_CHARACTERS(new String[]{"-v", "REMOVE_SPECIAL_CHARACTERS"}, true, ""),
         TRAIN_NAMES(new String[]{"-t"}, true, ""),
         SERVICE_DAY_START(new String[]{"-s", "03:30"}, true, ""),
         SERVICE_DAY_END(new String[]{"-s", "24:15"}, true, "");

@@ -166,10 +166,10 @@ class MatsimSupplyBuilderTest {
     @RequiredArgsConstructor
     @Getter
     enum Stop {
-        A(new StopFacilityInfo("A", new Coordinate(0, 0))),
-        B(new StopFacilityInfo("B", new Coordinate(1, 1))),
-        C(new StopFacilityInfo("C", new Coordinate(2, 2))),
-        D(new StopFacilityInfo("D", new Coordinate(3, 3)));
+        A(new StopFacilityInfo("A", "Stop A", new Coordinate(0, 0))),
+        B(new StopFacilityInfo("B", "Stop B", new Coordinate(1, 1))),
+        C(new StopFacilityInfo("C", "Stop C", new Coordinate(2, 2))),
+        D(new StopFacilityInfo("D", "Stop D", new Coordinate(3, 3)));
 
         private final StopFacilityInfo stopFacilityInfo;
     }

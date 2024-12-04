@@ -18,7 +18,8 @@ public class NoInfrastructureRepository implements InfrastructureRepository {
     public StopFacilityInfo getStopFacility(String stopId, double x, double y) {
         Coordinate coordinate = new Coordinate(-y, x);
         coordinates.put(stopId, coordinate);
-        return new StopFacilityInfo(stopId, coordinate);
+        // TODO: Pass also stop name
+        return new StopFacilityInfo(stopId, "", coordinate);
     }
 
     @Override

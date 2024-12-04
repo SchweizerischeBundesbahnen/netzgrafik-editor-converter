@@ -10,6 +10,7 @@ import java.util.Map;
 public class StopFacilityInfo {
 
     String id;
+    String name;
     Coordinate coordinate;
     Map<String, Object> attributes = new HashMap<>();
 

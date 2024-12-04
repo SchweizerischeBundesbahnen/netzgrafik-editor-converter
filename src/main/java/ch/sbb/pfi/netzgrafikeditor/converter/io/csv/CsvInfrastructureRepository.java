@@ -9,14 +9,13 @@ import ch.sbb.pfi.netzgrafikeditor.converter.util.spatial.HaversineDistance;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.input.BOMInputStream;
 
-import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
@@ -28,21 +27,27 @@ public class CsvInfrastructureRepository implements InfrastructureRepository {
 
     private final Map<String, StopFacilityInfo> stopFacilityInfos = new HashMap<>();
 
-    // TODO: Remove deprecated BOMInputStream, robust handling of encoding
     public CsvInfrastructureRepository(Path filePath) throws IOException {
-        log.info("Reading stop facility info CSV file {}", filePath);
-        BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new BOMInputStream(Files.newInputStream(filePath)), StandardCharsets.UTF_8));
-        CSVParser csvParser = new CSVParser(reader,
-                CSVFormat.DEFAULT.builder().setHeader().setSkipHeaderRecord(true).build());
-        {
-            for (CSVRecord record : csvParser) {
-                String stopId = record.get("stop_id");
-                // String stopName = record.get("stop_name");
-                double stopLat = Double.parseDouble(record.get("stop_lat"));
-                double stopLon = Double.parseDouble(record.get("stop_lon"));
+        log.info("Reading stop facility info CSV file: {}", filePath);
 
-                stopFacilityInfos.put(stopId, new StopFacilityInfo(stopId, new Coordinate(stopLat, stopLon)));
+        try (FileInputStream fileInputStream = new FileInputStream(
+                filePath.toFile()); BOMInputStream bomInputStream = BOMInputStream.builder()
+                .setInputStream(fileInputStream)
+                .setByteOrderMarks(ByteOrderMark.UTF_8)
+                .get(); InputStreamReader reader = new InputStreamReader(bomInputStream, StandardCharsets.UTF_8)) {
+
+            CSVFormat format = CSVFormat.DEFAULT.builder().setHeader().setIgnoreHeaderCase(true).setTrim(true).build();
+
+            try (CSVParser csvParser = new CSVParser(reader, format)) {
+                csvParser.forEach(record -> {
+                    String stopId = record.get("stop_id");
+                    String stopName = record.get("stop_name");
+                    double stopLat = Double.parseDouble(record.get("stop_lat"));
+                    double stopLon = Double.parseDouble(record.get("stop_lon"));
+
+                    stopFacilityInfos.put(stopId,
+                            new StopFacilityInfo(stopId, stopName, new Coordinate(stopLat, stopLon)));
+                });
             }
         }
     }

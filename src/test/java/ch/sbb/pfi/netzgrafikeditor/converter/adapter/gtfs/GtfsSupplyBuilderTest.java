@@ -42,13 +42,13 @@ class GtfsSupplyBuilderTest {
     @BeforeEach
     void setUp() {
         when(infrastructureRepository.getStopFacility(eq("a"), any(Double.class), any(Double.class))).thenReturn(
-                new StopFacilityInfo("a", new Coordinate(1, 1)));
+                new StopFacilityInfo("a", "Stop A", new Coordinate(1, 1)));
         when(infrastructureRepository.getStopFacility(eq("b"), any(Double.class), any(Double.class))).thenReturn(
-                new StopFacilityInfo("b", new Coordinate(2, 2)));
+                new StopFacilityInfo("b", "Stop B", new Coordinate(2, 2)));
         when(infrastructureRepository.getStopFacility(eq("c"), any(Double.class), any(Double.class))).thenReturn(
-                new StopFacilityInfo("c", new Coordinate(3, 3)));
+                new StopFacilityInfo("c", "Stop C", new Coordinate(3, 3)));
         when(infrastructureRepository.getStopFacility(eq("d"), any(Double.class), any(Double.class))).thenReturn(
-                new StopFacilityInfo("d", new Coordinate(4, 4)));
+                new StopFacilityInfo("d", "Stop D", new Coordinate(4, 4)));
 
         TransitLineInfo transitLineInfo = new TransitLineInfo("lineId", null);
         TransitRouteInfo transitRouteInfo = new TransitRouteInfo("routeId", transitLineInfo);

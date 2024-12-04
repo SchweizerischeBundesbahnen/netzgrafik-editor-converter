@@ -1,4 +1,4 @@
-package ch.sbb.pfi.netzgrafikeditor.converter.core;
+package ch.sbb.pfi.netzgrafikeditor.converter.util.test;
 
 import java.nio.file.Path;
 

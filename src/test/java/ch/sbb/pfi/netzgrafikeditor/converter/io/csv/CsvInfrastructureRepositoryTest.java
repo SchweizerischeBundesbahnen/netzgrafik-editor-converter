@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.List;
 
-import static ch.sbb.pfi.netzgrafikeditor.converter.core.TestCase.STOP_INFO_CSV;
+import static ch.sbb.pfi.netzgrafikeditor.converter.util.test.TestCase.STOP_INFO_CSV;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CsvInfrastructureRepositoryTest {

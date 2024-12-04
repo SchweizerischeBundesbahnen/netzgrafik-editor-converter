@@ -3,6 +3,7 @@ package ch.sbb.pfi.netzgrafikeditor.converter.core;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.SupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.validation.ValidationStrategy;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonDeserializer;
+import ch.sbb.pfi.netzgrafikeditor.converter.util.test.TestCase;
 import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,4 +1,4 @@
-package ch.sbb.pfi.netzgrafikeditor.converter.core;
+package ch.sbb.pfi.netzgrafikeditor.converter.util.test;
 
 import lombok.Getter;
 
@@ -7,7 +7,6 @@ import java.util.List;
 
 @Getter
 public enum TestCase {
-
     SHORT("short.json", StopSequence.SHORT),
     SIMPLE("simple.json", StopSequence.SIMPLE),
     SIMPLE_PASS("simple-pass.json", StopSequence.SIMPLE_PASS),

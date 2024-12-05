@@ -8,9 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static ch.sbb.pfi.netzgrafikeditor.converter.core.validation.ValidationUtils.removeSpecialCharacters;
-import static ch.sbb.pfi.netzgrafikeditor.converter.core.validation.ValidationUtils.removeWhitespace;
+import java.util.function.Function;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -18,12 +16,13 @@ public class NetworkGraphicSanitizer {
 
     private final NetworkGraphic original;
     private final boolean considerTrainruns;
+    private final Function<String, String> idProcessor;
 
     public NetworkGraphic run() {
 
         List<Node> fixedNodes = new ArrayList<>();
         for (Node node : original.getNodes()) {
-            String fixedBetriebspunktName = fixId(node.getBetriebspunktName());
+            String fixedBetriebspunktName = process(node.getBetriebspunktName());
             Node fixedNode = Node.builder()
                     .id(node.getId())
                     .betriebspunktName(fixedBetriebspunktName)
@@ -43,7 +42,7 @@ public class NetworkGraphicSanitizer {
         if (considerTrainruns) {
             fixedTrainruns = new ArrayList<>();
             for (Trainrun trainrun : original.getTrainruns()) {
-                String fixedName = fixId(trainrun.getName());
+                String fixedName = process(trainrun.getName());
                 Trainrun fixedTrainrun = Trainrun.builder()
                         .id(trainrun.getId())
                         .name(fixedName)
@@ -63,11 +62,11 @@ public class NetworkGraphicSanitizer {
                 .build();
     }
 
-    private String fixId(String id) {
+    private String process(String id) {
         if (id == null || id.isEmpty()) {
-            throw new IllegalArgumentException("Cannot fix id which is null or empty.");
+            throw new IllegalArgumentException("Cannot process id which is null or empty.");
         }
 
-        return removeWhitespace(removeSpecialCharacters(id));
+        return idProcessor.apply(id);
     }
 }

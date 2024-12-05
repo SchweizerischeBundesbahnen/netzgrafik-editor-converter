@@ -3,6 +3,7 @@ package ch.sbb.pfi.netzgrafikeditor.converter.core;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.SupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.validation.ValidationStrategy;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonDeserializer;
+import ch.sbb.pfi.netzgrafikeditor.converter.util.test.TestCase;
 import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +43,7 @@ class NetworkGraphicConverterTest {
         when(config.getServiceDayEnd()).thenReturn(ServiceDayTime.NOON);
         when(config.isUseTrainNamesAsIds()).thenReturn(false);
         when(config.getValidationStrategy()).thenReturn(ValidationStrategy.WARN_ON_ISSUES);
-        when(builder.addStopFacility(anyString(), anyDouble(), anyDouble())).thenReturn(builder);
+        when(builder.addStopFacility(anyString(), anyString(), anyDouble(), anyDouble())).thenReturn(builder);
         when(builder.addTransitRoute(anyString(), anyString(), anyString(), any())).thenReturn(builder);
         when(builder.addRouteStop(anyString(), anyString(), any(), any())).thenReturn(builder);
         when(builder.addDeparture(anyString(), any())).thenReturn(builder);

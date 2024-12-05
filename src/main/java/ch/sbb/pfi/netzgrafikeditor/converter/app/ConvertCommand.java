@@ -18,11 +18,15 @@ public class ConvertCommand implements Callable<Integer> {
 
     private final BuildProperties buildProperties;
     private final ConversionService conversionService;
+
+    // positional arguments
     @CommandLine.Parameters(index = "0", description = "The network graphic file to convert.")
     private Path networkGraphicFile;
     @CommandLine.Parameters(index = "1", description = "The output directory for the converted timetable.")
+
+    // converter configuration
     private Path outputDirectory;
-    @CommandLine.Option(names = {"-v", "--validation"}, description = "Validation strategy (SKIP_VALIDATION, WARN_ON_ISSUES, FAIL_ON_ISSUES, FIX_ISSUES).", defaultValue = "WARN_ON_ISSUES")
+    @CommandLine.Option(names = {"-v", "--validation"}, description = "Validation strategy (SKIP_VALIDATION, WARN_ON_ISSUES, FAIL_ON_ISSUES, REPLACE_WHITESPACE, REMOVE_SPECIAL_CHARACTERS).", defaultValue = "WARN_ON_ISSUES")
     private ValidationStrategy validationStrategy;
     @CommandLine.Option(names = {"-t", "--train-names"}, description = "Use train names as route or line IDs (true/false).", defaultValue = "false")
     private boolean useTrainNamesAsIds;
@@ -30,13 +34,30 @@ public class ConvertCommand implements Callable<Integer> {
     private ServiceDayTime serviceDayStart;
     @CommandLine.Option(names = {"-e", "--service-day-end"}, description = "Service day end time (HH:mm).", converter = ServiceDayTimeConverter.class, defaultValue = "25:00")
     private ServiceDayTime serviceDayEnd;
+
+    // format and repositories
     @CommandLine.Option(names = {"-f", "--format"}, description = "Output format (GTFS or MATSim).", defaultValue = "GTFS")
     private OutputFormat outputFormat;
+    @CommandLine.Option(names = {"-i", "--stop-facility-csv"}, description = "File which contains the coordinates of the stop facilities.")
+    private Path stopFacilityCsv;
+    @CommandLine.Option(names = {"-r", "--rolling-stock-csv"}, description = "File which contains the vehicle types to be mapped to network graphic categories.")
+    private Path rollingStockCsv;
 
     @Override
     public Integer call() throws Exception {
-        conversionService.convert(networkGraphicFile, outputDirectory, deriveNetworkGraphicConfig(), outputFormat);
+        conversionService.convert(deriveConversionServiceRequest());
         return 0;
+    }
+
+    private ConversionService.Request deriveConversionServiceRequest() {
+        return ConversionService.Request.builder()
+                .networkGraphicFile(networkGraphicFile)
+                .outputDirectory(outputDirectory)
+                .converterConfig(deriveNetworkGraphicConfig())
+                .outputFormat(outputFormat)
+                .stopFacilityCsv(stopFacilityCsv)
+                .rollingStockCsv(rollingStockCsv)
+                .build();
     }
 
     private NetworkGraphicConverterConfig deriveNetworkGraphicConfig() {

@@ -1,5 +1,6 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.core.supply;
 
+import ch.sbb.pfi.netzgrafikeditor.converter.util.spatial.Coordinate;
 import lombok.Value;
 
 import java.util.HashMap;
@@ -9,7 +10,8 @@ import java.util.Map;
 public class StopFacilityInfo {
 
     String id;
+    String name;
     Coordinate coordinate;
-    Map<String, Object> linkAttributes = new HashMap<>();
+    Map<String, Object> attributes = new HashMap<>();
 
 }

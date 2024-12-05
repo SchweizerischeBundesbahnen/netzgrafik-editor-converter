@@ -1,4 +1,4 @@
-package ch.sbb.pfi.netzgrafikeditor.converter.core.supply;
+package ch.sbb.pfi.netzgrafikeditor.converter.util.spatial;
 
 import lombok.Value;
 

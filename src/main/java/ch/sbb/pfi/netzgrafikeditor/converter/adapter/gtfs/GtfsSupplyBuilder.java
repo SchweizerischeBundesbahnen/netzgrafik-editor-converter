@@ -29,6 +29,7 @@ import java.util.Set;
 public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
 
     public static final int ROUTE_TYPE = 2; // rail
+    public static final String ROUTE_NAME_FORMAT = "%s: %s - %s";
 
     private final List<Stop> stops = new ArrayList<>();
     private final List<Route> routes = new ArrayList<>();
@@ -43,11 +44,15 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
         super(infrastructureRepository, vehicleCircuitsPlanner);
     }
 
+    private static String getNameOrIdIfNull(StopFacilityInfo stopFacilityInfo) {
+        return stopFacilityInfo.getName().isEmpty() ? stopFacilityInfo.getId() : stopFacilityInfo.getName();
+    }
+
     @Override
     protected void buildStopFacility(StopFacilityInfo stopFacilityInfo) {
         stops.add(Stop.builder()
                 .stopId(stopFacilityInfo.getId())
-                .stopName(stopFacilityInfo.getId())
+                .stopName(stopFacilityInfo.getName())
                 .stopLat(stopFacilityInfo.getCoordinate().getLatitude())
                 .stopLon(stopFacilityInfo.getCoordinate().getLongitude())
                 .build());
@@ -60,11 +65,12 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
         routeElements.put(transitRouteContainer.transitRouteInfo().getId(), transitRouteContainer.routeElements());
 
         // build transit route names
-        String routeShortName = String.format("%s - %s",
-                transitRouteContainer.routeElements().getFirst().getStopFacilityInfo().getId(),
-                transitRouteContainer.routeElements().getLast().getStopFacilityInfo().getId());
-        String routeLongName = String.format("%s: %s",
-                transitRouteContainer.transitRouteInfo().getTransitLineInfo().getCategory(), routeShortName);
+        String categoryName = transitRouteContainer.transitRouteInfo().getTransitLineInfo().getCategory();
+        StopFacilityInfo orig = transitRouteContainer.routeElements().getFirst().getStopFacilityInfo();
+        StopFacilityInfo dest = transitRouteContainer.routeElements().getLast().getStopFacilityInfo();
+        String routeShortName = String.format(ROUTE_NAME_FORMAT, categoryName, orig.getId(), dest.getId());
+        String routeLongName = String.format(ROUTE_NAME_FORMAT, categoryName, getNameOrIdIfNull(orig),
+                getNameOrIdIfNull(dest));
 
         // create and add GTFS route (transit line in the context of the supply builder) if not yet added
         String routeId = transitRouteContainer.transitRouteInfo().getTransitLineInfo().getId();

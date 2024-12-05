@@ -58,7 +58,8 @@ public class MatsimSupplyBuilder extends BaseSupplyBuilder<Scenario> {
 
         VehicleTypeInfo vehicleTypeInfo = vehicleAllocation.getVehicleInfo().getVehicleTypeInfo();
         VehicleType vehicleType = factory.getOrCreateVehicleType(vehicleTypeInfo.getId(), vehicleTypeInfo.getLength(),
-                vehicleTypeInfo.getMaxVelocity(), vehicleTypeInfo.getCapacity(), vehicleTypeInfo.getAttributes());
+                vehicleTypeInfo.getMaxVelocity(), vehicleTypeInfo.getSeats(), vehicleTypeInfo.getStandingRoom(),
+                vehicleTypeInfo.getAttributes());
         Vehicle vehicle = factory.getOrCreateVehicle(vehicleType, vehicleAllocation.getVehicleInfo().getId());
 
         DepartureInfo departureInfo = vehicleAllocation.getDepartureInfo();

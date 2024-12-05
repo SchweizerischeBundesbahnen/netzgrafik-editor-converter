@@ -52,11 +52,18 @@ class NetworkGraphicValidatorTest {
                 assertEquals(original, validated);
             }
             case FAIL_ON_ISSUES -> assertThrows(IllegalStateException.class, validator::run);
-            case FIX_ISSUES -> {
+            case REPLACE_WHITESPACE -> {
                 NetworkGraphic validated = validator.run();
-                assertEquals(List.of("validNode", "in_validNode", "_invalidNode", "invalidNode_", "inVlidNde"),
+                assertEquals(List.of("validNode", "in_validNode", "invalidNode", "invalidNode", "inVälidNöde"),
                         getNodeIds(validated));
-                assertEquals(List.of("validTrainrun", "in_validTrainrun", "_invalidTrainrun", "invalidTrainrun_",
+                assertEquals(List.of("validTrainrun", "in_validTrainrun", "invalidTrainrun", "invalidTrainrun",
+                        "inVälidTräinrün"), getTrainrunIds(validated));
+            }
+            case REMOVE_SPECIAL_CHARACTERS -> {
+                NetworkGraphic validated = validator.run();
+                assertEquals(List.of("validNode", "in_validNode", "invalidNode", "invalidNode", "inVlidNde"),
+                        getNodeIds(validated));
+                assertEquals(List.of("validTrainrun", "in_validTrainrun", "invalidTrainrun", "invalidTrainrun",
                         "inVlidTrinrn"), getTrainrunIds(validated));
             }
         }

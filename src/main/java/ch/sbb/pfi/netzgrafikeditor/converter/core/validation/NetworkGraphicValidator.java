@@ -67,8 +67,16 @@ public class NetworkGraphicValidator {
         }
     }
 
-    void fix() {
-        networkGraphic = new NetworkGraphicSanitizer(networkGraphic, considerTrainruns).run();
+    void replaceWhitespace() {
+        log.info("Strip and replace whitespace in invalid IDs of network graphic");
+        networkGraphic = new NetworkGraphicSanitizer(networkGraphic, considerTrainruns,
+                ValidationUtils::replaceWhitespace).run();
+    }
+
+    void removeSpecialCharacters() {
+        log.info("Remove special characters in invalid IDs of network graphic");
+        networkGraphic = new NetworkGraphicSanitizer(networkGraphic, considerTrainruns,
+                s -> ValidationUtils.replaceWhitespace(ValidationUtils.removeSpecialCharacters(s))).run();
     }
 
     private enum IssueTarget {

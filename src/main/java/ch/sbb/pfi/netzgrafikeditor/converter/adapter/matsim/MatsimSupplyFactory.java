@@ -160,7 +160,7 @@ class MatsimSupplyFactory {
         return transitLine;
     }
 
-    VehicleType getOrCreateVehicleType(String id, double length, double maxVelocity, int capacity, Map<String, Object> attributes) {
+    VehicleType getOrCreateVehicleType(String id, double length, double maxVelocity, int seats, int standingRoom, Map<String, Object> attributes) {
         Id<VehicleType> vehicleTypeId = Id.create(String.format(IdPattern.VEHICLE_TYPE, id), VehicleType.class);
         VehicleType vehicleType = vehicles.getVehicleTypes().get(vehicleTypeId);
 
@@ -171,12 +171,13 @@ class MatsimSupplyFactory {
 
         log.debug("Creating VehicleType {}", vehicleTypeId);
         vehicleType = vf.createVehicleType(vehicleTypeId);
-        vehicleType.getCapacity().setSeats(capacity);
+        vehicleType.getCapacity().setSeats(seats);
+        vehicleType.getCapacity().setStandingRoom(standingRoom);
         vehicleType.setMaximumVelocity(maxVelocity);
+        vehicleType.setLength(length);
         VehicleUtils.setDoorOperationMode(vehicleType, VehicleType.DoorOperationMode.parallel);
         VehicleUtils.setAccessTime(vehicleType, Default.VEHICLE_ACCESS_TIME);
         VehicleUtils.setEgressTime(vehicleType, Default.VEHICLE_EGRESS_TIME);
-        vehicleType.setLength(length);
         putAttributes(vehicleType, attributes);
         vehicles.addVehicleType(vehicleType);
 

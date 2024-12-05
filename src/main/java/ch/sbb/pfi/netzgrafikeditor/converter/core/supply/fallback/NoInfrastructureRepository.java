@@ -1,10 +1,10 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback;
 
-import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.Coordinate;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TrackSegmentInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitRouteInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.util.spatial.Coordinate;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,10 +15,11 @@ public class NoInfrastructureRepository implements InfrastructureRepository {
     private final Map<String, Coordinate> coordinates = new HashMap<>();
 
     @Override
-    public StopFacilityInfo getStopFacility(String stopId, double x, double y) {
+    public StopFacilityInfo getStopFacility(String stopId, String stopName, double x, double y) {
         Coordinate coordinate = new Coordinate(-y, x);
         coordinates.put(stopId, coordinate);
-        return new StopFacilityInfo(stopId, coordinate);
+
+        return new StopFacilityInfo(stopId, stopName, coordinate);
     }
 
     @Override

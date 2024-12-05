@@ -1,6 +1,5 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.adapter.matsim;
 
-import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.Coordinate;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.DepartureInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
@@ -11,6 +10,7 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleAllocation;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleTypeInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.util.spatial.Coordinate;
 import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -49,8 +49,8 @@ class MatsimSupplyBuilderTest {
     private static List<VehicleAllocation> mockVehicleAllocations() {
         TransitLineInfo transitLineInfo = new TransitLineInfo("lineSimple", "A");
 
-        VehicleTypeInfo vehicleTypeInfo1 = new VehicleTypeInfo("vehicleType1", 100, 200.0, 50.0, Map.of());
-        VehicleTypeInfo vehicleTypeInfo2 = new VehicleTypeInfo("vehicleType2", 150, 300.0, 60.0, Map.of());
+        VehicleTypeInfo vehicleTypeInfo1 = new VehicleTypeInfo("vehicleType1", 100, 50, 200.0, 50.0, Map.of());
+        VehicleTypeInfo vehicleTypeInfo2 = new VehicleTypeInfo("vehicleType2", 150, 0, 300.0, 60.0, Map.of());
 
         VehicleInfo vehicleInfo1 = new VehicleInfo("vehicle1", vehicleTypeInfo1);
         VehicleInfo vehicleInfo2 = new VehicleInfo("vehicle2", vehicleTypeInfo1);
@@ -99,13 +99,13 @@ class MatsimSupplyBuilderTest {
     @Test
     void testBuild() {
         // mock infrastructure
-        when(infrastructureRepository.getStopFacility(eq("A"), anyDouble(), anyDouble())).thenReturn(
+        when(infrastructureRepository.getStopFacility(eq("A"), anyString(), anyDouble(), anyDouble())).thenReturn(
                 Stop.A.getStopFacilityInfo());
-        when(infrastructureRepository.getStopFacility(eq("B"), anyDouble(), anyDouble())).thenReturn(
+        when(infrastructureRepository.getStopFacility(eq("B"), anyString(), anyDouble(), anyDouble())).thenReturn(
                 Stop.B.getStopFacilityInfo());
-        when(infrastructureRepository.getStopFacility(eq("C"), anyDouble(), anyDouble())).thenReturn(
+        when(infrastructureRepository.getStopFacility(eq("C"), anyString(), anyDouble(), anyDouble())).thenReturn(
                 Stop.C.getStopFacilityInfo());
-        when(infrastructureRepository.getStopFacility(eq("D"), anyDouble(), anyDouble())).thenReturn(
+        when(infrastructureRepository.getStopFacility(eq("D"), anyString(), anyDouble(), anyDouble())).thenReturn(
                 Stop.D.getStopFacilityInfo());
 
         // mock track segments: forward
@@ -121,10 +121,10 @@ class MatsimSupplyBuilderTest {
         when(vehicleCircuitsPlanner.plan()).thenReturn(mockVehicleAllocations());
 
         // act
-        Scenario scenario = matsimSupplyBuilder.addStopFacility("A", 0, 0)
-                .addStopFacility("B", 1, 1)
-                .addStopFacility("C", 2, 2)
-                .addStopFacility("D", 3, 3)
+        Scenario scenario = matsimSupplyBuilder.addStopFacility("A", "Stop A", 0, 0)
+                .addStopFacility("B", "Stop B", 1, 1)
+                .addStopFacility("C", "Stop C", 2, 2)
+                .addStopFacility("D", "Stop D", 3, 3)
                 .addTransitLine("lineSimple", "vehicleType")
                 .addTransitRoute("lineSimple_F", "lineSimple", "A", Default.DWELL_TIME)
                 .addRouteStop("lineSimple_F", "B", Default.TRAVEL_TIME, Default.DWELL_TIME)
@@ -166,10 +166,10 @@ class MatsimSupplyBuilderTest {
     @RequiredArgsConstructor
     @Getter
     enum Stop {
-        A(new StopFacilityInfo("A", new Coordinate(0, 0))),
-        B(new StopFacilityInfo("B", new Coordinate(1, 1))),
-        C(new StopFacilityInfo("C", new Coordinate(2, 2))),
-        D(new StopFacilityInfo("D", new Coordinate(3, 3)));
+        A(new StopFacilityInfo("A", "Stop A", new Coordinate(0, 0))),
+        B(new StopFacilityInfo("B", "Stop B", new Coordinate(1, 1))),
+        C(new StopFacilityInfo("C", "Stop C", new Coordinate(2, 2))),
+        D(new StopFacilityInfo("D", "Stop D", new Coordinate(3, 3)));
 
         private final StopFacilityInfo stopFacilityInfo;
     }

@@ -1,6 +1,7 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.app;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.util.test.TestDirectoryExtension;
+import ch.sbb.pfi.netzgrafikeditor.converter.util.test.TestScenario;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 class CommandLineConverterIT {
 
-    private static final Path NETWORK_GRAPHIC_FILE = Path.of("src/test/resources/ng/scenarios/realistic.json");
+    private static final TestScenario TEST_SCENARIO = TestScenario.REALISTIC_SCENARIO;
 
     private final List<String> args = new ArrayList<>();
     private Path outputDir;
@@ -38,7 +39,7 @@ class CommandLineConverterIT {
     @BeforeEach
     void setUp(Path outputDir) {
         this.outputDir = outputDir;
-        args.add(NETWORK_GRAPHIC_FILE.toString());
+        args.add(TEST_SCENARIO.getNetworkGraphicFilePath().toString());
     }
 
     @ParameterizedTest
@@ -59,6 +60,8 @@ class CommandLineConverterIT {
         // arrange
         args.add(outputDir.toString());
         args.addAll(List.of("-f", format));
+        args.addAll(List.of("-i", TEST_SCENARIO.getStopFacilityInfoCsvFilePath().toString()));
+        args.addAll(List.of("-r", TEST_SCENARIO.getRollingStockInfoCsvFilePath().toString()));
         args.addAll(Arrays.asList(testCase.args));
 
         // act
@@ -86,7 +89,8 @@ class CommandLineConverterIT {
         VALIDATION_WARN_ON_ISSUES(new String[]{"-v", "WARN_ON_ISSUES"}, true, ""),
         VALIDATION_FAIL_ON_ISSUES(new String[]{"-v", "FAIL_ON_ISSUES"}, false,
                 "Found issues during network graphic validation and option fail on issue is set"),
-        VALIDATION_FIX_ISSUES(new String[]{"-v", "FIX_ISSUES"}, true, ""),
+        VALIDATION_REPLACE_WHITESPACE(new String[]{"-v", "REPLACE_WHITESPACE"}, true, ""),
+        VALIDATION_REMOVE_SPECIAL_CHARACTERS(new String[]{"-v", "REMOVE_SPECIAL_CHARACTERS"}, true, ""),
         TRAIN_NAMES(new String[]{"-t"}, true, ""),
         SERVICE_DAY_START(new String[]{"-s", "03:30"}, true, ""),
         SERVICE_DAY_END(new String[]{"-s", "24:15"}, true, "");

@@ -9,7 +9,8 @@ import java.util.Map;
 public class VehicleTypeInfo {
 
     String id;
-    int capacity;
+    int seats;
+    int standingRoom;
     double length;
     double maxVelocity;
     Map<String, Object> attributes;

@@ -11,7 +11,9 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback.NoVehicleCircu
 import ch.sbb.pfi.netzgrafikeditor.converter.io.gtfs.GtfsScheduleWriter;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.matsim.TransitScheduleXmlWriter;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonFileReader;
+import ch.sbb.pfi.netzgrafikeditor.converter.util.test.TestCase;
 import ch.sbb.pfi.netzgrafikeditor.converter.util.test.TestDirectoryExtension;
+import ch.sbb.pfi.netzgrafikeditor.converter.util.test.TestScenario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,7 +51,7 @@ public class NetworkGraphicConverterIT {
         @ParameterizedTest
         @EnumSource(TestScenario.class)
         void run(TestScenario testScenario) throws IOException {
-            configure(testScenario.getPath(), testScenario.name());
+            configure(testScenario.getNetworkGraphicFilePath(), testScenario.name());
             converter.run();
             assertNotNull(scenario);
         }
@@ -129,7 +131,7 @@ public class NetworkGraphicConverterIT {
         @ParameterizedTest
         @EnumSource(TestScenario.class)
         void run(TestScenario testScenario) throws IOException {
-            configure(testScenario.getPath());
+            configure(testScenario.getNetworkGraphicFilePath());
             converter.run();
             assertNotNull(schedule);
         }

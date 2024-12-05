@@ -61,6 +61,7 @@ class CommandLineConverterIT {
         args.add(outputDir.toString());
         args.addAll(List.of("-f", format));
         args.addAll(List.of("-i", TEST_SCENARIO.getStopFacilityInfoCsvFilePath().toString()));
+        args.addAll(List.of("-r", TEST_SCENARIO.getRollingStockInfoCsvFilePath().toString()));
         args.addAll(Arrays.asList(testCase.args));
 
         // act

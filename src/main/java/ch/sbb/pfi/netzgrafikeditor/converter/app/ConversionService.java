@@ -15,6 +15,7 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback.NoInfrastructu
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback.NoRollingStockRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback.NoVehicleCircuitsPlanner;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.csv.CsvInfrastructureRepository;
+import ch.sbb.pfi.netzgrafikeditor.converter.io.csv.CsvRollingStockRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.gtfs.GtfsScheduleWriter;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.matsim.TransitScheduleXmlWriter;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonFileReader;
@@ -30,21 +31,20 @@ import java.nio.file.Path;
 public class ConversionService {
 
     private static InfrastructureRepository configureInfrastructureRepository(Path stopFacilityCsv) throws IOException {
-        InfrastructureRepository infrastructureRepository;
-        if (stopFacilityCsv != null) {
-            infrastructureRepository = new CsvInfrastructureRepository(stopFacilityCsv);
-        } else {
-            infrastructureRepository = new NoInfrastructureRepository();
-        }
+        return stopFacilityCsv == null ? new NoInfrastructureRepository() : new CsvInfrastructureRepository(
+                stopFacilityCsv);
+    }
 
-        return infrastructureRepository;
+    private static RollingStockRepository configureRollingStockRepository(Path rollingStockCsv) throws IOException {
+        return rollingStockCsv == null ? new NoRollingStockRepository() : new CsvRollingStockRepository(
+                rollingStockCsv);
     }
 
     public void convert(Request request) throws IOException {
         NetworkGraphicSource source = new JsonFileReader(request.networkGraphicFile);
 
         InfrastructureRepository infrastructureRepository = configureInfrastructureRepository(request.stopFacilityCsv);
-        RollingStockRepository rollingStockRepository = new NoRollingStockRepository();
+        RollingStockRepository rollingStockRepository = configureRollingStockRepository(request.rollingStockCsv);
         VehicleCircuitsPlanner vehicleCircuitsPlanner = new NoVehicleCircuitsPlanner(rollingStockRepository);
 
         NetworkGraphicConverter<?> converter = switch (request.outputFormat) {
@@ -78,5 +78,6 @@ public class ConversionService {
         NetworkGraphicConverterConfig converterConfig;
         OutputFormat outputFormat;
         Path stopFacilityCsv;
+        Path rollingStockCsv;
     }
 }

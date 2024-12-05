@@ -2891,7 +2891,7 @@
     },
     {
       "id": 150,
-      "betriebspunktName": "ZFH",
+      "betriebspunktName": "ZFH ✈",
       "fullName": "Zürich Flughafen",
       "positionX": 3296,
       "positionY": 32,
@@ -4008,7 +4008,7 @@
     },
     {
       "id": 161,
-      "betriebspunktName": "GEAP",
+      "betriebspunktName": "GEAP ✈",
       "fullName": "Genève-Aéroport",
       "positionX": -4352,
       "positionY": 608,

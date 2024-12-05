@@ -49,8 +49,8 @@ class MatsimSupplyBuilderTest {
     private static List<VehicleAllocation> mockVehicleAllocations() {
         TransitLineInfo transitLineInfo = new TransitLineInfo("lineSimple", "A");
 
-        VehicleTypeInfo vehicleTypeInfo1 = new VehicleTypeInfo("vehicleType1", 100, 200.0, 50.0, Map.of());
-        VehicleTypeInfo vehicleTypeInfo2 = new VehicleTypeInfo("vehicleType2", 150, 300.0, 60.0, Map.of());
+        VehicleTypeInfo vehicleTypeInfo1 = new VehicleTypeInfo("vehicleType1", 100, 50, 200.0, 50.0, Map.of());
+        VehicleTypeInfo vehicleTypeInfo2 = new VehicleTypeInfo("vehicleType2", 150, 0, 300.0, 60.0, Map.of());
 
         VehicleInfo vehicleInfo1 = new VehicleInfo("vehicle1", vehicleTypeInfo1);
         VehicleInfo vehicleInfo2 = new VehicleInfo("vehicle2", vehicleTypeInfo1);

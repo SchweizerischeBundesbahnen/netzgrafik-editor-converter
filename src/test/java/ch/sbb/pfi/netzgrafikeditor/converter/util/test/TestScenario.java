@@ -11,10 +11,12 @@ public enum TestScenario {
 
     private final TestFile networkGraphicFile;
     private final TestFile stopFacilityInfoCsvFile;
+    private final TestFile rollingStockInfoCsvFile;
 
     TestScenario(String name) {
         this.networkGraphicFile = new TestFile(FOLDER, String.format("%s.json", name));
         this.stopFacilityInfoCsvFile = new TestFile(FOLDER, String.format("%s-stop-facility-info.csv", name));
+        this.rollingStockInfoCsvFile = new TestFile(FOLDER, String.format("%s-rolling-stock-info.csv", name));
     }
 
     public Path getNetworkGraphicFilePath() {
@@ -23,5 +25,9 @@ public enum TestScenario {
 
     public Path getStopFacilityInfoCsvFilePath() {
         return stopFacilityInfoCsvFile.getPath();
+    }
+
+    public Path getRollingStockInfoCsvFilePath() {
+        return rollingStockInfoCsvFile.getPath();
     }
 }

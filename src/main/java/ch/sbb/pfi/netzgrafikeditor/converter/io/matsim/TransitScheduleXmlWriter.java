@@ -23,6 +23,10 @@ public class TransitScheduleXmlWriter implements ConverterSink<Scenario> {
     private final Path directory;
     private final String prefix;
 
+    public TransitScheduleXmlWriter(Path directory) {
+        this(directory, "");
+    }
+
     @Override
     public void save(Scenario result) throws IOException {
         Files.createDirectories(directory);

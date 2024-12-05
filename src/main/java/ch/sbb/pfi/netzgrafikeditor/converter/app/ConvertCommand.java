@@ -43,9 +43,18 @@ public class ConvertCommand implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-        conversionService.convert(networkGraphicFile, outputDirectory, deriveNetworkGraphicConfig(), outputFormat,
-                stopFacilityCsv);
+        conversionService.convert(deriveConversionServiceRequest());
         return 0;
+    }
+
+    private ConversionService.Request deriveConversionServiceRequest() {
+        return ConversionService.Request.builder()
+                .networkGraphicFile(networkGraphicFile)
+                .outputDirectory(outputDirectory)
+                .converterConfig(deriveNetworkGraphicConfig())
+                .outputFormat(outputFormat)
+                .stopFacilityCsv(stopFacilityCsv)
+                .build();
     }
 
     private NetworkGraphicConverterConfig deriveNetworkGraphicConfig() {

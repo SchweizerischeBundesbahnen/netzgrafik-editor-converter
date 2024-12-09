@@ -45,6 +45,22 @@ public enum ValidationStrategy {
             }
             return true;
         }
+    },
+
+    /**
+     * @deprecated This option is deprecated because specialized treatment of the IDs should ideally be performed
+     * upstream of the converter. This option is provided only to ensure backward compatibility with the old default
+     * behavior. Users are encouraged to perform ID manipulations before invoking the converter, preferably directly in
+     * the Network Graphic Editor (NGE).
+     */
+    @Deprecated REMOVE_DOTS_AND_REPLACE_WHITESPACE {
+        @Override
+        public boolean apply(NetworkGraphicValidator validator) {
+            if (!validator.isValid()) {
+                validator.removeDotsReplaceWhitespace();
+            }
+            return true;
+        }
     };
 
     public abstract boolean apply(NetworkGraphicValidator validator);

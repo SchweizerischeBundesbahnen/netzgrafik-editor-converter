@@ -72,7 +72,7 @@ class MatsimSupplyFactory {
         }
 
         log.debug("Creating TransitRoute {} and adding to TransitLine {}", routeId, transitLine.getId());
-        transitRoute = sf.createTransitRoute(routeId, networkRoute, stops, Default.LINK_MODE);
+        transitRoute = sf.createTransitRoute(routeId, networkRoute, stops, Default.NETWORK_MODE);
         transitLine.addRoute(transitRoute);
 
         return transitRoute;
@@ -133,7 +133,7 @@ class MatsimSupplyFactory {
 
         log.debug("Creating Link {}", linkId);
         link = nf.createLink(linkId, fromNode, toNode);
-        link.setAllowedModes(new HashSet<>(List.of(Default.LINK_MODE)));
+        link.setAllowedModes(new HashSet<>(List.of(Default.NETWORK_MODE)));
         link.setLength(length);
         link.setFreespeed(Default.LINK_FREESPEED);
         link.setCapacity(Default.LINK_CAPACITY);
@@ -175,6 +175,7 @@ class MatsimSupplyFactory {
         vehicleType.getCapacity().setStandingRoom(standingRoom);
         vehicleType.setMaximumVelocity(maxVelocity);
         vehicleType.setLength(length);
+        vehicleType.setNetworkMode(Default.NETWORK_MODE);
         VehicleUtils.setDoorOperationMode(vehicleType, VehicleType.DoorOperationMode.parallel);
         VehicleUtils.setAccessTime(vehicleType, Default.VEHICLE_ACCESS_TIME);
         VehicleUtils.setEgressTime(vehicleType, Default.VEHICLE_EGRESS_TIME);
@@ -201,10 +202,10 @@ class MatsimSupplyFactory {
     }
 
     private static class Default {
+        private static final String NETWORK_MODE = "pt";
         private static final double LINK_FREESPEED = 10000.;
         private static final double LINK_CAPACITY = 10000.;
         private static final double LINK_LANES = 1.;
-        private static final String LINK_MODE = "rail";
         private static final double VEHICLE_ACCESS_TIME = 1.;
         private static final double VEHICLE_EGRESS_TIME = 1.;
     }

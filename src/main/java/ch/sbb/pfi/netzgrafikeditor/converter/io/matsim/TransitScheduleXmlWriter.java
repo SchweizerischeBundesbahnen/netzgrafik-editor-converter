@@ -16,7 +16,7 @@ import java.nio.file.Path;
 public class TransitScheduleXmlWriter implements ConverterSink<Scenario> {
 
     private static final String CONFIG_FILE = "config.xml";
-    private static final String NETWORK_FILE = "network.xml.gz";
+    private static final String NETWORK_FILE = "transitNetwork.xml.gz";
     private static final String TRANSIT_SCHEDULE_FILE = "transitSchedule.xml.gz";
     private static final String TRANSIT_VEHICLE_FILE = "transitVehicles.xml.gz";
 

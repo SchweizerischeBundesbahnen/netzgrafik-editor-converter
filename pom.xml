@@ -16,7 +16,7 @@
         day in different formats
     </description>
     <properties>
-        <matsim.version>2025.0-2024w49</matsim.version>
+        <matsim.version>2025.0-2024w50</matsim.version>
         <java.version>21</java.version>
     </properties>
 

@@ -30,13 +30,13 @@ class NetworkGraphicValidatorTest {
                 Node.builder().betriebspunktName("in validNode").build(),
                 Node.builder().betriebspunktName(" invalidNode").build(),
                 Node.builder().betriebspunktName("invalidNode ").build(),
-                Node.builder().betriebspunktName("inVälidNöde").build());
+                Node.builder().betriebspunktName("inVälid.Nöde").build());
 
         List<Trainrun> trainruns = List.of(Trainrun.builder().name("validTrainrun").build(),
                 Trainrun.builder().name("in validTrainrun").build(),
                 Trainrun.builder().name(" invalidTrainrun").build(),
                 Trainrun.builder().name("invalidTrainrun ").build(),
-                Trainrun.builder().name("inVälidTräinrün").build());
+                Trainrun.builder().name("inVälid.Träinrün").build());
 
         original = NetworkGraphic.builder().nodes(nodes).trainruns(trainruns).build();
     }
@@ -54,10 +54,10 @@ class NetworkGraphicValidatorTest {
             case FAIL_ON_ISSUES -> assertThrows(IllegalStateException.class, validator::run);
             case REPLACE_WHITESPACE -> {
                 NetworkGraphic validated = validator.run();
-                assertEquals(List.of("validNode", "in_validNode", "invalidNode", "invalidNode", "inVälidNöde"),
+                assertEquals(List.of("validNode", "in_validNode", "invalidNode", "invalidNode", "inVälid.Nöde"),
                         getNodeIds(validated));
                 assertEquals(List.of("validTrainrun", "in_validTrainrun", "invalidTrainrun", "invalidTrainrun",
-                        "inVälidTräinrün"), getTrainrunIds(validated));
+                        "inVälid.Träinrün"), getTrainrunIds(validated));
             }
             case REMOVE_SPECIAL_CHARACTERS -> {
                 NetworkGraphic validated = validator.run();
@@ -66,7 +66,13 @@ class NetworkGraphicValidatorTest {
                 assertEquals(List.of("validTrainrun", "in_validTrainrun", "invalidTrainrun", "invalidTrainrun",
                         "inVlidTrinrn"), getTrainrunIds(validated));
             }
+            case REMOVE_DOTS_AND_REPLACE_WHITESPACE -> {
+                NetworkGraphic validated = validator.run();
+                assertEquals(List.of("validNode", "in_validNode", "_invalidNode", "invalidNode_", "inVälidNöde"),
+                        getNodeIds(validated));
+                assertEquals(List.of("validTrainrun", "in_validTrainrun", "_invalidTrainrun", "invalidTrainrun_",
+                        "inVälidTräinrün"), getTrainrunIds(validated));
+            }
         }
     }
-
 }

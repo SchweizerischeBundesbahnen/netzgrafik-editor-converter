@@ -67,6 +67,12 @@ public class NetworkGraphicValidator {
         }
     }
 
+    void removeDotsReplaceWhitespace() {
+        log.info("Remove dots and replace whitespace in invalid IDs of network graphic");
+        networkGraphic = new NetworkGraphicSanitizer(networkGraphic, considerTrainruns,
+                ValidationUtils::removeDotsReplaceWhitespace).run();
+    }
+
     void replaceWhitespace() {
         log.info("Strip and replace whitespace in invalid IDs of network graphic");
         networkGraphic = new NetworkGraphicSanitizer(networkGraphic, considerTrainruns,

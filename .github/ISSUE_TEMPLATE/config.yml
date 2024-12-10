@@ -1,0 +1,12 @@
+name: Issue Templates
+description: Choose an issue template to use.
+labels:
+  - bug
+  - enhancement
+templates:
+  - name: Bug Report
+    path: bug_report.md
+    description: Create a report to help us fix a bug.
+  - name: Feature Request
+    path: feature_request.md
+    description: Suggest an idea for a new feature or enhancement.

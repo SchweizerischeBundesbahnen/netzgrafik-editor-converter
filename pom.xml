@@ -10,7 +10,7 @@
     </parent>
     <groupId>ch.sbb.pfi.netzgrafikeditor</groupId>
     <artifactId>netzgrafik-editor-converter</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>netzgrafik-editor-converter</name>
     <description>Converter to expand network graphics from the Netzgrafik-Editor into timetables for the entire service
         day in different formats
@@ -19,6 +19,14 @@
         <matsim.version>2025.0-2024w50</matsim.version>
         <java.version>21</java.version>
     </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter</url>
+        </repository>
+    </distributionManagement>
 
     <licenses>
         <license>

@@ -30,8 +30,3 @@ assignees: ''
 **Screenshots**
 
 <!-- If applicable, add screenshots to help explain your problem. -->
-
----
-title: 'Bug: <Title>'
-labels: 'bug'
-assignees: ''

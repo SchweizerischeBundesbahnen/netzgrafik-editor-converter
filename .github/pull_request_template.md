@@ -1,9 +1,3 @@
----
-title: '<type>: <subject>'
-labels: ''
-assignees: ''
----
-
 <!--
     Thank you for your contribution. Please use this template to help guide
     you towards preparing a PR that fulfills our merge requirements.

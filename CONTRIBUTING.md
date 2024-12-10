@@ -42,12 +42,11 @@ Before you submit your Pull Request (PR) consider the following guidelines:
 * Create your feature or patch, **including appropriate test cases**.
 * Follow our [Coding Standards](CODING_STANDARDS.md).
 * Run tests and ensure that all tests pass.
-* Commit your changes using a descriptive commit message that follows our
-  [commit message conventions](#commit).
+* Commit your changes using a descriptive commit message that follows our Commit Message Guidelines.
 * Push your branch to GitHub.
 
-* In GitHub, send a pull request to `sbb-your-project:main`.
-  The PR title and message should as well conform to the [commit message conventions](#commit).
+* In GitHub, send a pull request to `SchweizerischeBundesbahnen/netzgrafik-editor-converter:main`.
+  The PR title and message should as well conform to the Commit Message Guidelines.
 
 ## Commit Message Guidelines
 

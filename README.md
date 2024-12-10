@@ -131,6 +131,14 @@ The class diagram outlines core classes and their relationships:
 
 ![Class diagram](docs/uml/class-diagram.svg)
 
+## Contributing
+
+This repository includes a [CONTRIBUTING.md](CONTRIBUTING.md) that outlines how to contribute to the project, including
+how to submit bug reports, feature requests, and pull requests. Coding standards that you should follow when
+contributing to the project are described in [CODING_STANDARDS.md](CODING_STANDARDS.md).
+
+## Continuous Integration
+
 ## License
 
 This project is licensed under GNU [GPL-3.0](LICENSE).

@@ -133,9 +133,9 @@ The class diagram outlines core classes and their relationships:
 
 ## Contributing
 
-This repository includes a [CONTRIBUTING.md](CONTRIBUTING.md) that outlines how to contribute to the project, including
-how to submit bug reports, feature requests, and pull requests. Coding standards that you should follow when
-contributing to the project are described in [CODING_STANDARDS.md](CODING_STANDARDS.md).
+This repository includes [Contribution Guidelines](CONTRIBUTING.md) that outline how to contribute to the project,
+including how to submit bug reports, feature requests, and pull requests. The [Coding Standards](CODING_STANDARDS.md)
+outline best practices and rules to follow when coding.
 
 ## Continuous Integration
 

@@ -1,7 +1,10 @@
 ---
+name: Bug Report
+about: Create a report to help us fix a bug.
 title: 'Bug: <Title>'
-labels: 'bug'
+labels: bug, enhancement
 assignees: ''
+
 ---
 
 <!--

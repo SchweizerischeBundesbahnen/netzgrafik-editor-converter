@@ -4,12 +4,13 @@ We appreciate all kinds of contributions. The following is a set of guidelines f
 GitHub. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this
 document in a pull request.
 
-By submitting a contribution to this repository you agree that you do this under the [license](LICENSE) of the
+By submitting a contribution to this repository you agree that you do this under the [License](LICENSE) of the
 repository and certify that you have all the rights to do so.
 
 ## Code of Conduct
 
-This project and everyone participating in it is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
+This project and everyone participating in it is governed by
+the [Code of Conduct](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/tree/main?tab=coc-ov-file#coc-ov-file).
 By participating, you are expected to uphold this code.
 
 ## Found an Issue?

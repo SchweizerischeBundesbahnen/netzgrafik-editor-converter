@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/compare/v1.0.0...v1.0.1) (2024-12-10)
+
+
+### Bug Fixes
+
+* **ci:** fix maven publish by providing settings.xml ([c8d4965](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/commit/c8d496587be7367bc4677fe6bb63c2e366d1aaec))
+
 ## 1.0.0 (2024-12-10)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/compare/v1.0.1...v1.1.0) (2024-12-13)
+
+
+### Features
+
+* configure manual workflow dispatch for release please ([#34](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/issues/34)) ([2ba16ab](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/commit/2ba16ab81cbbefb3fa1d568ee45a92ce83cf0506))
+
 ## [1.0.1](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/compare/v1.0.0...v1.0.1) (2024-12-10)
 
 

@@ -1,0 +1,4 @@
+jdk:
+  - openjdk21
+env:
+  MAVEN_PROFILE: "lib"

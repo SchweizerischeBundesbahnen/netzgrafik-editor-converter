@@ -1,4 +1,4 @@
 jdk:
   - openjdk21
 install:
-  - ./mvnw install -P lib
+  - mvn install -P lib

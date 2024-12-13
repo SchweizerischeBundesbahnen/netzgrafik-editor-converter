@@ -1,4 +1,4 @@
 jdk:
   - openjdk21
-install:
-  - mvn install -P lib
+env:
+  MAVEN_PROFILE: "lib"

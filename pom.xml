@@ -58,6 +58,10 @@
             <id>app</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>env.MAVEN_PROFILE</name>
+                    <value>app</value>
+                </property>
             </activation>
             <build>
                 <plugins>
@@ -94,6 +98,10 @@
             <id>lib</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>env.MAVEN_PROFILE</name>
+                    <value>lib</value>
+                </property>
             </activation>
             <build>
                 <plugins>

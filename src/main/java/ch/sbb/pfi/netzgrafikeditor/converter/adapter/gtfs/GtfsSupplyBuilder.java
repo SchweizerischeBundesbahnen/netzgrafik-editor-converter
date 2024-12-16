@@ -66,8 +66,10 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
 
         // build transit route names
         String categoryName = transitRouteContainer.transitRouteInfo().getTransitLineInfo().getCategory();
-        StopFacilityInfo orig = transitRouteContainer.routeElements().getFirst().getStopFacilityInfo();
-        StopFacilityInfo dest = transitRouteContainer.routeElements().getLast().getStopFacilityInfo();
+        StopFacilityInfo orig = transitRouteContainer.routeElements().get(0).getStopFacilityInfo();
+        StopFacilityInfo dest = transitRouteContainer.routeElements()
+                .get(transitRouteContainer.routeElements().size() - 1)
+                .getStopFacilityInfo();
         String routeShortName = String.format(ROUTE_NAME_FORMAT, categoryName, orig.getId(), dest.getId());
         String routeLongName = String.format(ROUTE_NAME_FORMAT, categoryName, getNameOrIdIfNull(orig),
                 getNameOrIdIfNull(dest));
@@ -98,7 +100,7 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
                 .routeId(vehicleAllocation.getDepartureInfo().getTransitRouteInfo().getTransitLineInfo().getId())
                 .serviceId(Calendar.DEFAULT_ID)
                 .tripId(tripId)
-                .tripHeadsign(currentRouteElements.getLast().getStopFacilityInfo().getId())
+                .tripHeadsign(currentRouteElements.get(currentRouteElements.size() - 1).getStopFacilityInfo().getId())
                 .build());
 
         // create and add stop times: gtfs stop time sequence starts with 1 not 0

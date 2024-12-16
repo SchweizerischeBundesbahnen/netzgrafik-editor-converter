@@ -3,6 +3,8 @@ package ch.sbb.pfi.netzgrafikeditor.converter.util.test;
 import lombok.Getter;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -12,13 +14,13 @@ public enum TestCase {
     SIMPLE_PASS("simple-pass.json", StopSequence.SIMPLE_PASS),
     SIMPLE_DOUBLE_PASS("simple-double-pass.json", StopSequence.SIMPLE_DOUBLE_PASS),
     SIMPLE_DWELL_TIME_CONFLICT("simple-dwell-time-conflict.json", StopSequence.SIMPLE),
-    SIMPLE_RANDOM_ORDER("simple-random-order.json", StopSequence.SIMPLE.reversed()),
+    SIMPLE_RANDOM_ORDER("simple-random-order.json", reverse(StopSequence.SIMPLE)),
     CYCLE_SMALL("cycle-small.json", StopSequence.CYCLE_SMALL),
     CYCLE("cycle.json", StopSequence.CYCLE),
-    CYCLE_RANDOM_ORDER("cycle-random-order.json", StopSequence.CYCLE.reversed()),
+    CYCLE_RANDOM_ORDER("cycle-random-order.json", reverse(StopSequence.CYCLE)),
     SELF_INTERSECTION("self-intersection.json", StopSequence.SELF_INTERSECTION),
     SELF_INTERSECTION_RANDOM_ORDER("self-intersection-random-order.json", StopSequence.SELF_INTERSECTION),
-    SELF_OVERLAY("self-overlay.json", StopSequence.SELF_OVERLAY.reversed()),
+    SELF_OVERLAY("self-overlay.json", reverse(StopSequence.SELF_OVERLAY)),
     SELF_OVERLAY_RANDOM_ORDER("self-overlay-random-order.json", StopSequence.SELF_OVERLAY);
 
     private static final String FOLDER = "ng/cases";
@@ -29,6 +31,13 @@ public enum TestCase {
     TestCase(String filename, List<String> stopSequence) {
         this.testFile = new TestFile(FOLDER, filename);
         this.stopSequence = stopSequence;
+    }
+
+    private static List<String> reverse(List<String> sequence) {
+        List<String> reversed = new ArrayList<>(sequence);
+        Collections.reverse(reversed);
+
+        return reversed;
     }
 
     public Path getPath() {

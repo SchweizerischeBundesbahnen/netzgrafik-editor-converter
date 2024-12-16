@@ -26,6 +26,9 @@ import org.matsim.pt.transitSchedule.api.TransitRoute;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -122,11 +125,20 @@ public class NetworkGraphicConverterIT {
         private NetworkGraphicConverter<GtfsSchedule> converter;
 
         private static void validateCurrentSequence(TestCase testCase, String actualSequence, boolean reversed) {
-            String expectedSequence = reversed ? String.join(DELIMITER,
-                    testCase.getStopSequence().reversed()) : String.join(DELIMITER, testCase.getStopSequence());
+            List<String> stopSequence = testCase.getStopSequence();
 
-            assertEquals(expectedSequence, actualSequence);
+            if (reversed) {
+                List<String> reversedSequence = new ArrayList<>(stopSequence);
+                Collections.reverse(reversedSequence);
+                String expectedSequence = String.join(DELIMITER, reversedSequence);
+
+                assertEquals(expectedSequence, actualSequence);
+            } else {
+                String expectedSequence = String.join(DELIMITER, stopSequence);
+                assertEquals(expectedSequence, actualSequence);
+            }
         }
+
 
         @ParameterizedTest
         @EnumSource(TestScenario.class)

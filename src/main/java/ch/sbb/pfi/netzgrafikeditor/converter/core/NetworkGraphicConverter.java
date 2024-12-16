@@ -115,7 +115,7 @@ public class NetworkGraphicConverter<T> {
 
         // get ordered trainrun nodes
         List<Node> nodes = new ArrayList<>();
-        nodes.addFirst(lookup.nodes.get(sections.getFirst().getSourceNodeId()));
+        nodes.add(0, lookup.nodes.get(sections.get(0).getSourceNodeId()));
         sections.forEach(section -> nodes.add(lookup.nodes.get(section.getTargetNodeId())));
 
         // create transit route and add first route stop
@@ -172,7 +172,7 @@ public class NetworkGraphicConverter<T> {
         }
 
         // derive departures in time intervals and add to supply builder
-        List<ServiceDayTime> departures = createDepartureTimes(timeIntervals, train, sections.getFirst());
+        List<ServiceDayTime> departures = createDepartureTimes(timeIntervals, train, sections.get(0));
         log.debug("Adding departures to {} at: {}", routeId, departures);
         departures.forEach(departure -> builder.addDeparture(routeId, departure));
     }
@@ -186,8 +186,8 @@ public class NetworkGraphicConverter<T> {
         } else {
             // create id from category with origin and destination, ignore the train name from nge
             lineId = String.format("%s_%s_%s", category,
-                    lookup.nodes.get(sections.getFirst().getSourceNodeId()).getBetriebspunktName(),
-                    lookup.nodes.get(sections.getLast().getTargetNodeId()).getBetriebspunktName());
+                    lookup.nodes.get(sections.get(0).getSourceNodeId()).getBetriebspunktName(),
+                    lookup.nodes.get(sections.get(sections.size() - 1).getTargetNodeId()).getBetriebspunktName());
         }
 
         // check if line id is already existing

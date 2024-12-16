@@ -7,6 +7,8 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.model.Transition;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -44,7 +46,7 @@ class SectionSequenceBuilder {
         traverse(randomSection, firstSection::set);
 
         // traverse from first section and collect sections
-        traverse(firstSection.get(), orderedSections::addFirst);
+        traverse(firstSection.get(), ts -> orderedSections.add(0, ts));
 
         // align sections: e.g. A-B, C-B becomes A-B, B-C
         SectionAligner.align(orderedSections);
@@ -142,7 +144,7 @@ class SectionSequenceBuilder {
             if (orderedSections.size() > 1) {
 
                 // check swap on first section
-                TrainrunSection first = orderedSections.getFirst();
+                TrainrunSection first = orderedSections.get(0);
                 TrainrunSection second = orderedSections.get(1);
                 if (first.getTargetNodeId() != second.getSourceNodeId() && first.getTargetNodeId() != second.getTargetNodeId()) {
                     orderedSections.set(0, swap(first));
@@ -161,7 +163,10 @@ class SectionSequenceBuilder {
         }
 
         private static List<TrainrunSection> reverse(List<TrainrunSection> sections) {
-            return sections.reversed().stream().map(SectionAligner::swap).toList();
+            List<TrainrunSection> reversed = new ArrayList<>(sections);
+            Collections.reverse(reversed);
+
+            return reversed.stream().map(SectionAligner::swap).toList();
         }
 
         private static TrainrunSection swap(TrainrunSection original) {

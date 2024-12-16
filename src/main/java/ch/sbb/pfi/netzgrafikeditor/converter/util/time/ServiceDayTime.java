@@ -78,10 +78,14 @@ public class ServiceDayTime implements Temporal, Comparable<ServiceDayTime>, Ser
 
     @Override
     public boolean isSupported(TemporalUnit unit) {
-        return switch (unit) {
-            case ChronoUnit.SECONDS, ChronoUnit.MINUTES, ChronoUnit.HOURS, ChronoUnit.DAYS -> true;
-            case null, default -> false;
-        };
+        if (unit instanceof ChronoUnit chronoUnit) {
+            return switch (chronoUnit) {
+                case SECONDS, MINUTES, HOURS, DAYS -> true;
+                default -> false;
+            };
+        }
+
+        return false;
     }
 
     @Override
@@ -91,15 +95,22 @@ public class ServiceDayTime implements Temporal, Comparable<ServiceDayTime>, Ser
 
     @Override
     public ServiceDayTime plus(long amountToAdd, TemporalUnit unit) {
-        long addedSeconds = switch (unit) {
-            case ChronoUnit.SECONDS -> amountToAdd;
-            case ChronoUnit.MINUTES -> amountToAdd * SECONDS_IN_MINUTE;
-            case ChronoUnit.HOURS -> amountToAdd * SECONDS_IN_HOUR;
-            case ChronoUnit.DAYS -> amountToAdd * SECONDS_IN_DAY;
-            case null, default -> throw new UnsupportedTemporalTypeException("Unit not supported: " + unit);
+        if (unit == null) {
+            throw new UnsupportedTemporalTypeException("Unit cannot be null");
+        }
+        if (!(unit instanceof ChronoUnit chronoUnit)) {
+            throw new UnsupportedTemporalTypeException("Unit not supported: " + unit);
+        }
+
+        long addedSeconds = switch (chronoUnit) {
+            case SECONDS -> amountToAdd;
+            case MINUTES -> amountToAdd * SECONDS_IN_MINUTE;
+            case HOURS -> amountToAdd * SECONDS_IN_HOUR;
+            case DAYS -> amountToAdd * SECONDS_IN_DAY;
+            default -> throw new UnsupportedTemporalTypeException("Unit not supported: " + unit);
         };
 
-        return new ServiceDayTime(Math.toIntExact((totalSeconds + addedSeconds)));
+        return new ServiceDayTime(Math.toIntExact(totalSeconds + addedSeconds));
     }
 
     @Override
@@ -116,21 +127,34 @@ public class ServiceDayTime implements Temporal, Comparable<ServiceDayTime>, Ser
     public long until(Temporal endExclusive, TemporalUnit unit) {
         long secondsDiff = endExclusive.get(ChronoField.SECOND_OF_DAY) - this.totalSeconds;
 
-        return switch (unit) {
-            case ChronoUnit.SECONDS -> secondsDiff;
-            case ChronoUnit.MINUTES -> secondsDiff / SECONDS_IN_MINUTE;
-            case ChronoUnit.HOURS -> secondsDiff / SECONDS_IN_HOUR;
-            case ChronoUnit.DAYS -> secondsDiff / SECONDS_IN_DAY;
-            case null, default -> throw new UnsupportedTemporalTypeException("Unit not supported: " + unit);
+        if (unit == null) {
+            throw new UnsupportedTemporalTypeException("Unit cannot be null");
+        }
+        if (!(unit instanceof ChronoUnit chronoUnit)) {
+            throw new UnsupportedTemporalTypeException("Unit not supported: " + unit);
+        }
+
+        return switch (chronoUnit) {
+            case SECONDS -> secondsDiff;
+            case MINUTES -> secondsDiff / SECONDS_IN_MINUTE;
+            case HOURS -> secondsDiff / SECONDS_IN_HOUR;
+            case DAYS -> secondsDiff / SECONDS_IN_DAY;
+            default -> throw new UnsupportedTemporalTypeException("Unit not supported: " + unit);
         };
     }
 
     @Override
     public boolean isSupported(TemporalField field) {
-        return switch (field) {
-            case ChronoField.HOUR_OF_DAY, ChronoField.MINUTE_OF_HOUR, ChronoField.SECOND_OF_MINUTE,
-                 ChronoField.MINUTE_OF_DAY, ChronoField.SECOND_OF_DAY -> true;
-            case null, default -> false;
+        if (field == null) {
+            return false;
+        }
+        if (!(field instanceof ChronoField chronoField)) {
+            return false; // If the field is not a ChronoField, return false
+        }
+
+        return switch (chronoField) {
+            case HOUR_OF_DAY, MINUTE_OF_HOUR, SECOND_OF_MINUTE, MINUTE_OF_DAY, SECOND_OF_DAY -> true;
+            default -> false;
         };
     }
 
@@ -141,14 +165,21 @@ public class ServiceDayTime implements Temporal, Comparable<ServiceDayTime>, Ser
         int seconds = totalSeconds % SECONDS_IN_MINUTE;
 
         int safeValue = Math.toIntExact(newValue);
-        return switch (field) {
-            case ChronoField.HOUR_OF_DAY -> ServiceDayTime.of(safeValue, minutes, seconds);
-            case ChronoField.MINUTE_OF_HOUR -> ServiceDayTime.of(hours, safeValue, seconds);
-            case ChronoField.SECOND_OF_MINUTE -> ServiceDayTime.of(hours, minutes, safeValue);
-            case ChronoField.MINUTE_OF_DAY ->
-                    new ServiceDayTime(Math.toIntExact(newValue * SECONDS_IN_MINUTE + seconds));
-            case ChronoField.SECOND_OF_DAY -> new ServiceDayTime(safeValue);
-            case null, default -> throw new UnsupportedTemporalTypeException("Field not supported: " + field);
+
+        if (field == null) {
+            throw new UnsupportedTemporalTypeException("Field cannot be null");
+        }
+        if (!(field instanceof ChronoField chronoField)) {
+            throw new UnsupportedTemporalTypeException("Field not supported: " + field);
+        }
+
+        return switch (chronoField) {
+            case HOUR_OF_DAY -> ServiceDayTime.of(safeValue, minutes, seconds);
+            case MINUTE_OF_HOUR -> ServiceDayTime.of(hours, safeValue, seconds);
+            case SECOND_OF_MINUTE -> ServiceDayTime.of(hours, minutes, safeValue);
+            case MINUTE_OF_DAY -> new ServiceDayTime(Math.toIntExact(newValue * SECONDS_IN_MINUTE + seconds));
+            case SECOND_OF_DAY -> new ServiceDayTime(safeValue);
+            default -> throw new UnsupportedTemporalTypeException("Field not supported: " + field);
         };
     }
 
@@ -159,15 +190,23 @@ public class ServiceDayTime implements Temporal, Comparable<ServiceDayTime>, Ser
 
     @Override
     public long getLong(TemporalField field) {
-        return switch (field) {
-            case ChronoField.HOUR_OF_DAY -> totalSeconds / SECONDS_IN_HOUR;
-            case ChronoField.MINUTE_OF_HOUR -> (totalSeconds % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE;
-            case ChronoField.SECOND_OF_MINUTE -> totalSeconds % SECONDS_IN_MINUTE;
-            case ChronoField.MINUTE_OF_DAY -> totalSeconds / SECONDS_IN_MINUTE;
-            case ChronoField.SECOND_OF_DAY -> totalSeconds;
-            case null, default -> throw new UnsupportedTemporalTypeException("Field not supported: " + field);
+        if (field == null) {
+            throw new UnsupportedTemporalTypeException("Field cannot be null");
+        }
+        if (!(field instanceof ChronoField chronoField)) {
+            throw new UnsupportedTemporalTypeException("Field not supported: " + field);
+        }
+
+        return switch (chronoField) {
+            case HOUR_OF_DAY -> totalSeconds / SECONDS_IN_HOUR;
+            case MINUTE_OF_HOUR -> (totalSeconds % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE;
+            case SECOND_OF_MINUTE -> totalSeconds % SECONDS_IN_MINUTE;
+            case MINUTE_OF_DAY -> totalSeconds / SECONDS_IN_MINUTE;
+            case SECOND_OF_DAY -> totalSeconds;
+            default -> throw new UnsupportedTemporalTypeException("Field not supported: " + field);
         };
     }
+
 
     @Override
     public String toString() {

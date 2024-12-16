@@ -33,6 +33,6 @@ class CsvInfrastructureRepositoryTest {
         List<TrackSegmentInfo> trackSegmentInfos = repo.getTrack(new StopFacilityInfo("A", "Stop A", null),
                 new StopFacilityInfo("B", "Stop B", null), null);
         assertEquals(1, trackSegmentInfos.size());
-        assertEquals(655.3, trackSegmentInfos.getFirst().getLength(), 0.1);
+        assertEquals(655.3, trackSegmentInfos.get(0).getLength(), 0.1);
     }
 }

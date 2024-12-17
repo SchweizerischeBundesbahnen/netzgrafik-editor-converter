@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -15,8 +16,9 @@
         day in different formats
     </description>
     <properties>
-        <matsim.version>2025.0-2024w51</matsim.version>
         <java.version>21</java.version>
+        <matsim.version>2025.0-2024w51</matsim.version>
+        <app.package>**/ch/sbb/pfi/netzgrafikeditor/converter/app/**</app.package>
     </properties>
 
     <distributionManagement>
@@ -90,6 +92,31 @@
                     </plugin>
                 </plugins>
             </build>
+            <dependencies>
+
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-actuator</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>info.picocli</groupId>
+                    <artifactId>picocli-spring-boot-starter</artifactId>
+                    <version>4.7.6</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-test</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+            </dependencies>
         </profile>
 
         <!-- build slim jar including javadoc and sources -->
@@ -106,8 +133,26 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.11.0</version>
+                        <configuration>
+                            <excludes>
+                                <exclude>${app.package}</exclude>
+                            </excludes>
+                            <testExcludes>
+                                <testExclude>${app.package}</testExclude>
+                            </testExcludes>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>3.11.2</version>
+                        <configuration>
+                            <sourceFileExcludes>
+                                <sourceFileExclude>${app.package}</sourceFileExclude>
+                            </sourceFileExcludes>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -121,6 +166,9 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
                         <version>3.3.1</version>
+                        <configuration>
+                            <excludes>${app.package}</excludes>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -132,6 +180,43 @@
                     </plugin>
                 </plugins>
             </build>
+            <dependencies>
+
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                    <version>2.0.16</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.junit.jupiter</groupId>
+                    <artifactId>junit-jupiter-engine</artifactId>
+                    <version>5.11.3</version>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.junit.jupiter</groupId>
+                    <artifactId>junit-jupiter-params</artifactId>
+                    <version>5.11.3</version>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-core</artifactId>
+                    <version>5.14.2</version>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-junit-jupiter</artifactId>
+                    <version>5.14.2</version>
+                    <scope>test</scope>
+                </dependency>
+
+            </dependencies>
         </profile>
     </profiles>
 
@@ -146,37 +231,14 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>info.picocli</groupId>
-            <artifactId>picocli-spring-boot-starter</artifactId>
-            <version>4.7.6</version>
         </dependency>
 
         <dependency>
             <groupId>org.matsim</groupId>
             <artifactId>matsim</artifactId>
             <version>${matsim.version}</version>
-        </dependency>
-
-        <!-- test -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <dependency>

@@ -9,8 +9,11 @@ on:
       - main
 
 jobs:
-  setup:
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        profile: [ 'lib', 'app' ]
     steps:
       - uses: actions/checkout@v4
 
@@ -21,16 +24,5 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-  build-lib:
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      - name: Build lib
-        run: mvn -B verify --file pom.xml -P lib
-
-  build-app:
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      - name: Build app
-        run: mvn -B verify --file pom.xml -P app
+      - name: Build with Maven
+        run: mvn -B verify --file pom.xml -P ${{ matrix.profile }}

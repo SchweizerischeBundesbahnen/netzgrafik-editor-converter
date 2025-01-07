@@ -1,8 +1,6 @@
 # Netzgrafik-Editor Converter
 
 TODO: Document modules
-TODO: Solve logging. Only include logback-classic as test dependency
-TODO: Proper include test case files in the test module?
 
 Converter to expand network graphics from
 the [Netzgrafik-Editor](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-frontend) into timetables for

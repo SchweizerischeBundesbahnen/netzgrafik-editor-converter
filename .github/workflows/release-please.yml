@@ -37,6 +37,6 @@ jobs:
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
       - name: Publish
-        run: mvn --batch-mode deploy --settings $GITHUB_WORKSPACE/settings.xml
+        run: mvn deploy -P lib -s $GITHUB_WORKSPACE/settings.xml
         env:
           GITHUB_TOKEN: ${{ github.token }}

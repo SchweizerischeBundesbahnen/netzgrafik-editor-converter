@@ -47,18 +47,19 @@ Example:
 
 ```sh
 # configure paths
-NETWORK_GRAPHIC_FILE=src/test/resources/ng/scenarios/realistic.json
-OUTPUT_DIRECTORY=integration-test/output/cmd
+NETWORK_GRAPHIC_FILE=../testutil/src/test/resources/ng/scenarios/realistic.json
+OUTPUT_DIRECTORY=../integration-test/output/cmd
 
 # output format: GTFS or MATSIM 
 OUTPUT_FORMAT=GTFS
 
 # optional CSV repositories
-STOP_FACILITY_INFO_FILE=src/test/resources/ng/scenarios/realistic-stop-facility-info.csv
-ROLLING_STOCK_INFO_FILE=src/test/resources/ng/scenarios/realistic-rolling-stock-info.csv
+STOP_FACILITY_INFO_FILE=../testutil/src/test/resources/ng/scenarios/realistic-stop-facility-info.csv
+ROLLING_STOCK_INFO_FILE=../testutil/src/test/resources/ng/scenarios/realistic-rolling-stock-info.csv
 
 # run the Spring command line runner app to convert to GTFS / MATSim format
-./mvnw spring-boot:run -Dspring-boot.run.arguments="$NETWORK_GRAPHIC_FILE $OUTPUT_DIRECTORY -f $OUTPUT_FORMAT -i $STOP_FACILITY_INFO_FILE -r $ROLLING_STOCK_INFO_FILE"
+ARGS="$NETWORK_GRAPHIC_FILE $OUTPUT_DIRECTORY -f $OUTPUT_FORMAT -i $STOP_FACILITY_INFO_FILE -r $ROLLING_STOCK_INFO_FILE"
+./mvnw spring-boot:run -pl app -Dspring-boot.run.arguments=$ARGS
 ```
 
 ### Converter in Java

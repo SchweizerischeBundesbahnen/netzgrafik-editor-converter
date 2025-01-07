@@ -1,7 +1,5 @@
 # Netzgrafik-Editor Converter
 
-TODO: Document modules
-
 Converter to expand network graphics from
 the [Netzgrafik-Editor](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-frontend) into timetables for
 the entire service day in different formats, as for example GTFS static or MATSim transit schedules.
@@ -117,7 +115,17 @@ public class Example {
 
 ## Design
 
-The converter has a modular design (DI):
+The Maven project is structured into three modules: `app`, `lib` and `test`.
+
+### Application
+
+A command-line application based on Spring Boot's `CommandLineRunner`, which serves as the entry point for interacting
+with the converter. The module isolates the Spring Boot dependency.
+
+### Library
+
+The core functionality of the project is encapsulated in the library module, which provides the logic for reading,
+converting, and writing network graphic data. The library has a modular design (DI):
 
 - **converter**: Reads a network graphic from a source, converts it, and writes to a sink.
     - **core**: Converter logic and configuration.
@@ -127,12 +135,16 @@ The converter has a modular design (DI):
         - **validation**: Network graphic ID validator and sanitizer.
     - **adapter**: Format-specific transit schedule builder, implementing the supply builder interface.
     - **io**: Provides implementations for network graphic sources and converter output sinks.
-    - **app**: Command line application.
     - **utils**: Utilities used across multiple domains.
 
 The class diagram outlines core classes and their relationships:
 
 ![Class diagram](docs/uml/class-diagram.svg)
+
+### Testing
+
+Enables access to test case files and provides a JUnit Jupiter Extension for easy integration test directory path
+handling. Both the library and application modules depend on this module in the test scope.
 
 ## Contributing
 

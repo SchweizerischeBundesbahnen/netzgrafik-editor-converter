@@ -10,7 +10,7 @@
         <version>1.1.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>netzgrafik-editor-converter-testutil</artifactId>
+    <artifactId>netzgrafik-editor-converter-test</artifactId>
 
     <dependencies>
         <dependency>

@@ -1,4 +1,4 @@
-package ch.sbb.pfi.netzgrafikeditor.converter.util.test;
+package ch.sbb.pfi.netzgrafikeditor.converter.test;
 
 import lombok.RequiredArgsConstructor;
 

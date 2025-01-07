@@ -1,4 +1,4 @@
-package ch.sbb.pfi.netzgrafikeditor.converter.util.test;
+package ch.sbb.pfi.netzgrafikeditor.converter.test;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -80,6 +80,7 @@ public class TestDirectoryExtension implements BeforeEachCallback, ParameterReso
                 .orElse(false)) {
             outputDir = outputDir.resolve(context.getDisplayName());
         }
+
         return outputDir;
     }
 
@@ -91,6 +92,7 @@ public class TestDirectoryExtension implements BeforeEachCallback, ParameterReso
                 }
             }
         }
+
         Files.delete(path);
     }
 
@@ -108,6 +110,7 @@ public class TestDirectoryExtension implements BeforeEachCallback, ParameterReso
         if (Files.exists(outputDir)) {
             deleteDirectory(outputDir);
         }
+
         Files.createDirectories(outputDir);
     }
 

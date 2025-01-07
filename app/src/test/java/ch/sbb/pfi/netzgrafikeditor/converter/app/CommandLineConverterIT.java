@@ -1,8 +1,8 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.app;
 
-import ch.sbb.pfi.netzgrafikeditor.converter.util.test.OutputDir;
-import ch.sbb.pfi.netzgrafikeditor.converter.util.test.TestDirectoryExtension;
-import ch.sbb.pfi.netzgrafikeditor.converter.util.test.TestScenario;
+import ch.sbb.pfi.netzgrafikeditor.converter.test.OutputDir;
+import ch.sbb.pfi.netzgrafikeditor.converter.test.TestDirectoryExtension;
+import ch.sbb.pfi.netzgrafikeditor.converter.test.TestScenario;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

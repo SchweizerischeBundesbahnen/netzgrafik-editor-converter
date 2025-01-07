@@ -1,4 +1,4 @@
-package ch.sbb.pfi.netzgrafikeditor.converter.util.test;
+package ch.sbb.pfi.netzgrafikeditor.converter.test;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

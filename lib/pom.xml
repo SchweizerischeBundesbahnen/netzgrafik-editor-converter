@@ -23,7 +23,7 @@
     <dependencies>
         <dependency>
             <groupId>ch.sbb.pfi.netzgrafikeditor</groupId>
-            <artifactId>netzgrafik-editor-converter-testutil</artifactId>
+            <artifactId>netzgrafik-editor-converter-test</artifactId>
             <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>

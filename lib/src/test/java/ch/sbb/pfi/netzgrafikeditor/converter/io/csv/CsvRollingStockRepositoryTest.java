@@ -1,7 +1,7 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.io.csv;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleTypeInfo;
-import ch.sbb.pfi.netzgrafikeditor.converter.util.test.TestScenario;
+import ch.sbb.pfi.netzgrafikeditor.converter.test.TestScenario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

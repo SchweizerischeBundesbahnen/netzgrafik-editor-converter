@@ -19,7 +19,7 @@
     </properties>
 
     <modules>
-        <module>testutil</module>
+        <module>test</module>
         <module>lib</module>
         <module>app</module>
     </modules>
@@ -52,7 +52,7 @@
     <build>
         <testResources>
             <testResource>
-                <directory>../testutil/src/test/resources</directory>
+                <directory>../test/src/test/resources</directory>
             </testResource>
         </testResources>
         <plugins>

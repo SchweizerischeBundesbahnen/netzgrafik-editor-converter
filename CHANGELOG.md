@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/compare/v1.1.0...v2.0.0) (2025-01-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* split project into maven modules app, lib and test ([#43](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/issues/43))
+
+### Features
+
+* split project into maven modules app, lib and test ([#43](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/issues/43)) ([4f82ad1](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/commit/4f82ad18fe5665e36d8e6a03a9bb6b14a9fe8852))
+
 ## [1.1.0](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/compare/v1.0.1...v1.1.0) (2024-12-13)
 
 

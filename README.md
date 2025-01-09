@@ -47,15 +47,15 @@ Example:
 
 ```sh
 # configure paths
-NETWORK_GRAPHIC_FILE=../testutil/src/test/resources/ng/scenarios/realistic.json
+NETWORK_GRAPHIC_FILE=../test/src/main/resources/ng/scenarios/realistic.json
 OUTPUT_DIRECTORY=../integration-test/output/cmd
 
 # output format: GTFS or MATSIM 
 OUTPUT_FORMAT=GTFS
 
 # optional CSV repositories
-STOP_FACILITY_INFO_FILE=../testutil/src/test/resources/ng/scenarios/realistic-stop-facility-info.csv
-ROLLING_STOCK_INFO_FILE=../testutil/src/test/resources/ng/scenarios/realistic-rolling-stock-info.csv
+STOP_FACILITY_INFO_FILE=../test/src/main/resources/ng/scenarios/realistic-stop-facility-info.csv
+ROLLING_STOCK_INFO_FILE=../test/src/main/resources/ng/scenarios/realistic-rolling-stock-info.csv
 
 # run the Spring command line runner app to convert to GTFS / MATSim format
 ARGS="$NETWORK_GRAPHIC_FILE $OUTPUT_DIRECTORY -f $OUTPUT_FORMAT -i $STOP_FACILITY_INFO_FILE -r $ROLLING_STOCK_INFO_FILE"
@@ -120,7 +120,7 @@ The Maven project is structured into three modules: `app`, `lib` and `test`.
 ### Application
 
 A command-line application based on Spring Boot's `CommandLineRunner`, which serves as the entry point for interacting
-with the converter. The module isolates the Spring Boot dependency.
+with the converter. The application module isolates the Spring Boot dependency.
 
 ### Library
 
@@ -139,7 +139,7 @@ converting, and writing network graphic data. The library has a modular design (
 
 The class diagram outlines core classes and their relationships:
 
-![Class diagram](docs/uml/class-diagram.svg)
+![Class diagram](docs/uml/lib-class-diagram.svg)
 
 ### Testing
 

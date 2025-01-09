@@ -1,4 +1,2 @@
 jdk:
-  - openjdk17
-env:
-  MAVEN_PROFILE: "lib"
+  - openjdk21

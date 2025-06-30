@@ -50,16 +50,6 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
         return stopFacilityInfo.getName().isEmpty() ? stopFacilityInfo.getId() : stopFacilityInfo.getName();
     }
 
-    @Override
-    protected void buildStopFacility(StopFacilityInfo stopFacilityInfo) {
-        stops.add(Stop.builder()
-                .stopId(stopFacilityInfo.getId())
-                .stopName(stopFacilityInfo.getName())
-                .stopLat(stopFacilityInfo.getCoordinate().getLatitude())
-                .stopLon(stopFacilityInfo.getCoordinate().getLongitude())
-                .build());
-    }
-
     private static RouteType toGtfsRouteType(TransportMode transportMode) {
         if (transportMode == null) {
             throw new IllegalArgumentException("Input TransportMode cannot be null.");
@@ -77,6 +67,16 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
             case TROLLEYBUS -> RouteType.TROLLEYBUS;
             case MONORAIL -> RouteType.MONORAIL;
         };
+    }
+
+    @Override
+    protected void buildStopFacility(StopFacilityInfo stopFacilityInfo) {
+        stops.add(Stop.builder()
+                .stopId(stopFacilityInfo.getId())
+                .stopName(stopFacilityInfo.getName())
+                .stopLat(stopFacilityInfo.getCoordinate().getLatitude())
+                .stopLon(stopFacilityInfo.getCoordinate().getLongitude())
+                .build());
     }
 
     @Override

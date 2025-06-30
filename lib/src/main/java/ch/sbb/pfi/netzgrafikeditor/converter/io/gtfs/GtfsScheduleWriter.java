@@ -5,6 +5,7 @@ import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Calendar;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.FeedInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.GtfsSchedule;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Route;
+import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.RouteType;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Stop;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.StopTime;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Trip;
@@ -91,6 +92,8 @@ public class GtfsScheduleWriter implements ConverterSink<GtfsSchedule> {
                     return casted.format(DATE_FORMATTER);
                 } else if (value instanceof Calendar.Type casted) {
                     return casted == Calendar.Type.AVAILABLE ? "1" : "0";
+                } else if (value instanceof RouteType casted) {
+                    return String.valueOf(casted.getValue());
                 } else if (value != null) {
                     return escapeCsv(value.toString());
                 } else {

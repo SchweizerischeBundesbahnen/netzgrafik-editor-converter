@@ -3,6 +3,7 @@ package ch.sbb.pfi.netzgrafikeditor.converter.adapter.matsim;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.BaseSupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.DepartureInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RollingStockRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleAllocation;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
@@ -27,8 +28,8 @@ public class MatsimSupplyBuilder extends BaseSupplyBuilder<Scenario> {
     private final InfrastructureBuilder infrastructureBuilder;
     private final Scenario scenario;
 
-    public MatsimSupplyBuilder(InfrastructureRepository infrastructureRepository, VehicleCircuitsPlanner vehicleCircuitsPlanner) {
-        super(infrastructureRepository, vehicleCircuitsPlanner);
+    public MatsimSupplyBuilder(InfrastructureRepository infrastructureRepository, RollingStockRepository rollingStockRepository, VehicleCircuitsPlanner vehicleCircuitsPlanner) {
+        super(infrastructureRepository, rollingStockRepository, vehicleCircuitsPlanner);
         this.scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
         factory = new MatsimSupplyFactory(scenario);
         infrastructureBuilder = new InfrastructureBuilder(scenario, factory, infrastructureRepository);

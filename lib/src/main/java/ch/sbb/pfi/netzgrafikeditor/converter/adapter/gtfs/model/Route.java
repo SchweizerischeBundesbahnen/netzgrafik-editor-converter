@@ -15,6 +15,6 @@ public class Route {
 
     String routeLongName;
 
-    int routeType;
+    RouteType routeType;
 
 }

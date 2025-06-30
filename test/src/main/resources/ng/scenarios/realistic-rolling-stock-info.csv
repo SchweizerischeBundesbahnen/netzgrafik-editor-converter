@@ -1,3 +1,3 @@
-category,vehicle_type_id,seats,standing_room,length,max_velocity
-IC,FV-Dosto,600,0,200,200
-IR,IR-Dosto,350,550,100,160
+category,transport_mode,vehicle_type_id,seats,standing_room,length,max_velocity
+IC,rail,FV-Dosto,600,0,200,200
+IR,rail,IR-Dosto,350,550,100,160

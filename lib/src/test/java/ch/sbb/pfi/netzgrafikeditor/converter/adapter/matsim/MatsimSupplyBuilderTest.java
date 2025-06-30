@@ -2,10 +2,12 @@ package ch.sbb.pfi.netzgrafikeditor.converter.adapter.matsim;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.DepartureInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RollingStockRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TrackSegmentInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitLineInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitRouteInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransportMode;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleAllocation;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleInfo;
@@ -44,18 +46,18 @@ class MatsimSupplyBuilderTest {
     @Mock
     private VehicleCircuitsPlanner vehicleCircuitsPlanner;
 
+    @Mock
+    private RollingStockRepository rollingStockRepository;
+
     private MatsimSupplyBuilder matsimSupplyBuilder;
 
     private static List<VehicleAllocation> mockVehicleAllocations() {
-        TransitLineInfo transitLineInfo = new TransitLineInfo("lineSimple", "A");
+        TransitLineInfo transitLineInfo = new TransitLineInfo("lineSimple", "A", TransportMode.RAIL);
 
-        VehicleTypeInfo vehicleTypeInfo1 = new VehicleTypeInfo("vehicleType1", 100, 50, 200.0, 50.0, Map.of());
-        VehicleTypeInfo vehicleTypeInfo2 = new VehicleTypeInfo("vehicleType2", 150, 0, 300.0, 60.0, Map.of());
-
-        VehicleInfo vehicleInfo1 = new VehicleInfo("vehicle1", vehicleTypeInfo1);
-        VehicleInfo vehicleInfo2 = new VehicleInfo("vehicle2", vehicleTypeInfo1);
-        VehicleInfo vehicleInfo3 = new VehicleInfo("vehicle3", vehicleTypeInfo2);
-        VehicleInfo vehicleInfo4 = new VehicleInfo("vehicle4", vehicleTypeInfo2);
+        VehicleInfo vehicleInfo1 = new VehicleInfo("vehicle1", VehicleType.VT_1.getVehicleTypeInfo());
+        VehicleInfo vehicleInfo2 = new VehicleInfo("vehicle2", VehicleType.VT_1.getVehicleTypeInfo());
+        VehicleInfo vehicleInfo3 = new VehicleInfo("vehicle3", VehicleType.VT_2.getVehicleTypeInfo());
+        VehicleInfo vehicleInfo4 = new VehicleInfo("vehicle4", VehicleType.VT_2.getVehicleTypeInfo());
 
         DepartureInfo departureInfo1 = new DepartureInfo(new TransitRouteInfo("lineSimple_F", transitLineInfo),
                 Default.SERVICE_DAY_START.plus(0, ChronoUnit.MINUTES));
@@ -82,7 +84,8 @@ class MatsimSupplyBuilderTest {
 
     @BeforeEach
     void setUp() {
-        matsimSupplyBuilder = new MatsimSupplyBuilder(infrastructureRepository, vehicleCircuitsPlanner);
+        matsimSupplyBuilder = new MatsimSupplyBuilder(infrastructureRepository, rollingStockRepository,
+                vehicleCircuitsPlanner);
     }
 
     /**
@@ -116,6 +119,9 @@ class MatsimSupplyBuilderTest {
         mockTrackSegments(Stop.D, Stop.C, Segments.D_C);
         mockTrackSegments(Stop.C, Stop.B, Segments.C_B);
         mockTrackSegments(Stop.B, Stop.A, Segments.B_A);
+
+        // mock vehicle type in rolling stock repository
+        when(rollingStockRepository.getVehicleType(any())).thenReturn(VehicleType.VT_1.getVehicleTypeInfo());
 
         // mock the plan method
         when(vehicleCircuitsPlanner.plan()).thenReturn(mockVehicleAllocations());
@@ -198,10 +204,18 @@ class MatsimSupplyBuilderTest {
         private final List<TrackSegmentInfo> segments;
     }
 
+    @RequiredArgsConstructor
+    @Getter
+    enum VehicleType {
+        VT_1(new VehicleTypeInfo("vehicleType1", TransportMode.RAIL, 100, 50, 200.0, 50.0, Map.of())),
+        VT_2(new VehicleTypeInfo("vehicleType2", TransportMode.RAIL, 150, 0, 300.0, 60.0, Map.of()));
+
+        private final VehicleTypeInfo vehicleTypeInfo;
+    }
+
     static class Default {
         private static final Duration DWELL_TIME = Duration.ofSeconds(2 * 60);
         private static final Duration TRAVEL_TIME = Duration.ofSeconds(5 * 60);
         private static final ServiceDayTime SERVICE_DAY_START = ServiceDayTime.of(6, 0, 0);
     }
-
 }

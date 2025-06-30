@@ -61,7 +61,7 @@ class MatsimSupplyFactory {
         return sf.createDeparture(departureId, time);
     }
 
-    TransitRoute createTransitRoute(TransitLine transitLine, String id, List<Id<Link>> routeLinks, List<TransitRouteStop> stops) {
+    TransitRoute createTransitRoute(TransitLine transitLine, String id, String transportMode, List<Id<Link>> routeLinks, List<TransitRouteStop> stops) {
         Id<TransitRoute> routeId = Id.create(String.format(IdPattern.TRANSIT_ROUTE, id), TransitRoute.class);
         NetworkRoute networkRoute = RouteUtils.createNetworkRoute(routeLinks);
         TransitRoute transitRoute = transitLine.getRoutes().get(routeId);
@@ -73,6 +73,7 @@ class MatsimSupplyFactory {
 
         log.debug("Creating TransitRoute {} and adding to TransitLine {}", routeId, transitLine.getId());
         transitRoute = sf.createTransitRoute(routeId, networkRoute, stops, Default.NETWORK_MODE);
+        transitRoute.setTransportMode(transportMode);
         transitLine.addRoute(transitRoute);
 
         return transitRoute;

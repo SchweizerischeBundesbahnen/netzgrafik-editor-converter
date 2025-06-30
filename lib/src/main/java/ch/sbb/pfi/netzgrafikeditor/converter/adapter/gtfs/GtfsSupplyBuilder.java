@@ -4,16 +4,19 @@ import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Agency;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Calendar;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.GtfsSchedule;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Route;
+import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.RouteType;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Stop;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.StopTime;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Trip;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.BaseSupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RollingStockRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteElement;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteElementVisitor;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RoutePass;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteStop;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransportMode;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleAllocation;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
 import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
@@ -28,7 +31,6 @@ import java.util.Set;
 
 public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
 
-    public static final int ROUTE_TYPE = 2; // rail
     public static final String ROUTE_NAME_FORMAT = "%s: %s - %s";
 
     private final List<Stop> stops = new ArrayList<>();
@@ -40,8 +42,8 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
     private final Map<String, Integer> tripCounts = new HashMap<>();
     private final Map<String, List<RouteElement>> routeElements = new HashMap<>();
 
-    public GtfsSupplyBuilder(InfrastructureRepository infrastructureRepository, VehicleCircuitsPlanner vehicleCircuitsPlanner) {
-        super(infrastructureRepository, vehicleCircuitsPlanner);
+    public GtfsSupplyBuilder(InfrastructureRepository infrastructureRepository, RollingStockRepository rollingStockRepository, VehicleCircuitsPlanner vehicleCircuitsPlanner) {
+        super(infrastructureRepository, rollingStockRepository, vehicleCircuitsPlanner);
     }
 
     private static String getNameOrIdIfNull(StopFacilityInfo stopFacilityInfo) {
@@ -58,32 +60,23 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
                 .build());
     }
 
-    @Override
-    protected void buildTransitRoute(TransitRouteContainer transitRouteContainer) {
-
-        // store route elements for stop time creation
-        routeElements.put(transitRouteContainer.transitRouteInfo().getId(), transitRouteContainer.routeElements());
-
-        // build transit route names
-        String categoryName = transitRouteContainer.transitRouteInfo().getTransitLineInfo().getCategory();
-        StopFacilityInfo orig = transitRouteContainer.routeElements().getFirst().getStopFacilityInfo();
-        StopFacilityInfo dest = transitRouteContainer.routeElements().getLast().getStopFacilityInfo();
-        String routeShortName = String.format(ROUTE_NAME_FORMAT, categoryName, orig.getId(), dest.getId());
-        String routeLongName = String.format(ROUTE_NAME_FORMAT, categoryName, getNameOrIdIfNull(orig),
-                getNameOrIdIfNull(dest));
-
-        // create and add GTFS route (transit line in the context of the supply builder) if not yet added
-        String routeId = transitRouteContainer.transitRouteInfo().getTransitLineInfo().getId();
-        if (!createdRoutes.contains(routeId)) {
-            routes.add(Route.builder()
-                    .routeId(routeId)
-                    .agencyId(Agency.DEFAULT_ID)
-                    .routeLongName(routeLongName)
-                    .routeShortName(routeShortName)
-                    .routeType(ROUTE_TYPE)
-                    .build());
-            createdRoutes.add(routeId);
+    private static RouteType toGtfsRouteType(TransportMode transportMode) {
+        if (transportMode == null) {
+            throw new IllegalArgumentException("Input TransportMode cannot be null.");
         }
+
+        return switch (transportMode) {
+            case TRAM -> RouteType.TRAM;
+            case SUBWAY -> RouteType.SUBWAY;
+            case RAIL -> RouteType.RAIL;
+            case BUS -> RouteType.BUS;
+            case FERRY -> RouteType.FERRY;
+            case CABLE_TRAM -> RouteType.CABLE_TRAM;
+            case AERIAL_LIFT -> RouteType.AERIAL_LIFT;
+            case FUNICULAR -> RouteType.FUNICULAR;
+            case TROLLEYBUS -> RouteType.TROLLEYBUS;
+            case MONORAIL -> RouteType.MONORAIL;
+        };
     }
 
     @Override
@@ -145,5 +138,34 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
     @Override
     protected GtfsSchedule getResult() {
         return GtfsSchedule.builder().stops(stops).routes(routes).trips(trips).stopTimes(stopTimes).build();
+    }
+
+    @Override
+    protected void buildTransitRoute(TransitRouteContainer transitRouteContainer) {
+
+        // store route elements for stop time creation
+        routeElements.put(transitRouteContainer.transitRouteInfo().getId(), transitRouteContainer.routeElements());
+
+        // build transit route names
+        String categoryName = transitRouteContainer.transitRouteInfo().getTransitLineInfo().getCategory();
+        StopFacilityInfo orig = transitRouteContainer.routeElements().getFirst().getStopFacilityInfo();
+        StopFacilityInfo dest = transitRouteContainer.routeElements().getLast().getStopFacilityInfo();
+        String routeShortName = String.format(ROUTE_NAME_FORMAT, categoryName, orig.getId(), dest.getId());
+        String routeLongName = String.format(ROUTE_NAME_FORMAT, categoryName, getNameOrIdIfNull(orig),
+                getNameOrIdIfNull(dest));
+
+        // create and add GTFS route (transit line in the context of the supply builder) if not yet added
+        String routeId = transitRouteContainer.transitRouteInfo().getTransitLineInfo().getId();
+        if (!createdRoutes.contains(routeId)) {
+            routes.add(Route.builder()
+                    .routeId(routeId)
+                    .agencyId(Agency.DEFAULT_ID)
+                    .routeLongName(routeLongName)
+                    .routeShortName(routeShortName)
+                    .routeType(toGtfsRouteType(
+                            transitRouteContainer.transitRouteInfo().getTransitLineInfo().getTransportMode()))
+                    .build());
+            createdRoutes.add(routeId);
+        }
     }
 }

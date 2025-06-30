@@ -51,7 +51,7 @@ public class ConversionService {
 
             case GTFS -> {
                 SupplyBuilder<GtfsSchedule> builder = new GtfsSupplyBuilder(infrastructureRepository,
-                        vehicleCircuitsPlanner);
+                        rollingStockRepository, vehicleCircuitsPlanner);
                 ConverterSink<GtfsSchedule> sink = new GtfsScheduleWriter(request.outputDirectory, true);
 
                 yield new NetworkGraphicConverter<>(request.converterConfig, source, builder, sink);
@@ -59,7 +59,7 @@ public class ConversionService {
 
             case MATSIM -> {
                 SupplyBuilder<Scenario> builder = new MatsimSupplyBuilder(infrastructureRepository,
-                        vehicleCircuitsPlanner);
+                        rollingStockRepository, vehicleCircuitsPlanner);
                 ConverterSink<Scenario> sink = new TransitScheduleXmlWriter(request.outputDirectory);
 
                 yield new NetworkGraphicConverter<>(request.converterConfig, source, builder, sink);

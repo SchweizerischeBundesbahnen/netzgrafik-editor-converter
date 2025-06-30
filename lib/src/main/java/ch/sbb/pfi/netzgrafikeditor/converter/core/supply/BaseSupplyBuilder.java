@@ -13,26 +13,28 @@ import java.util.Map;
 public abstract class BaseSupplyBuilder<T> implements SupplyBuilder<T> {
 
     private final InfrastructureRepository infrastructureRepository;
+    private final RollingStockRepository rollingStockRepository;
     private final VehicleCircuitsPlanner vehicleCircuitsPlanner;
 
     private final Map<String, TransitLineInfo> transitLineInfos = new HashMap<>();
     private final Map<String, StopFacilityInfo> stopFacilityInfos = new HashMap<>();
     private final Map<String, TransitRouteContainer> transitRouteContainers = new HashMap<>();
 
-    public BaseSupplyBuilder(InfrastructureRepository infrastructureRepository, VehicleCircuitsPlanner vehicleCircuitsPlanner) {
+    public BaseSupplyBuilder(InfrastructureRepository infrastructureRepository, RollingStockRepository rollingStockRepository, VehicleCircuitsPlanner vehicleCircuitsPlanner) {
         this.infrastructureRepository = infrastructureRepository;
+        this.rollingStockRepository = rollingStockRepository;
         this.vehicleCircuitsPlanner = vehicleCircuitsPlanner;
     }
 
     @Override
     public SupplyBuilder<T> addStopFacility(String id, String name, double x, double y) {
         if (stopFacilityInfos.containsKey(id)) {
-            throw new RuntimeException("Stop already existing for id " + id);
+            throw new IllegalArgumentException("Stop already existing for id " + id);
         }
 
         StopFacilityInfo stopFacilityInfo = infrastructureRepository.getStopFacility(id, name, x, y);
         if (stopFacilityInfo == null) {
-            throw new RuntimeException("Stop with id " + id + " does not exist in infrastructure repository");
+            throw new IllegalStateException("Stop with id " + id + " does not exist in infrastructure repository");
         }
 
         stopFacilityInfos.put(id, stopFacilityInfo);
@@ -43,10 +45,15 @@ public abstract class BaseSupplyBuilder<T> implements SupplyBuilder<T> {
     @Override
     public SupplyBuilder<T> addTransitLine(String id, String category) {
         if (transitLineInfos.containsKey(id)) {
-            throw new RuntimeException("Transit line already exists for id " + id);
+            throw new IllegalArgumentException("Transit line already exists for id " + id);
         }
 
-        transitLineInfos.put(id, new TransitLineInfo(id, category));
+        VehicleTypeInfo vehicleTypeInfo = rollingStockRepository.getVehicleType(category);
+        if (vehicleTypeInfo == null) {
+            throw new IllegalStateException("No vehicle type found in RollingStockRepository for category " + category);
+        }
+
+        transitLineInfos.put(id, new TransitLineInfo(id, category, vehicleTypeInfo.getTransportMode()));
 
         return this;
     }
@@ -135,15 +142,35 @@ public abstract class BaseSupplyBuilder<T> implements SupplyBuilder<T> {
         }
 
         List<VehicleAllocation> vehicleAllocations = vehicleCircuitsPlanner.plan();
+
         if (vehicleAllocations == null || vehicleAllocations.isEmpty()) {
             throw new IllegalStateException("No vehicle allocations received from vehicle circuit planer");
         }
+        validateAllocations(vehicleAllocations);
 
         for (VehicleAllocation vehicleAllocation : vehicleAllocations) {
             buildDeparture(vehicleAllocation);
         }
 
         return getResult();
+    }
+
+    private void validateAllocations(List<VehicleAllocation> vehicleAllocations) {
+        for (VehicleAllocation vehicleAllocation : vehicleAllocations) {
+            TransportMode expectedMode = vehicleAllocation.getDepartureInfo()
+                    .getTransitRouteInfo()
+                    .getTransitLineInfo()
+                    .getTransportMode();
+            TransportMode actualMode = vehicleAllocation.getVehicleInfo().getVehicleTypeInfo().getTransportMode();
+
+            if (expectedMode != actualMode) {
+                throw new IllegalStateException(String.format(
+                        "Inconsistent transport mode ('%s' / '%s') set on vehicle allocation for departure '%s' on route '%s' and line '%s'",
+                        expectedMode, actualMode, vehicleAllocation.getDepartureId(),
+                        vehicleAllocation.getDepartureInfo().getTransitRouteInfo().getId(),
+                        vehicleAllocation.getDepartureInfo().getTransitRouteInfo().getTransitLineInfo().getId()));
+            }
+        }
     }
 
     protected abstract void buildStopFacility(StopFacilityInfo stopFacilityInfo);
@@ -156,5 +183,4 @@ public abstract class BaseSupplyBuilder<T> implements SupplyBuilder<T> {
 
     protected record TransitRouteContainer(TransitRouteInfo transitRouteInfo, List<RouteElement> routeElements) {
     }
-
 }

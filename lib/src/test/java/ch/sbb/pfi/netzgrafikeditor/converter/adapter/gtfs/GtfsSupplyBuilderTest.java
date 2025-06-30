@@ -3,11 +3,15 @@ package ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.GtfsSchedule;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.DepartureInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RollingStockRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitLineInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitRouteInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransportMode;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleAllocation;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleTypeInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.util.spatial.Coordinate;
 import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -32,6 +37,9 @@ class GtfsSupplyBuilderTest {
 
     @Mock
     private InfrastructureRepository infrastructureRepository;
+
+    @Mock
+    private RollingStockRepository rollingStockRepository;
 
     @Mock
     private VehicleCircuitsPlanner vehicleCircuitsPlanner;
@@ -50,12 +58,16 @@ class GtfsSupplyBuilderTest {
         when(infrastructureRepository.getStopFacility(eq("d"), any(String.class), any(Double.class),
                 any(Double.class))).thenReturn(new StopFacilityInfo("d", "Stop D", new Coordinate(4, 4)));
 
-        TransitLineInfo transitLineInfo = new TransitLineInfo("lineId", null);
+        TransitLineInfo transitLineInfo = new TransitLineInfo("lineId", null, TransportMode.RAIL);
         TransitRouteInfo transitRouteInfo = new TransitRouteInfo("routeId", transitLineInfo);
         DepartureInfo departureInfo = new DepartureInfo(transitRouteInfo, ServiceDayTime.NOON);
-        VehicleAllocation vehicleAllocation = new VehicleAllocation(null, departureInfo, null);
+        VehicleTypeInfo vehicleTypeInfo = new VehicleTypeInfo("train", TransportMode.RAIL, 100, 150, 200, 90 * 3.6,
+                Map.of());
+        VehicleAllocation vehicleAllocation = new VehicleAllocation(null, departureInfo,
+                new VehicleInfo("train1", vehicleTypeInfo));
 
         when(vehicleCircuitsPlanner.plan()).thenReturn(List.of(vehicleAllocation));
+        when(rollingStockRepository.getVehicleType(any())).thenReturn(vehicleTypeInfo);
     }
 
     @Test
@@ -64,7 +76,7 @@ class GtfsSupplyBuilderTest {
                 .addStopFacility("b", "Stop B", 1, 0)
                 .addStopFacility("c", "Stop C", 2, 0)
                 .addStopFacility("d", "Stop D", 3, 0)
-                .addTransitLine("lineId", "IC")
+                .addTransitLine("lineId", "rail")
                 .addTransitRoute("routeId", "lineId", "a", Duration.of(5, ChronoUnit.MINUTES))
                 .addRoutePass("routeId", "b")
                 .addRouteStop("routeId", "c", Duration.of(10, ChronoUnit.MINUTES), Duration.of(5, ChronoUnit.MINUTES))

@@ -71,8 +71,14 @@ public class NetworkGraphicConverter<T> {
         log.info("Adding nodes of network graphic");
         for (Node node : lookup.nodes.values()) {
             log.debug("Adding node {}", node.getBetriebspunktName());
+
+            // The input coordinates originate from a graphical editor which uses a top-left origin system (Y-axis
+            // increases downwards). To transform these into a standard Cartesian or geographical coordinate system
+            // (bottom-left origin), the Y-coordinate must be inverted.
+            // Note: These transformed coordinates serve as a fallback. They are typically superseded by real-world
+            // coordinates from the infrastructure repository.
             builder.addStopFacility(node.getBetriebspunktName(), node.getFullName(), node.getPositionX(),
-                    node.getPositionY());
+                    -node.getPositionY());
         }
     }
 

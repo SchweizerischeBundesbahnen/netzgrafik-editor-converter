@@ -4,6 +4,7 @@ import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.GtfsSupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.GtfsSchedule;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.StopTime;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.matsim.MatsimSupplyBuilder;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RollingStockRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.SupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback.NoInfrastructureRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback.NoRollingStockRepository;
@@ -104,8 +105,9 @@ public class NetworkGraphicConverterIT {
                     .build();
 
             NetworkGraphicSource source = new JsonFileReader(path);
+            RollingStockRepository rollingStockRepository = new NoRollingStockRepository();
             SupplyBuilder<Scenario> builder = new MatsimSupplyBuilder(new NoInfrastructureRepository(),
-                    new NoVehicleCircuitsPlanner(new NoRollingStockRepository()));
+                    rollingStockRepository, new NoVehicleCircuitsPlanner(rollingStockRepository));
 
             // store scenario and write schedule
             ConverterSink<Scenario> sink = result -> {
@@ -188,8 +190,9 @@ public class NetworkGraphicConverterIT {
                     .build();
 
             NetworkGraphicSource source = new JsonFileReader(path);
+            RollingStockRepository rollingStockRepository = new NoRollingStockRepository();
             SupplyBuilder<GtfsSchedule> builder = new GtfsSupplyBuilder(new NoInfrastructureRepository(),
-                    new NoVehicleCircuitsPlanner(new NoRollingStockRepository()));
+                    rollingStockRepository, new NoVehicleCircuitsPlanner(rollingStockRepository));
 
             // store and write schedule
             ConverterSink<GtfsSchedule> sink = result -> {

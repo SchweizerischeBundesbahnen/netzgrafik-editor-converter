@@ -88,24 +88,30 @@ public class Example {
                 customRollingStockRepository);
 
         // convert to GTFS
-        setupGtfsConverter(customInfrastructureRepository, customVehicleCircuitsPlanner, source).run();
+        setupGtfsConverter(customInfrastructureRepository, customRollingStockRepository, customVehicleCircuitsPlanner,
+                source).run();
 
         // convert to MATSim
-        setupMatsimConverter(customInfrastructureRepository, customVehicleCircuitsPlanner, source).run();
+        setupMatsimConverter(customInfrastructureRepository, customRollingStockRepository, customVehicleCircuitsPlanner,
+                source).run();
     }
 
-    private static NetworkGraphicConverter<Scenario> setupMatsimConverter(InfrastructureRepository customInfrastructureRepository, VehicleCircuitsPlanner customVehicleCircuitsPlanner, NetworkGraphicSource source) {
+    private static NetworkGraphicConverter<Scenario> setupMatsimConverter(
+            InfrastructureRepository customInfrastructureRepository, RollingStockRepository customRollingStockRepository,
+            VehicleCircuitsPlanner customVehicleCircuitsPlanner, NetworkGraphicSource source) {
         SupplyBuilder<Scenario> builder = new MatsimSupplyBuilder(customInfrastructureRepository,
-                customVehicleCircuitsPlanner);
+                customRollingStockRepository, customVehicleCircuitsPlanner);
         ConverterSink<Scenario> sink = new TransitScheduleXmlWriter(Example.OUTPUT_DIRECTORY, "");
 
         return new NetworkGraphicConverter<>(CONFIG, source, builder, sink);
     }
 
-    private static NetworkGraphicConverter<GtfsSchedule> setupGtfsConverter(InfrastructureRepository customInfrastructureRepository, VehicleCircuitsPlanner customVehicleCircuitsPlanner, NetworkGraphicSource source) {
+    private static NetworkGraphicConverter<GtfsSchedule> setupGtfsConverter(
+            InfrastructureRepository customInfrastructureRepository, RollingStockRepository customRollingStockRepository,
+            VehicleCircuitsPlanner customVehicleCircuitsPlanner, NetworkGraphicSource source) {
         SupplyBuilder<GtfsSchedule> builder = new GtfsSupplyBuilder(customInfrastructureRepository,
-                customVehicleCircuitsPlanner);
-        ConverterSink<GtfsSchedule> sink = new GtfsScheduleWriter(Example.OUTPUT_DIRECTORY);
+                customRollingStockRepository, customVehicleCircuitsPlanner);
+        ConverterSink<GtfsSchedule> sink = new GtfsScheduleWriter(Example.OUTPUT_DIRECTORY, true);
 
         return new NetworkGraphicConverter<>(CONFIG, source, builder, sink);
     }

@@ -109,7 +109,8 @@ class InfrastructureBuilder {
             routeLinks.add(stopFacility[0].getLinkId());
         }
 
-        return factory.createTransitRoute(transitLine, transitRouteInfo.getId(), routeLinks, routeStops);
+        return factory.createTransitRoute(transitLine, transitRouteInfo.getId(),
+                transitRouteInfo.getTransitLineInfo().getTransportMode().name().toLowerCase(), routeLinks, routeStops);
     }
 
     // connects transit route stops on network, calls infrastructure repository for track information

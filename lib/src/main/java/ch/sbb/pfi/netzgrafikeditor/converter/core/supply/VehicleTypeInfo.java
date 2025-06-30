@@ -9,6 +9,7 @@ import java.util.Map;
 public class VehicleTypeInfo {
 
     String id;
+    TransportMode transportMode;
     int seats;
     int standingRoom;
     double length;

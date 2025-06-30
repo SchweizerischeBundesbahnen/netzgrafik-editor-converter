@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/compare/v2.0.0...v3.0.0) (2025-06-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* **supply:** The constructors for `BaseSupplyBuilder` (and all its subclasses like `GtfsSupplyBuilder` and `MatsimSupplyBuilder`) now require a `RollingStockRepository` instance. Any direct instantiation of these builders must be updated. Additionally, `VehicleTypeInfo` and `TransitLineInfo` constructors now require a `TransportMode` argument. The `CsvRollingStockRepository` now requires a `transport_mode` column in its input CSV file.
+
+### Features
+
+* **supply:** introduce and enforce transport mode consistency ([#121](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/issues/121)) ([716d79d](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/commit/716d79d3dddf8679f1b564bd707258acdd2362c5))
+
 ## [2.0.0](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/compare/v1.1.0...v2.0.0) (2025-01-09)
 
 

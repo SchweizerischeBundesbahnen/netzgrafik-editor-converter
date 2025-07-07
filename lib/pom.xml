@@ -29,7 +29,7 @@
         <dependency>
             <groupId>org.matsim</groupId>
             <artifactId>matsim</artifactId>
-            <version>2026.0-2025w27</version>
+            <version>2026.0-2025w28</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

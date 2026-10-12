@@ -2,6 +2,7 @@ package ch.sbb.pfi.netzgrafikeditor.converter.core;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.Node;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.Port;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.model.Trainrun;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.TrainrunSection;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.Transition;
 import lombok.AllArgsConstructor;
@@ -34,8 +35,10 @@ class SectionSequenceBuilder {
 
     /**
      * Traverse the sections and build an ordered, directed section sequences.
+     * <p>
+     * One-way trainruns only get a forward sequence, which follows the NGE section chain from source to target.
      */
-    EnumMap<RouteDirection, List<TrainrunSection>> build() {
+    EnumMap<RouteDirection, List<TrainrunSection>> build(Trainrun.Direction direction) {
         List<TrainrunSection> orderedSections = new LinkedList<>(); // append to start of list
 
         // find first section of the chain
@@ -49,12 +52,17 @@ class SectionSequenceBuilder {
         // align sections: e.g. A-B, C-B becomes A-B, B-C
         SectionAligner.align(orderedSections);
 
-        // create directed sequences
-        EnumMap<RouteDirection, List<TrainrunSection>> directedSections = new EnumMap<>(RouteDirection.class);
-        directedSections.put(RouteDirection.FORWARD, orderedSections);
-        directedSections.put(RouteDirection.REVERSE, SectionAligner.reverse(orderedSections));
+        // check if the aligned sections still follow the NGE section chain, or were swapped against it
+        TrainrunSection first = orderedSections.getFirst();
+        boolean drawnDirection = first.getSourceNodeId() == sections.get(first.getId()).getSourceNodeId();
 
-        return directedSections;
+        // create directed sequences
+        return switch (direction) {
+            case ROUND_TRIP -> new EnumMap<>(Map.of(RouteDirection.FORWARD, orderedSections, RouteDirection.REVERSE,
+                    SectionAligner.reverse(orderedSections)));
+            case ONE_WAY -> new EnumMap<>(Map.of(RouteDirection.FORWARD,
+                    drawnDirection ? orderedSections : SectionAligner.reverse(orderedSections)));
+        };
     }
 
     private void traverse(TrainrunSection root, Consumer<TrainrunSection> action) {

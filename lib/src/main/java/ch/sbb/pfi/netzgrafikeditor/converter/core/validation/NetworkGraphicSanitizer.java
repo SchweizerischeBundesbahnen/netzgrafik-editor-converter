@@ -49,6 +49,7 @@ public class NetworkGraphicSanitizer {
                         .categoryId(trainrun.getCategoryId())
                         .frequencyId(trainrun.getFrequencyId())
                         .trainrunTimeCategoryId(trainrun.getTrainrunTimeCategoryId())
+                        .direction(trainrun.getDirection())
                         .build();
                 fixedTrainruns.add(fixedTrainrun);
             }

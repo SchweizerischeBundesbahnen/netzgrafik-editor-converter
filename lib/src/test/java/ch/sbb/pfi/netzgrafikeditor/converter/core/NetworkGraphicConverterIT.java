@@ -79,7 +79,7 @@ public class NetworkGraphicConverterIT {
                     .getTransitLines()
                     .get(Id.create(testCase.name(), TransitLine.class));
             assertNotNull(transitLine);
-            assertEquals(2, transitLine.getRoutes().size());
+            assertEquals(testCase.isOneWay() ? 1 : 2, transitLine.getRoutes().size());
 
             // check FORWARD transit route
             TransitRoute transitRoute = transitLine.getRoutes()

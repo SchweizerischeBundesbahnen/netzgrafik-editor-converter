@@ -13,6 +13,7 @@ public enum TestCase {
     SIMPLE_DOUBLE_PASS("simple-double-pass.json", StopSequence.SIMPLE_DOUBLE_PASS),
     SIMPLE_DWELL_TIME_CONFLICT("simple-dwell-time-conflict.json", StopSequence.SIMPLE),
     SIMPLE_RANDOM_ORDER("simple-random-order.json", StopSequence.SIMPLE.reversed()),
+    SIMPLE_ASYMMETRIC("simple-asymmetric.json", StopSequence.SIMPLE),
     CYCLE_SMALL("cycle-small.json", StopSequence.CYCLE_SMALL),
     CYCLE("cycle.json", StopSequence.CYCLE),
     CYCLE_RANDOM_ORDER("cycle-random-order.json", StopSequence.CYCLE.reversed()),
@@ -20,8 +21,8 @@ public enum TestCase {
     SELF_INTERSECTION_RANDOM_ORDER("self-intersection-random-order.json", StopSequence.SELF_INTERSECTION),
     SELF_OVERLAY("self-overlay.json", StopSequence.SELF_OVERLAY.reversed()),
     SELF_OVERLAY_RANDOM_ORDER("self-overlay-random-order.json", StopSequence.SELF_OVERLAY),
-    ONE_WAY("one-way.json", StopSequence.ONE_WAY, true),
-    ONE_WAY_BACKWARD("one-way-backward.json", StopSequence.ONE_WAY.reversed(), true);
+    ONE_WAY("one-way.json", StopSequence.SIMPLE, true),
+    ONE_WAY_BACKWARD("one-way-backward.json", StopSequence.SIMPLE.reversed(), true);
 
     private static final String FOLDER = "ng/cases";
 
@@ -52,6 +53,5 @@ public enum TestCase {
         private static final List<String> CYCLE = List.of("A", "B", "C", "D", "E", "F", "G", "H", "A");
         private static final List<String> SELF_INTERSECTION = List.of("A", "B", "G", "F", "C", "B", "H");
         private static final List<String> SELF_OVERLAY = List.of("A", "B", "G", "B", "C");
-        private static final List<String> ONE_WAY = List.of("ZF", "ZG", "BAA");
     }
 }

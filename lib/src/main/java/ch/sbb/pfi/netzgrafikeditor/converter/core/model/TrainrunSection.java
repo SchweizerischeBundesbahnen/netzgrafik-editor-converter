@@ -24,10 +24,17 @@ public class TrainrunSection implements Identifiable {
 
     Time travelTime;
 
+    Time backwardTravelTime;
+
     Time sourceDeparture;
 
     Time targetArrival;
 
     Time targetDeparture;
+
+    // older network graphics have no backward travel time, the NGE treats them as symmetric
+    public Time getBackwardTravelTime() {
+        return backwardTravelTime != null ? backwardTravelTime : travelTime;
+    }
 
 }

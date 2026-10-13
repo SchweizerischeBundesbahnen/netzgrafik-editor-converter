@@ -19,16 +19,24 @@ public enum TestCase {
     SELF_INTERSECTION("self-intersection.json", StopSequence.SELF_INTERSECTION),
     SELF_INTERSECTION_RANDOM_ORDER("self-intersection-random-order.json", StopSequence.SELF_INTERSECTION),
     SELF_OVERLAY("self-overlay.json", StopSequence.SELF_OVERLAY.reversed()),
-    SELF_OVERLAY_RANDOM_ORDER("self-overlay-random-order.json", StopSequence.SELF_OVERLAY);
+    SELF_OVERLAY_RANDOM_ORDER("self-overlay-random-order.json", StopSequence.SELF_OVERLAY),
+    ONE_WAY("one-way.json", StopSequence.ONE_WAY, true),
+    ONE_WAY_BACKWARD("one-way-backward.json", StopSequence.ONE_WAY.reversed(), true);
 
     private static final String FOLDER = "ng/cases";
 
     private final TestFile testFile;
     private final List<String> stopSequence;
+    private final boolean oneWay;
 
     TestCase(String filename, List<String> stopSequence) {
+        this(filename, stopSequence, false);
+    }
+
+    TestCase(String filename, List<String> stopSequence, boolean oneWay) {
         this.testFile = new TestFile(FOLDER, filename);
         this.stopSequence = stopSequence;
+        this.oneWay = oneWay;
     }
 
     public Path getPath() {
@@ -44,5 +52,6 @@ public enum TestCase {
         private static final List<String> CYCLE = List.of("A", "B", "C", "D", "E", "F", "G", "H", "A");
         private static final List<String> SELF_INTERSECTION = List.of("A", "B", "G", "F", "C", "B", "H");
         private static final List<String> SELF_OVERLAY = List.of("A", "B", "G", "B", "C");
+        private static final List<String> ONE_WAY = List.of("ZF", "ZG", "BAA");
     }
 }

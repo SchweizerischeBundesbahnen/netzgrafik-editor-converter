@@ -90,7 +90,7 @@ public class NetworkGraphicConverter<T> {
         for (TrainrunSection section : lookup.sections.values()) {
             int trainId = section.getTrainrunId();
             SectionSequenceBuilder sequence = sequences.computeIfAbsent(trainId,
-                    k -> new SectionSequenceBuilder(lookup.nodes));
+                    _ -> new SectionSequenceBuilder(lookup.nodes));
             sequence.add(section);
         }
 
@@ -100,7 +100,7 @@ public class NetworkGraphicConverter<T> {
             SectionSequenceBuilder sequence = entry.getValue();
 
             log.debug("Adding train {}", train.getName());
-            createAndAddTransitLine(train, sequence.build());
+            createAndAddTransitLine(train, sequence.build(train.getDirection()));
         }
     }
 
@@ -110,10 +110,8 @@ public class NetworkGraphicConverter<T> {
         String lineId = createTransitLineId(train, sequence.get(RouteDirection.FORWARD), category);
         builder.addTransitLine(lineId, category);
 
-        // add transit route for each direction
-        for (RouteDirection direction : RouteDirection.values()) {
-            createAndAddTransitRoute(lineId, train, sequence.get(direction), direction);
-        }
+        // add transit route for each direction the train operates in
+        sequence.forEach((direction, sections) -> createAndAddTransitRoute(lineId, train, sections, direction));
 
     }
 
@@ -348,7 +346,7 @@ public class NetworkGraphicConverter<T> {
 
         private <T extends Identifiable> Map<Integer, T> listToHashMap(List<T> list) {
             return list.stream()
-                    .collect(Collectors.toMap(Identifiable::getId, element -> element, (element, element2) -> element,
+                    .collect(Collectors.toMap(Identifiable::getId, element -> element, (element, _) -> element,
                             HashMap::new));
         }
 

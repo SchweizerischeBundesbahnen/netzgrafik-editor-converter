@@ -1,0 +1,608 @@
+{
+  "nodes": [
+    {
+      "id": 4,
+      "betriebspunktName": "ZF",
+      "fullName": "Zofingen",
+      "positionX": 704,
+      "positionY": 576,
+      "ports": [
+        {
+          "id": 21245,
+          "trainrunSectionId": 10356,
+          "positionIndex": 0,
+          "positionAlignment": 3
+        }
+      ],
+      "transitions": [],
+      "connections": [],
+      "resourceId": 5,
+      "perronkanten": 5,
+      "connectionTime": 3,
+      "trainrunCategoryHaltezeiten": {
+        "HaltezeitA": {
+          "no_halt": false,
+          "haltezeit": 2
+        },
+        "HaltezeitB": {
+          "no_halt": false,
+          "haltezeit": 2
+        },
+        "HaltezeitC": {
+          "no_halt": false,
+          "haltezeit": 1
+        },
+        "HaltezeitD": {
+          "no_halt": false,
+          "haltezeit": 1
+        },
+        "HaltezeitIPV": {
+          "no_halt": false,
+          "haltezeit": 3
+        },
+        "HaltezeitUncategorized": {
+          "no_halt": true,
+          "haltezeit": 0
+        }
+      },
+      "symmetryAxis": null,
+      "warnings": null,
+      "labelIds": []
+    },
+    {
+      "id": 5,
+      "betriebspunktName": "ZG",
+      "fullName": "Zug",
+      "positionX": 1184,
+      "positionY": 576,
+      "ports": [
+        {
+          "id": 21246,
+          "trainrunSectionId": 10356,
+          "positionIndex": 0,
+          "positionAlignment": 2
+        },
+        {
+          "id": 21247,
+          "trainrunSectionId": 10357,
+          "positionIndex": 0,
+          "positionAlignment": 3
+        }
+      ],
+      "transitions": [
+        {
+          "id": 9344,
+          "port1Id": 21246,
+          "port2Id": 21247,
+          "isNonStopTransit": false
+        }
+      ],
+      "connections": [],
+      "resourceId": 6,
+      "perronkanten": 5,
+      "connectionTime": 5,
+      "trainrunCategoryHaltezeiten": {
+        "HaltezeitA": {
+          "no_halt": false,
+          "haltezeit": 2
+        },
+        "HaltezeitB": {
+          "no_halt": false,
+          "haltezeit": 2
+        },
+        "HaltezeitC": {
+          "no_halt": false,
+          "haltezeit": 1
+        },
+        "HaltezeitD": {
+          "no_halt": false,
+          "haltezeit": 1
+        },
+        "HaltezeitIPV": {
+          "no_halt": false,
+          "haltezeit": 3
+        },
+        "HaltezeitUncategorized": {
+          "no_halt": true,
+          "haltezeit": 0
+        }
+      },
+      "symmetryAxis": null,
+      "warnings": null,
+      "labelIds": []
+    },
+    {
+      "id": 9,
+      "betriebspunktName": "BAA",
+      "fullName": "Baar",
+      "positionX": 1632,
+      "positionY": 576,
+      "ports": [
+        {
+          "id": 21248,
+          "trainrunSectionId": 10357,
+          "positionIndex": 0,
+          "positionAlignment": 2
+        }
+      ],
+      "transitions": [],
+      "connections": [],
+      "resourceId": 10,
+      "perronkanten": 5,
+      "connectionTime": 5,
+      "trainrunCategoryHaltezeiten": {
+        "HaltezeitA": {
+          "no_halt": false,
+          "haltezeit": 2
+        },
+        "HaltezeitB": {
+          "no_halt": false,
+          "haltezeit": 2
+        },
+        "HaltezeitC": {
+          "no_halt": false,
+          "haltezeit": 1
+        },
+        "HaltezeitD": {
+          "no_halt": false,
+          "haltezeit": 1
+        },
+        "HaltezeitIPV": {
+          "no_halt": false,
+          "haltezeit": 3
+        },
+        "HaltezeitUncategorized": {
+          "no_halt": true,
+          "haltezeit": 0
+        }
+      },
+      "symmetryAxis": null,
+      "warnings": null,
+      "labelIds": []
+    }
+  ],
+  "trainrunSections": [
+    {
+      "id": 10356,
+      "sourceNodeId": 5,
+      "sourcePortId": 21246,
+      "targetNodeId": 4,
+      "targetPortId": 21245,
+      "travelTime": {
+        "time": 1,
+        "consecutiveTime": 1,
+        "lock": true,
+        "warning": null,
+        "timeFormatter": null
+      },
+      "sourceDeparture": {
+        "time": 59,
+        "consecutiveTime": 59,
+        "lock": false,
+        "warning": null,
+        "timeFormatter": null
+      },
+      "sourceArrival": {
+        "time": 1,
+        "consecutiveTime": 1,
+        "lock": false,
+        "warning": null,
+        "timeFormatter": null
+      },
+      "targetDeparture": {
+        "time": 0,
+        "consecutiveTime": 0,
+        "lock": false,
+        "warning": null,
+        "timeFormatter": null
+      },
+      "targetArrival": {
+        "time": 0,
+        "consecutiveTime": 60,
+        "lock": false,
+        "warning": null,
+        "timeFormatter": null
+      },
+      "numberOfStops": 0,
+      "trainrunId": 993,
+      "resourceId": 0,
+      "specificTrainrunSectionFrequencyId": null,
+      "path": {
+        "path": [
+          {
+            "x": 1182,
+            "y": 592
+          },
+          {
+            "x": 1118,
+            "y": 592
+          },
+          {
+            "x": 866,
+            "y": 592
+          },
+          {
+            "x": 802,
+            "y": 592
+          }
+        ],
+        "textPositions": {
+          "0": {
+            "x": 1164,
+            "y": 580
+          },
+          "1": {
+            "x": 1136,
+            "y": 604
+          },
+          "2": {
+            "x": 820,
+            "y": 604
+          },
+          "3": {
+            "x": 848,
+            "y": 580
+          },
+          "4": {
+            "x": 992,
+            "y": 580
+          },
+          "5": {
+            "x": 992,
+            "y": 580
+          },
+          "6": {
+            "x": 992,
+            "y": 604
+          }
+        }
+      },
+      "warnings": null
+    },
+    {
+      "id": 10357,
+      "sourceNodeId": 9,
+      "sourcePortId": 21248,
+      "targetNodeId": 5,
+      "targetPortId": 21247,
+      "travelTime": {
+        "time": 1,
+        "consecutiveTime": 1,
+        "lock": true,
+        "warning": null,
+        "timeFormatter": null
+      },
+      "sourceDeparture": {
+        "time": 56,
+        "consecutiveTime": 56,
+        "lock": false,
+        "warning": null,
+        "timeFormatter": null
+      },
+      "sourceArrival": {
+        "time": 4,
+        "consecutiveTime": 4,
+        "lock": false,
+        "warning": null,
+        "timeFormatter": null
+      },
+      "targetDeparture": {
+        "time": 3,
+        "consecutiveTime": 3,
+        "lock": false,
+        "warning": null,
+        "timeFormatter": null
+      },
+      "targetArrival": {
+        "time": 57,
+        "consecutiveTime": 57,
+        "lock": false,
+        "warning": null,
+        "timeFormatter": null
+      },
+      "numberOfStops": 0,
+      "trainrunId": 993,
+      "resourceId": 0,
+      "specificTrainrunSectionFrequencyId": null,
+      "path": {
+        "path": [
+          {
+            "x": 1630,
+            "y": 592
+          },
+          {
+            "x": 1566,
+            "y": 592
+          },
+          {
+            "x": 1346,
+            "y": 592
+          },
+          {
+            "x": 1282,
+            "y": 592
+          }
+        ],
+        "textPositions": {
+          "0": {
+            "x": 1612,
+            "y": 580
+          },
+          "1": {
+            "x": 1584,
+            "y": 604
+          },
+          "2": {
+            "x": 1300,
+            "y": 604
+          },
+          "3": {
+            "x": 1328,
+            "y": 580
+          },
+          "4": {
+            "x": 1456,
+            "y": 580
+          },
+          "5": {
+            "x": 1456,
+            "y": 580
+          },
+          "6": {
+            "x": 1456,
+            "y": 604
+          }
+        }
+      },
+      "warnings": null
+    }
+  ],
+  "trainruns": [
+    {
+      "id": 993,
+      "name": "ONE_WAY_BACKWARD",
+      "categoryId": 1,
+      "frequencyId": 3,
+      "trainrunTimeCategoryId": 0,
+      "labelIds": [],
+      "direction": "one_way"
+    }
+  ],
+  "resources": [
+    {
+      "id": 5,
+      "capacity": 2
+    },
+    {
+      "id": 6,
+      "capacity": 2
+    },
+    {
+      "id": 10,
+      "capacity": 2
+    }
+  ],
+  "metadata": {
+    "netzgrafikColors": [
+      {
+        "id": 2,
+        "colorRef": "NORMAL",
+        "color": "#767676",
+        "colorFocus": "#000000",
+        "colorMuted": "#DCDCDC",
+        "colorRelated": "#767676",
+        "colorDarkMode": "#767676",
+        "colorDarkModeFocus": "#DCDCDC",
+        "colorDarkModeMuted": "#000000",
+        "colorDarkModeRelated": "#767676"
+      }
+    ],
+    "analyticsSettings": {
+      "originDestinationSettings": {
+        "connectionPenalty": 5
+      }
+    },
+    "trainrunCategories": [
+      {
+        "id": 0,
+        "name": "International",
+        "order": 0,
+        "colorRef": "EC",
+        "shortName": "EC",
+        "fachCategory": "HaltezeitIPV",
+        "sectionHeadway": 2,
+        "nodeHeadwayStop": 2,
+        "nodeHeadwayNonStop": 2,
+        "minimalTurnaroundTime": 4
+      },
+      {
+        "id": 1,
+        "name": "InterCity",
+        "order": 1,
+        "colorRef": "IC",
+        "shortName": "IC",
+        "fachCategory": "HaltezeitA",
+        "sectionHeadway": 2,
+        "nodeHeadwayStop": 2,
+        "nodeHeadwayNonStop": 2,
+        "minimalTurnaroundTime": 4
+      },
+      {
+        "id": 2,
+        "name": "InterRegio",
+        "order": 2,
+        "colorRef": "IR",
+        "shortName": "IR",
+        "fachCategory": "HaltezeitB",
+        "sectionHeadway": 2,
+        "nodeHeadwayStop": 2,
+        "nodeHeadwayNonStop": 2,
+        "minimalTurnaroundTime": 4
+      },
+      {
+        "id": 3,
+        "name": "RegioExpress",
+        "order": 3,
+        "colorRef": "RE",
+        "shortName": "RE",
+        "fachCategory": "HaltezeitC",
+        "sectionHeadway": 2,
+        "nodeHeadwayStop": 2,
+        "nodeHeadwayNonStop": 2,
+        "minimalTurnaroundTime": 4
+      },
+      {
+        "id": 4,
+        "name": "RegioUndSBahnverkehr",
+        "order": 4,
+        "colorRef": "S",
+        "shortName": "S",
+        "fachCategory": "HaltezeitD",
+        "sectionHeadway": 2,
+        "nodeHeadwayStop": 2,
+        "nodeHeadwayNonStop": 2,
+        "minimalTurnaroundTime": 4
+      },
+      {
+        "id": 5,
+        "name": "GüterExpress",
+        "order": 5,
+        "colorRef": "GEX",
+        "shortName": "GEX",
+        "fachCategory": "HaltezeitUncategorized",
+        "sectionHeadway": 3,
+        "nodeHeadwayStop": 3,
+        "nodeHeadwayNonStop": 3,
+        "minimalTurnaroundTime": 4
+      },
+      {
+        "id": 6,
+        "name": "Güterverkehr",
+        "order": 6,
+        "colorRef": "G",
+        "shortName": "G",
+        "fachCategory": "HaltezeitUncategorized",
+        "sectionHeadway": 3,
+        "nodeHeadwayStop": 3,
+        "nodeHeadwayNonStop": 3,
+        "minimalTurnaroundTime": 4
+      }
+    ],
+    "trainrunFrequencies": [
+      {
+        "id": 0,
+        "name": "verkehrt viertelstündlich",
+        "order": 0,
+        "offset": 0,
+        "frequency": 15,
+        "shortName": "15",
+        "linePatternRef": "15"
+      },
+      {
+        "id": 1,
+        "name": "verkehrt im 20 Minuten Takt",
+        "order": 0,
+        "offset": 0,
+        "frequency": 20,
+        "shortName": "20",
+        "linePatternRef": "20"
+      },
+      {
+        "id": 2,
+        "name": "verkehrt halbstündlich",
+        "order": 0,
+        "offset": 0,
+        "frequency": 30,
+        "shortName": "30",
+        "linePatternRef": "30"
+      },
+      {
+        "id": 3,
+        "name": "verkehrt stündlich",
+        "order": 0,
+        "offset": 0,
+        "frequency": 60,
+        "shortName": "60",
+        "linePatternRef": "60"
+      },
+      {
+        "id": 4,
+        "name": "verkehrt zweistündlich (gerade)",
+        "order": 0,
+        "offset": 0,
+        "frequency": 120,
+        "shortName": "120",
+        "linePatternRef": "120"
+      },
+      {
+        "id": 5,
+        "name": "verkehrt zweistündlich (ungerade)",
+        "order": 0,
+        "offset": 60,
+        "frequency": 120,
+        "shortName": "120+",
+        "linePatternRef": "120"
+      }
+    ],
+    "trainrunTimeCategories": [
+      {
+        "id": 0,
+        "name": "verkehrt uneingeschränkt",
+        "order": 0,
+        "weekday": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "shortName": "7/24",
+        "linePatternRef": "7/24",
+        "dayTimeInterval": []
+      },
+      {
+        "id": 1,
+        "name": "verkehrt zur Hauptverkehrszeit",
+        "order": 0,
+        "weekday": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "shortName": "HVZ",
+        "linePatternRef": "HVZ",
+        "dayTimeInterval": [
+          {
+            "to": 420,
+            "from": 360
+          },
+          {
+            "to": 1140,
+            "from": 960
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "verkehrt zeitweise",
+        "order": 0,
+        "weekday": [],
+        "shortName": "zeitweise",
+        "linePatternRef": "ZEITWEISE",
+        "dayTimeInterval": []
+      }
+    ]
+  },
+  "freeFloatingTexts": [],
+  "labels": [],
+  "labelGroups": [],
+  "filterData": {
+    "filterSettings": []
+  }
+}

@@ -181,7 +181,8 @@ class SectionSequenceBuilder {
                     .sourceDeparture(original.getTargetDeparture()) // swap
                     .targetArrival(original.getSourceArrival()) // swap
                     .targetDeparture(original.getSourceDeparture()) // swap
-                    .travelTime(original.getTravelTime()) // keep
+                    .travelTime(original.getBackwardTravelTime()) // swap
+                    .backwardTravelTime(original.getTravelTime()) // swap
                     .build();
         }
     }

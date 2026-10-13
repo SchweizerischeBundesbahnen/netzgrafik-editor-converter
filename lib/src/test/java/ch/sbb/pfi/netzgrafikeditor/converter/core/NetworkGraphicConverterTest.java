@@ -6,6 +6,7 @@ import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonDeserializer;
 import ch.sbb.pfi.netzgrafikeditor.converter.test.TestCase;
 import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -15,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
+import java.time.Duration;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -55,6 +57,16 @@ class NetworkGraphicConverterTest {
         when(source.load()).thenReturn(new JsonDeserializer().read(testCase.getPath()));
         converter.run();
         verifyConversionSteps();
+    }
+
+    @Test
+    void run_asymmetricTravelTime() throws IOException {
+        when(source.load()).thenReturn(new JsonDeserializer().read(TestCase.SIMPLE_ASYMMETRIC.getPath()));
+        converter.run();
+
+        // section A-B takes 15 minutes forward, but 18 minutes backward
+        verify(builder).addRouteStop(eq("IC_A_D_FORWARD"), eq("B"), eq(Duration.ofMinutes(15)), any());
+        verify(builder).addRouteStop(eq("IC_A_D_REVERSE"), eq("A"), eq(Duration.ofMinutes(18)), any());
     }
 
     private void verifyConversionSteps() throws IOException {

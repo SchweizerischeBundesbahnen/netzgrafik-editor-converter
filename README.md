@@ -11,14 +11,20 @@ the entire service day in different formats, as for example GTFS static or MATSi
 Run the command line tool to convert a network graphic to either a GTFS or MATSim timetable:
 
 ```text
-Usage: convert [-htV] [-e=<serviceDayEnd>] [-f=<outputFormat>]
-               [-i=<stopFacilityCsv>] [-r=<rollingStockCsv>]
-               [-s=<serviceDayStart>] [-v=<validationStrategy>]
-               <networkGraphicFile> <outputDirectory>
+Usage: convert [-htV] [-b=<serviceDayBoundary>] [-d=<depotLabel>]
+               [-e=<serviceDayEnd>] [-f=<outputFormat>] [-i=<stopFacilityCsv>]
+               [-r=<rollingStockCsv>] [-s=<serviceDayStart>]
+               [-v=<validationStrategy>] <networkGraphicFile> <outputDirectory>
                
 Converts network graphics into timetables in various formats.
       <networkGraphicFile>   The network graphic file to convert.
       <outputDirectory>      The output directory for the converted timetable.
+  -b, --service-day-boundary=<serviceDayBoundary>
+                             Handling of trips at the service day boundaries
+                               (FULL, CLIP, DEPOT).
+  -d, --depot-label=<depotLabel>
+                             Node label which marks the depots in the network
+                               graphic.
   -e, --service-day-end=<serviceDayEnd>
                              Service day end time (HH:mm).
   -f, --format=<outputFormat>
@@ -62,6 +68,22 @@ ARGS="$NETWORK_GRAPHIC_FILE $OUTPUT_DIRECTORY -f $OUTPUT_FORMAT -i $STOP_FACILIT
 ./mvnw spring-boot:run -pl app -Dspring-boot.run.arguments=$ARGS
 ```
 
+### Service day boundary
+
+The trainruns repeat with their frequency from their times in the Netzgrafik-Editor, independent of the service day
+start. The service day boundary defines how trips at the start and end of the service day are handled:
+
+| Boundary         | Trips                                                                             |
+|------------------|-----------------------------------------------------------------------------------|
+| `FULL` (default) | Run their full route if they depart from their first stop within the service day. |
+| `CLIP`           | Are clipped to the stops served within the service day.                           |
+| `DEPOT`          | Like `CLIP`, but start and end at depots only.                                    |
+
+Clipped trips start at the first stop departing at or after the service day start and end at the last stop arriving
+at or before its end; trips with less than two stops within the service day are dropped. Depots are the nodes labelled
+`Depot` in the Netzgrafik-Editor; the label can be changed with `--depot-label`. Line termini always count as depots.
+Trainruns with day time intervals always run their full route within their intervals.
+
 ### Converter in Java
 
 In most cases, the repositories for infrastructure, rolling stock, and vehicle circuits used by the supply builder will
@@ -76,7 +98,7 @@ public class Example {
     public static final Path OUTPUT_DIRECTORY = Path.of("path/to/outputDirectory");
     public static final NetworkGraphicConverterConfig CONFIG = NetworkGraphicConverterConfig.builder().build();
 
-    public static void main(String[] args) throws IOException {
+    static void main(String[] args) throws IOException {
 
         // define network graphic source
         NetworkGraphicSource source = new JsonFileReader(NETWORK_GRAPHIC_FILE);

@@ -34,6 +34,7 @@ public class NetworkGraphicSanitizer {
                     .ports(node.getPorts())
                     .transitions(node.getTransitions())
                     .trainrunCategoryHaltezeiten(node.getTrainrunCategoryHaltezeiten())
+                    .labelIds(node.getLabelIds())
                     .build();
             fixedNodes.add(fixedNode);
         }
@@ -60,6 +61,7 @@ public class NetworkGraphicSanitizer {
                 .trainrunSections(original.getTrainrunSections())
                 .trainruns(fixedTrainruns)
                 .metadata(original.getMetadata())
+                .labels(original.getLabels())
                 .build();
     }
 

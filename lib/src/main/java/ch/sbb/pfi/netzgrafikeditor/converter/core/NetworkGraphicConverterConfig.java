@@ -39,9 +39,22 @@ public class NetworkGraphicConverterConfig {
     ServiceDayTime serviceDayStart = ServiceDayTime.of(5, 0, 0);
 
     /**
-     * Time when the operation day ends, default is 23:00, this day.
+     * Time when the operation day ends, default is 01:00, next day.
      */
     @Builder.Default
     ServiceDayTime serviceDayEnd = ServiceDayTime.of(25, 0, 0);
+
+    /**
+     * Handling of trips at the boundaries of the service day: FULL, CLIP, DEPOT. See {@link ServiceDayBoundary}.
+     */
+    @Builder.Default
+    ServiceDayBoundary serviceDayBoundary = ServiceDayBoundary.FULL;
+
+    /**
+     * Node label which marks the depots in the network graphic, default is "Depot". See
+     * {@link ServiceDayBoundary#DEPOT}.
+     */
+    @Builder.Default
+    String depotLabel = "Depot";
 
 }

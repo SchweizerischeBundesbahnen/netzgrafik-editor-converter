@@ -1,6 +1,7 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.app;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.core.NetworkGraphicConverterConfig;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.ServiceDayBoundary;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.validation.ValidationStrategy;
 import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,10 @@ public class ConvertCommand implements Callable<Integer> {
     private ServiceDayTime serviceDayStart;
     @CommandLine.Option(names = {"-e", "--service-day-end"}, description = "Service day end time (HH:mm).", converter = ServiceDayTimeConverter.class, defaultValue = "25:00")
     private ServiceDayTime serviceDayEnd;
+    @CommandLine.Option(names = {"-b", "--service-day-boundary"}, description = "Handling of trips at the service day boundaries (FULL, CLIP, DEPOT).", defaultValue = "FULL")
+    private ServiceDayBoundary serviceDayBoundary;
+    @CommandLine.Option(names = {"-d", "--depot-label"}, description = "Node label which marks the depots in the network graphic.", defaultValue = "Depot")
+    private String depotLabel;
 
     // format and repositories
     @CommandLine.Option(names = {"-f", "--format"}, description = "Output format (GTFS or MATSim).", defaultValue = "GTFS")
@@ -66,6 +71,8 @@ public class ConvertCommand implements Callable<Integer> {
                 .useTrainNamesAsIds(useTrainNamesAsIds)
                 .serviceDayStart(serviceDayStart)
                 .serviceDayEnd(serviceDayEnd)
+                .serviceDayBoundary(serviceDayBoundary)
+                .depotLabel(depotLabel)
                 .build();
     }
 

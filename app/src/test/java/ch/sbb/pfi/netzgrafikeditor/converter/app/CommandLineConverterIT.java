@@ -94,7 +94,9 @@ class CommandLineConverterIT {
         VALIDATION_REMOVE_SPECIAL_CHARACTERS(new String[]{"-v", "REMOVE_SPECIAL_CHARACTERS"}, true, ""),
         TRAIN_NAMES(new String[]{"-t"}, true, ""),
         SERVICE_DAY_START(new String[]{"-s", "03:30"}, true, ""),
-        SERVICE_DAY_END(new String[]{"-s", "24:15"}, true, "");
+        SERVICE_DAY_END(new String[]{"-e", "24:15"}, true, ""),
+        SERVICE_DAY_BOUNDARY_CLIP(new String[]{"-b", "CLIP"}, true, ""),
+        SERVICE_DAY_BOUNDARY_DEPOT(new String[]{"-b", "DEPOT"}, true, "");
 
         private final String[] args;
         private final boolean success;

@@ -82,7 +82,9 @@ start. The service day boundary defines how trips at the start and end of the se
 Clipped trips start at the first stop departing at or after the service day start and end at the last stop arriving
 at or before its end; trips with less than two stops within the service day are dropped. Depots are the nodes labelled
 `Depot` in the Netzgrafik-Editor; the label can be changed with `--depot-label`. Line termini always count as depots.
-Trainruns with day time intervals always run their full route within their intervals.
+Lines without a stop labelled as depot only start and end at their termini: The validation strategy ignores this
+(`SKIP_VALIDATION`), fails the conversion (`FAIL_ON_ISSUES`) or logs a warning (all other strategies). Trainruns with
+day time intervals always run their full route within their intervals.
 
 ### Converter in Java
 

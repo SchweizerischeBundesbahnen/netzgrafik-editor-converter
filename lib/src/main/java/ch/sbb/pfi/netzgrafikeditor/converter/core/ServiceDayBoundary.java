@@ -1,5 +1,7 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.core;
 
+import ch.sbb.pfi.netzgrafikeditor.converter.core.validation.ValidationStrategy;
+
 /**
  * Handling of trips at the boundaries of the service day.
  * <p>
@@ -24,7 +26,8 @@ public enum ServiceDayBoundary {
     /**
      * Like {@link #CLIP}, but trips only start and end at depots: They start at the first depot departing at or after
      * the service day start and end at the last depot arriving at or before the service day end. Depots are the nodes
-     * with the configured depot label; line termini always count as depots.
+     * service day end. Depots are the nodes with the configured depot label; line termini always count as depots. The
+     * validation strategy handles lines without a stop labelled as depot, see {@link ValidationStrategy}.
      */
     DEPOT
 

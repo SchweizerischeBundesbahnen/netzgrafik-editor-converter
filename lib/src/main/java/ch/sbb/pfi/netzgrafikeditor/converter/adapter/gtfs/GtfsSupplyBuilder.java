@@ -106,8 +106,10 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
                     Duration travelTime = routeStop.getTravelTime();
                     Duration dwellTime = routeStop.getDwellTime();
 
-                    // set time to arrival time if at start of stop time sequence
+                    // set time to arrival time if at start of stop time sequence, which cannot be before midnight
                     if (count[0] == 1) {
+                        Duration sinceMidnight = Duration.ofSeconds(time[0].toSecondOfDay());
+                        dwellTime = dwellTime.compareTo(sinceMidnight) > 0 ? sinceMidnight : dwellTime;
                         time[0] = time[0].minus(dwellTime);
                     }
 

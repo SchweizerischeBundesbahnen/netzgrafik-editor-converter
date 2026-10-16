@@ -1,9 +1,11 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.core.validation;
 
+import ch.sbb.pfi.netzgrafikeditor.converter.core.model.Label;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.NetworkGraphic;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.Node;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.Trainrun;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -74,5 +76,20 @@ class NetworkGraphicValidatorTest {
                         "inVälidTräinrün"), getTrainrunIds(validated));
             }
         }
+    }
+
+    @Test
+    void run_sanitizingKeepsLabels() {
+        List<Label> labels = List.of(Label.builder().id(1).label("Depot").build());
+        NetworkGraphic labelled = NetworkGraphic.builder()
+                .nodes(List.of(Node.builder().betriebspunktName("in validNode").labelIds(List.of(1)).build()))
+                .labels(labels)
+                .build();
+
+        NetworkGraphic sanitized = new NetworkGraphicValidator(ValidationStrategy.REPLACE_WHITESPACE, false,
+                labelled).run();
+
+        assertEquals(labels, sanitized.getLabels());
+        assertEquals(List.of(1), sanitized.getNodes().getFirst().getLabelIds());
     }
 }

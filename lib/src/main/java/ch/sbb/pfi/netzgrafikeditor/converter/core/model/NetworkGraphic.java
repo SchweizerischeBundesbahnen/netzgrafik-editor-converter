@@ -22,4 +22,7 @@ public class NetworkGraphic {
 
     Metadata metadata;
 
+    @Builder.Default
+    List<Label> labels = List.of();
+
 }

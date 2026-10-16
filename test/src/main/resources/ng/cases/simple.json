@@ -122,7 +122,8 @@
         17,
         18,
         19,
-        26
+        26,
+        27
       ]
     },
     {
@@ -868,6 +869,12 @@
     {
       "id": 26,
       "label": "CYCLE_SMALL",
+      "labelGroupId": 2,
+      "labelRef": "Node"
+    },
+    {
+      "id": 27,
+      "label": "Depot",
       "labelGroupId": 2,
       "labelRef": "Node"
     }

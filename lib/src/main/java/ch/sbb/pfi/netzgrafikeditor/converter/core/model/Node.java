@@ -35,4 +35,7 @@ public class Node implements Identifiable {
 
     Map<String, TrainrunCategoryHaltezeit> trainrunCategoryHaltezeiten;
 
+    @Builder.Default
+    List<Integer> labelIds = List.of();
+
 }

@@ -16,11 +16,15 @@ import ch.sbb.pfi.netzgrafikeditor.converter.test.OutputDir;
 import ch.sbb.pfi.netzgrafikeditor.converter.test.TestCase;
 import ch.sbb.pfi.netzgrafikeditor.converter.test.TestDirectoryExtension;
 import ch.sbb.pfi.netzgrafikeditor.converter.test.TestScenario;
+import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.pt.transitSchedule.api.TransitLine;
@@ -28,7 +32,9 @@ import org.matsim.pt.transitSchedule.api.TransitRoute;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -131,6 +137,12 @@ public class NetworkGraphicConverterIT {
             assertEquals(expectedSequence, actualSequence);
         }
 
+        static Stream<Arguments> boundedServiceDays() {
+            return Arrays.stream(TestCase.values())
+                    .flatMap(testCase -> Stream.of(ServiceDayBoundary.CLIP, ServiceDayBoundary.DEPOT)
+                            .map(boundary -> Arguments.of(testCase, boundary)));
+        }
+
         @ParameterizedTest
         @EnumSource(TestScenario.class)
         void run(TestScenario testScenario) throws IOException {
@@ -145,6 +157,41 @@ public class NetworkGraphicConverterIT {
             configure(testCase.getPath());
             converter.run();
             validate(testCase);
+        }
+
+        @ParameterizedTest
+        @MethodSource("boundedServiceDays")
+        void run_boundedServiceDay(TestCase testCase, ServiceDayBoundary boundary) {
+            configure(testCase.getPath(), NetworkGraphicConverterConfig.builder()
+                    .useTrainNamesAsIds(true)
+                    .serviceDayStart(ServiceDayTime.of(6, 10, 0))
+                    .serviceDayEnd(ServiceDayTime.of(9, 20, 0))
+                    .serviceDayBoundary(boundary)
+                    .build());
+
+            // the supply builder rejects duplicate route ids of trips clipped at both ends
+            assertDoesNotThrow(converter::run);
+        }
+
+        @Test
+        void run_clipFromMidnight() throws IOException {
+            configure(TestCase.CYCLE.getPath(), NetworkGraphicConverterConfig.builder()
+                    .useTrainNamesAsIds(true)
+                    .serviceDayStart(ServiceDayTime.MIDNIGHT)
+                    .serviceDayBoundary(ServiceDayBoundary.CLIP)
+                    .build());
+            converter.run();
+
+            // the trip clipped to a stop departing at midnight cannot arrive there before midnight
+            StopTime midnight = schedule.getStopTimes()
+                    .stream()
+                    .filter(stopTime -> stopTime.getDepartureTime().equals(ServiceDayTime.MIDNIGHT))
+                    .findFirst()
+                    .orElseThrow();
+            assertEquals(ServiceDayTime.MIDNIGHT, midnight.getArrivalTime());
+
+            // the line is named after its full route, not after a clipped route
+            assertEquals("S: A - A", schedule.getRoutes().getFirst().getRouteShortName());
         }
 
         private void validate(TestCase testCase) {
@@ -185,10 +232,10 @@ public class NetworkGraphicConverterIT {
         }
 
         private void configure(Path path) {
-            NetworkGraphicConverterConfig config = NetworkGraphicConverterConfig.builder()
-                    .useTrainNamesAsIds(true)
-                    .build();
+            configure(path, NetworkGraphicConverterConfig.builder().useTrainNamesAsIds(true).build());
+        }
 
+        private void configure(Path path, NetworkGraphicConverterConfig config) {
             NetworkGraphicSource source = new JsonFileReader(path);
             RollingStockRepository rollingStockRepository = new NoRollingStockRepository();
             SupplyBuilder<GtfsSchedule> builder = new GtfsSupplyBuilder(new NoInfrastructureRepository(),

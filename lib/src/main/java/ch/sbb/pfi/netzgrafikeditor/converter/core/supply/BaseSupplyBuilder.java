@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,8 @@ public abstract class BaseSupplyBuilder<T> implements SupplyBuilder<T> {
 
     private final Map<String, TransitLineInfo> transitLineInfos = new HashMap<>();
     private final Map<String, StopFacilityInfo> stopFacilityInfos = new HashMap<>();
-    private final Map<String, TransitRouteContainer> transitRouteContainers = new HashMap<>();
+    // insertion order: the first route added to a line names the line in formats like GTFS
+    private final Map<String, TransitRouteContainer> transitRouteContainers = new LinkedHashMap<>();
 
     public BaseSupplyBuilder(InfrastructureRepository infrastructureRepository, RollingStockRepository rollingStockRepository, VehicleCircuitsPlanner vehicleCircuitsPlanner) {
         this.infrastructureRepository = infrastructureRepository;

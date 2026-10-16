@@ -1,5 +1,23 @@
 # Changelog
 
+## [4.0.0](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/compare/v3.0.0...v4.0.0) (2026-10-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* **deps:** Java 25 is now the minimum runtime.
+
+### Features
+
+* add service day boundary strategies ([#222](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/issues/222)) ([68c10cc](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/commit/68c10cc405d4a7c883e37629f2df73a08cb71b85))
+* support asymmetric trainruns ([#220](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/issues/220)) ([5e35c35](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/commit/5e35c352f2b045a28e6ff3dcbdcc9741640db473))
+* support one-way trainruns ([#219](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/issues/219)) ([a29cd3d](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/commit/a29cd3dbab173c7e977e1854b8e27738bac20c71))
+
+
+### Build System
+
+* **deps:** require Java 25 and update dependencies ([#217](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/issues/217)) ([e47df67](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/commit/e47df67fc83653bb388256fc8e95b9feeaf4fc22))
+
 ## [3.0.0](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/compare/v2.0.0...v3.0.0) (2025-06-30)
 
 

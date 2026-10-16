@@ -19,6 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.time.Duration;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -138,6 +140,30 @@ class NetworkGraphicConverterTest {
         // no node has the label, so the termini are the only depots and trips not reaching a terminus are dropped
         verify(builder).addDeparture("IC_A_D_FORWARD", ServiceDayTime.of(6, 5, 0));
         verify(builder, never()).addDeparture(anyString(), eq(ServiceDayTime.of(7, 5, 0)));
+    }
+
+    @Test
+    void run_depotWithoutDepotsFailOnIssues() throws IOException {
+        configureServiceDay(ServiceDayTime.of(5, 0, 0), ServiceDayTime.of(7, 30, 0), ServiceDayBoundary.DEPOT);
+        when(config.getValidationStrategy()).thenReturn(ValidationStrategy.FAIL_ON_ISSUES);
+        when(config.getDepotLabel()).thenReturn("Unknown");
+        when(source.load()).thenReturn(new JsonDeserializer().read(TestCase.SIMPLE.getPath()));
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class, converter::run);
+        assertTrue(exception.getMessage().contains("IC_A_D"));
+        verify(sink, never()).save(any());
+    }
+
+    @Test
+    void run_depotAtTerminusFailOnIssues() throws IOException {
+        configureServiceDay(ServiceDayTime.of(5, 0, 0), ServiceDayTime.of(25, 0, 0), ServiceDayBoundary.DEPOT);
+        when(config.getValidationStrategy()).thenReturn(ValidationStrategy.FAIL_ON_ISSUES);
+        when(config.getDepotLabel()).thenReturn("SHORT");
+        when(source.load()).thenReturn(new JsonDeserializer().read(TestCase.SHORT.getPath()));
+        converter.run();
+
+        // both termini carry the label, which satisfies the depot check
+        verifyConversionSteps();
     }
 
     @Test

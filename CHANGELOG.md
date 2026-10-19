@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/compare/v4.0.0...v4.1.0) (2026-10-19)
+
+
+### Features
+
+* validate depots according to the validation strategy ([#224](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/issues/224)) ([1cd1e09](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/commit/1cd1e0903257b571e5b8a7c7a9723f5bd02f79c7))
+
 ## [4.0.0](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/compare/v3.0.0...v4.0.0) (2026-10-16)
 
 

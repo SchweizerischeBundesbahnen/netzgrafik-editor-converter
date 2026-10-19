@@ -26,8 +26,8 @@ public enum ServiceDayBoundary {
     /**
      * Like {@link #CLIP}, but trips only start and end at depots: They start at the first depot departing at or after
      * the service day start and end at the last depot arriving at or before the service day end. Depots are the nodes
-     * service day end. Depots are the nodes with the configured depot label; line termini always count as depots. The
-     * validation strategy handles lines without a stop labelled as depot, see {@link ValidationStrategy}.
+     * with the configured depot label where the line stops; line termini always count as depots. The validation
+     * strategy handles lines without a stop labelled as depot, see {@link ValidationStrategy}.
      */
     DEPOT
 

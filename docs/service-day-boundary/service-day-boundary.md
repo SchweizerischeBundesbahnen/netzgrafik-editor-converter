@@ -5,37 +5,35 @@ service day boundary which trips are created at the start and end of the service
 
 ## Model
 
-The result of every strategy can be explained in two steps:
+The strategies are explained in two steps:
 
 1. **Unroll:** Every line is rolled out infinitely. The trips repeat with the frequency of the trainrun, anchored at the
    times in the Netzgrafik-Editor, independent of the service day start.
-2. **Cut:** Each unrolled trip is cut once at depots:
+2. **Cut:** With `CLIP` and `DEPOT`, each unrolled trip is cut once at its depots:
     - It starts at the first depot **departing at or after** the service day start.
     - It ends at the last depot **arriving at or before** the service day end.
     - If less than two stops remain, the trip is dropped.
 
-The strategies only differ in their depots:
-
-| Strategy         | Depots                                                     |
-|------------------|------------------------------------------------------------|
-| `FULL` (default) | Not cut at stops, see below.                               |
-| `CLIP`           | Every stop.                                                |
-| `DEPOT`          | The stops with the depot label, and the termini of a line. |
+| Strategy         | Trips                                                                  |
+|------------------|------------------------------------------------------------------------|
+| `FULL` (default) | Not cut, see below.                                                    |
+| `CLIP`           | Cut at every stop.                                                     |
+| `DEPOT`          | Cut at the stops with the depot label, and at the termini of the line. |
 
 `FULL` keeps the behavior of earlier versions: A trip is created with its full route if it departs from its first stop
-at or after the service day start and before its end. It may arrive after the service day end, and trips that departed
-before the service day start are not created. So `FULL` is not the same as `DEPOT` with the termini as only depots,
-which additionally requires the arrival at the last stop before the service day end.
+at or after the service day start and before its end, even if it arrives after the end. So `FULL` is not the same as
+`DEPOT` with only the termini as depots, which additionally requires the arrival at the last stop before the end.
 
-Non-stop passes are never depots. The times of a cut trip are the times of the unrolled trip; at a cut end, the dwell
-time of the category applies, as at the termini of a full trip.
+A stop that a line passes without stopping is never a depot for this line, even if it is labelled as depot: A trip
+starting or ending there would let passengers board or alight where the timetable has no stop, and a transit route
+always starts and ends with a stop.
 
 ### Guarantees
 
 - Each unrolled trip results in at most one trip, so there are no duplicate trips, regardless of how many depots follow
   each other on a line.
-- A cut trip is a section of an unrolled trip with unchanged times, served as its own transit route
-  (`<route>_<from stop>_<to stop>_<from index>_<to index>`).
+- A cut trip keeps the times of the unrolled trip; at a cut end, the dwell time of the category applies, as at the
+  termini. It is served as its own transit route (`<route>_<from stop>_<to stop>_<from index>_<to index>`).
 - Trainruns with day time intervals (e.g. peak hours) are not cut; they run their full route within their intervals.
 
 ## Examples
@@ -86,7 +84,7 @@ and 24:07 are missing, as they arrive after 25:00.
 
 ## Lines Without Depot
 
-With `DEPOT`, every line should have at least one stop with the depot label; a labelled terminus is sufficient.
+With `DEPOT`, every line should stop at least once at a node with the depot label; a labelled terminus is sufficient.
 Otherwise, its trips only start and end at the termini, as shown above. The validation strategy decides how this is
 reported:
 

@@ -79,7 +79,8 @@ start. The service day boundary defines how trips at the start and end of the se
 | `CLIP`           | Are clipped to the stops served within the service day.                           |
 | `DEPOT`          | Like `CLIP`, but start and end at depots only.                                    |
 
-Depots are the nodes labelled `Depot` in the Netzgrafik-Editor (`--depot-label`); line termini always count as depots.
+Depots are the nodes labelled `Depot` in the Netzgrafik-Editor (`--depot-label`) where a line stops; line termini always
+count as depots.
 See [Service Day Boundary](docs/service-day-boundary/service-day-boundary.md) for the exact rules, the handling of lines
 without depot by the validation strategy, and time-distance diagrams.
 

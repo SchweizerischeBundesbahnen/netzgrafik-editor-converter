@@ -28,6 +28,9 @@ public class NetworkGraphicConverterConfig {
      * <p>
      * Note: If the parameter {@link #useTrainNamesAsIds} is set to false, the trainrun names are not considered in
      * validation, since they are not used in this case.
+     * <p>
+     * With the service day boundary {@link ServiceDayBoundary#DEPOT}, the strategy also handles lines without a stop
+     * labelled as depot, see {@link ValidationStrategy}.
      */
     @Builder.Default
     ValidationStrategy validationStrategy = ValidationStrategy.WARN_ON_ISSUES;

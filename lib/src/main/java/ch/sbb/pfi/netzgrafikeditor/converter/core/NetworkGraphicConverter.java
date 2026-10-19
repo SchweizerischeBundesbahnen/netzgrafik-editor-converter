@@ -30,8 +30,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -47,6 +47,7 @@ public class NetworkGraphicConverter<T> {
     private Map<String, Integer> lineCounter;
     private Lookup lookup;
     private Set<Integer> depots;
+    private Set<String> linesWithoutDepot;
 
     private static String createTransitRouteId(String lineId, RouteDirection direction) {
         return String.format("%s_%s", lineId, direction.name());
@@ -62,6 +63,7 @@ public class NetworkGraphicConverter<T> {
         initialize(networkGraphic);
         addStops();
         addTrains();
+        handleLinesWithoutDepot();
 
         sink.save(builder.build());
     }
@@ -70,6 +72,7 @@ public class NetworkGraphicConverter<T> {
         lineCounter = new HashMap<>();
         lookup = new Lookup(network);
         depots = config.getServiceDayBoundary() == ServiceDayBoundary.DEPOT ? findDepots(network) : Set.of();
+        linesWithoutDepot = new TreeSet<>();
     }
 
     private Set<Integer> findDepots(NetworkGraphic network) {
@@ -242,9 +245,8 @@ public class NetworkGraphicConverter<T> {
         final int last = visits.size() - 1;
         final boolean depot = config.getServiceDayBoundary() == ServiceDayBoundary.DEPOT;
 
-        if (depot && IntStream.range(1, last).noneMatch(i -> isDepot(visits, i))) {
-            log.warn("No depot on route {} apart from its termini, only trips between the termini are created",
-                    routeId);
+        if (depot && visits.stream().noneMatch(this::isLabelledDepot)) {
+            linesWithoutDepot.add(lineId);
         }
 
         Set<Section> boundedSections = new HashSet<>();
@@ -297,8 +299,28 @@ public class NetworkGraphicConverter<T> {
     }
 
     private boolean isDepot(List<Visit> visits, int index) {
-        Visit visit = visits.get(index);
-        return index == 0 || index == visits.size() - 1 || (!visit.pass() && depots.contains(visit.node().getId()));
+        return index == 0 || index == visits.size() - 1 || isLabelledDepot(visits.get(index));
+    }
+
+    private boolean isLabelledDepot(Visit visit) {
+        return !visit.pass() && depots.contains(visit.node().getId());
+    }
+
+    /**
+     * Handle the transit lines without a stop labelled as depot, whose trips fall back to start and end at the line
+     * termini, according to the validation strategy.
+     */
+    private void handleLinesWithoutDepot() {
+        if (linesWithoutDepot.isEmpty()) {
+            return;
+        }
+
+        String message = String.format("No stop labelled '%s' on lines %s", config.getDepotLabel(), linesWithoutDepot);
+        switch (config.getValidationStrategy()) {
+            case SKIP_VALIDATION -> log.debug(message);
+            case FAIL_ON_ISSUES -> throw new IllegalStateException(message);
+            default -> log.warn("{}, their trips only start and end at the termini", message);
+        }
     }
 
     private String createTransitLineId(Trainrun train, List<TrainrunSection> sections, String category) {

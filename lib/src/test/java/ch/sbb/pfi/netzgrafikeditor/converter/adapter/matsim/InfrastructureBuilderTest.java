@@ -29,11 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Builds the network of transit routes over tracks made of several segments.
@@ -245,6 +241,50 @@ class InfrastructureBuilderTest {
                     new TrackSegmentInfo("J-D", movedJunction, nodes.get("D"), 1000));
 
             assertHandledAccordingTo(strategy, build(strategy, "A>D", "B>D"));
+        }
+
+        @ParameterizedTest
+        @EnumSource(ValidationStrategy.class)
+        void reusedSegmentWithANodeAtAnotherCoordinate(ValidationStrategy strategy) {
+            // B>D reuses segment J-D with the same node ids, but with junction J at another coordinate
+            track("A", "D", segment("A-J", "A", "J"), segment("J-D", "J", "D"));
+            TrackNodeInfo movedJunction = new TrackNodeInfo("J", new Coordinate(1.5, 1));
+            track("B", "D", segment("B-J", "B", "J"),
+                    new TrackSegmentInfo("J-D", movedJunction, nodes.get("D"), 1000));
+
+            assertHandledAccordingTo(strategy, build(strategy, "A>D", "B>D"));
+        }
+
+        @ParameterizedTest
+        @EnumSource(ValidationStrategy.class)
+        void reusedSegmentWithAnotherLength(ValidationStrategy strategy) {
+            track("A", "D", segment("A-J", "A", "J"), segment("J-D", "J", "D"));
+            track("B", "D", segment("B-J", "B", "J"),
+                    new TrackSegmentInfo("J-D", nodes.get("J"), nodes.get("D"), 2000));
+
+            assertHandledAccordingTo(strategy, build(strategy, "A>D", "B>D"));
+        }
+
+        @ParameterizedTest
+        @EnumSource(ValidationStrategy.class)
+        void reusedSegmentWithOtherLinkAttributes(ValidationStrategy strategy) {
+            track("A", "D", segment("A-J", "A", "J"), segment("J-D", "J", "D"));
+            TrackSegmentInfo electrified = segment("J-D", "J", "D");
+            electrified.getLinkAttributes().put("electrified", true);
+            track("B", "D", segment("B-J", "B", "J"), electrified);
+
+            assertHandledAccordingTo(strategy, build(strategy, "A>D", "B>D"));
+        }
+
+        @Test
+        void reusedSegmentKeepsWhatItWasFirstAddedWithWhenWarning() {
+            track("A", "D", segment("A-J", "A", "J"), segment("J-D", "J", "D"));
+            track("B", "D", segment("B-J", "B", "J"),
+                    new TrackSegmentInfo("J-D", nodes.get("J"), nodes.get("D"), 2000));
+
+            build(ValidationStrategy.WARN_ON_ISSUES, "A>D", "B>D").handleTrackIssues();
+
+            assertEquals(1000, scenario.getNetwork().getLinks().get(Id.createLinkId("track_link_J-D")).getLength());
         }
 
         @Test

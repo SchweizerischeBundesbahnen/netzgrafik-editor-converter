@@ -19,7 +19,9 @@ public interface InfrastructureRepository {
      *     node of a stop has the id of the stop,</li>
      *     <li>each segment starts at the node the segment before ends at, so consecutive segments share the id of the
      *     junction between them,</li>
-     *     <li>a segment id always connects the same two nodes, and a node id always stands at the same coordinate.</li>
+     *     <li>a segment id always stands for the same segment: the same two nodes, the same length and the same link
+     *     attributes,</li>
+     *     <li>a node id always stands at the same coordinate.</li>
      * </ul>
      * A track that breaks these rules is handled according to the validation strategy of the supply builder that
      * reads it.

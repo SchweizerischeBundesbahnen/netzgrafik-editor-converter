@@ -51,6 +51,32 @@ class InfrastructureBuilder {
     private final Map<String, AddedSegment> addedSegments = new HashMap<>();
     private final List<TrackIssue> trackIssues = new ArrayList<>();
 
+    /**
+     * Lists what a segment has other than the segment with its id that was added first: other nodes, another length or
+     * other link attributes. The coordinates of the nodes are checked with the nodes themselves.
+     */
+    private static List<String> differences(TrackSegmentInfo added, TrackSegmentInfo segment) {
+        List<String> differences = new ArrayList<>();
+
+        if (!added.getFromNode().getId().equals(segment.getFromNode().getId()) || !added.getToNode()
+                .getId()
+                .equals(segment.getToNode().getId())) {
+            differences.add(String.format("connects %s to %s instead of %s to %s", segment.getFromNode().getId(),
+                    segment.getToNode().getId(), added.getFromNode().getId(), added.getToNode().getId()));
+        }
+
+        if (Double.compare(added.getLength(), segment.getLength()) != 0) {
+            differences.add(String.format("length %s instead of %s", segment.getLength(), added.getLength()));
+        }
+
+        if (!added.getLinkAttributes().equals(segment.getLinkAttributes())) {
+            differences.add(String.format("link attributes %s instead of %s", segment.getLinkAttributes(),
+                    added.getLinkAttributes()));
+        }
+
+        return differences;
+    }
+
     TransitStopFacility buildTransitStopFacility(StopFacilityInfo stopFacilityInfo) {
         String stopId = stopFacilityInfo.getId();
 
@@ -197,42 +223,50 @@ class InfrastructureBuilder {
     }
 
     private Id<Link> getOrCreateSegmentLink(TransitRouteInfo transitRouteInfo, StopFacilityInfo fromStop, StopFacilityInfo toStop, TrackSegmentInfo segment) {
+        // a segment places its nodes where they were first added, whether the segment itself is new or not
+        checkNodeCoordinate(transitRouteInfo, fromStop, toStop, segment.getFromNode());
+        checkNodeCoordinate(transitRouteInfo, fromStop, toStop, segment.getToNode());
+
         AddedSegment added = addedSegments.get(segment.getSegmentId());
 
-        // a segment already added keeps its link, which joins the nodes it was first added with
+        // a segment already added keeps its link, with the nodes, length and attributes it was first added with
         if (added != null) {
             log.debug("Track segment {} already added, reusing its link", segment.getSegmentId());
-            if (!added.fromNodeId().equals(segment.getFromNode().getId()) || !added.toNodeId()
-                    .equals(segment.getToNode().getId())) {
+            List<String> differences = differences(added.segment(), segment);
+            if (!differences.isEmpty()) {
                 reportIssue(TrackIssueType.SEGMENT_CONFLICT, transitRouteInfo, fromStop, toStop,
-                        String.format("segment %s connects %s to %s, but was added from %s to %s",
-                                segment.getSegmentId(), segment.getFromNode().getId(), segment.getToNode().getId(),
-                                added.fromNodeId(), added.toNodeId()));
+                        String.format("segment %s differs from when it was added: %s", segment.getSegmentId(),
+                                String.join(", ", differences)));
             }
             return added.linkId();
         }
 
         log.debug("Adding track segment {}", segment.getSegmentId());
-        Node fromNode = getOrCreateNode(transitRouteInfo, fromStop, toStop, segment.getFromNode());
-        Node toNode = getOrCreateNode(transitRouteInfo, fromStop, toStop, segment.getToNode());
+        Node fromNode = getOrCreateNode(segment.getFromNode());
+        Node toNode = getOrCreateNode(segment.getToNode());
         Id<Link> linkId = factory.createLink(LinkType.ROUTE, segment.getSegmentId(), fromNode, toNode,
                 segment.getLength(), segment.getLinkAttributes()).getId();
-        addedSegments.put(segment.getSegmentId(),
-                new AddedSegment(linkId, segment.getFromNode().getId(), segment.getToNode().getId()));
+        addedSegments.put(segment.getSegmentId(), new AddedSegment(linkId, segment));
 
         return linkId;
     }
 
-    private Node getOrCreateNode(TransitRouteInfo transitRouteInfo, StopFacilityInfo fromStop, StopFacilityInfo toStop, TrackNodeInfo trackNode) {
+    private void checkNodeCoordinate(TransitRouteInfo transitRouteInfo, StopFacilityInfo fromStop, StopFacilityInfo toStop, TrackNodeInfo trackNode) {
         AddedNode added = addedNodes.get(trackNode.getId());
+        if (added != null && !added.coordinate().equals(trackNode.getCoordinate())) {
+            reportIssue(TrackIssueType.NODE_CONFLICT, transitRouteInfo, fromStop, toStop,
+                    String.format("node %s is at %s, but was added at %s", trackNode.getId(),
+                            trackNode.getCoordinate(), added.coordinate()));
+        }
+    }
 
-        // a node already added keeps the coordinate it was first added at
+    /**
+     * Gets the network node of a node of the track infrastructure, created at its coordinate if not added yet; a node
+     * already added keeps the coordinate it was first added at (see {@link #checkNodeCoordinate}).
+     */
+    private Node getOrCreateNode(TrackNodeInfo trackNode) {
+        AddedNode added = addedNodes.get(trackNode.getId());
         if (added != null) {
-            if (!added.coordinate().equals(trackNode.getCoordinate())) {
-                reportIssue(TrackIssueType.NODE_CONFLICT, transitRouteInfo, fromStop, toStop,
-                        String.format("node %s is at %s, but was added at %s", trackNode.getId(),
-                                trackNode.getCoordinate(), added.coordinate()));
-            }
             return added.node();
         }
 
@@ -257,7 +291,8 @@ class InfrastructureBuilder {
          */
         NOT_CONTIGUOUS,
         /**
-         * A segment id connects other nodes than it did before.
+         * A segment id stands for another segment than it did before: other nodes, another length or other link
+         * attributes.
          */
         SEGMENT_CONFLICT,
         /**
@@ -278,7 +313,7 @@ class InfrastructureBuilder {
     private record AddedNode(Node node, Coordinate coordinate) {
     }
 
-    private record AddedSegment(Id<Link> linkId, String fromNodeId, String toNodeId) {
+    private record AddedSegment(Id<Link> linkId, TrackSegmentInfo segment) {
     }
 
 }

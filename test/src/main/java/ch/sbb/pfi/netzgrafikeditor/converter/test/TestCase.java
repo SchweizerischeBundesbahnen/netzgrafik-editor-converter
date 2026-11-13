@@ -14,6 +14,7 @@ public enum TestCase {
     SIMPLE_DWELL_TIME_CONFLICT("simple-dwell-time-conflict.json", StopSequence.SIMPLE),
     SIMPLE_RANDOM_ORDER("simple-random-order.json", StopSequence.SIMPLE.reversed()),
     SIMPLE_ASYMMETRIC("simple-asymmetric.json", StopSequence.SIMPLE),
+    FRACTIONAL_TRAVEL_TIMES("fractional-travel-times.json", StopSequence.SIMPLE_PASS),
     CYCLE_SMALL("cycle-small.json", StopSequence.CYCLE_SMALL),
     CYCLE("cycle.json", StopSequence.CYCLE),
     CYCLE_RANDOM_ORDER("cycle-random-order.json", StopSequence.CYCLE.reversed()),

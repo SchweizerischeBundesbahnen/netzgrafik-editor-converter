@@ -53,6 +53,13 @@ public class NetworkGraphicConverter<T> {
         return String.format("%s_%s", lineId, direction.name());
     }
 
+    /**
+     * Converts minutes with decimals, as the network graphic gives them, into a duration rounded to the second.
+     */
+    private static Duration toDuration(double minutes) {
+        return Duration.ofSeconds(Math.round(minutes * SECONDS_PER_MINUTE));
+    }
+
     public void run() throws IOException {
         log.info("Converting netzgrafik using source {}, supply builder {} and sink {}",
                 source.getClass().getSimpleName(), builder.getClass().getSimpleName(), sink.getClass().getSimpleName());
@@ -168,6 +175,10 @@ public class NetworkGraphicConverter<T> {
 
     /**
      * Create the visits of the nodes along the sections, with times relative to the departure at the first node.
+     * <p>
+     * The travel and dwell times of the network graphic have decimals (e.g. 1.5 minutes), so the elapsed time is summed
+     * up unrounded and only each visit time is rounded, once, to the second. Rounding the durations instead would carry
+     * the error of every section into all the visits after it.
      */
     private List<Visit> createVisits(Trainrun train, List<TrainrunSection> sections, String fachCategory) {
         List<Visit> visits = new ArrayList<>();
@@ -175,30 +186,32 @@ public class NetworkGraphicConverter<T> {
         visits.add(new Visit(sourceNode, false, DwellTime.fromCategory(sourceNode, fachCategory).negated(),
                 Duration.ZERO));
 
-        Duration time = Duration.ZERO;
+        // minutes since the departure at the first node, never rounded
+        double elapsed = 0;
         for (int i = 0; i < sections.size(); i++) {
             TrainrunSection currentSection = sections.get(i);
             Node targetNode = lookup.nodes.get(currentSection.getTargetNodeId());
-            time = time.plusMinutes(Math.round(currentSection.getTravelTime().getTime()));
+            elapsed += currentSection.getTravelTime().getTime();
+            Duration arrival = toDuration(elapsed);
 
             if (i == sections.size() - 1) {
                 // last stop: dwell time from category
                 Duration dwellTime = DwellTime.fromCategory(targetNode, fachCategory);
-                visits.add(new Visit(targetNode, false, time, time.plus(dwellTime)));
+                visits.add(new Visit(targetNode, false, arrival, arrival.plus(dwellTime)));
 
             } else if (isPass(targetNode, currentSection.getId())) {
                 // pass: nonstop at node
-                visits.add(new Visit(targetNode, true, time, time));
+                visits.add(new Visit(targetNode, true, arrival, arrival));
 
             } else {
                 // stop: dwell time from network graphic
-                Duration dwellTime = DwellTime.fromSections(currentSection, sections.get(i + 1));
+                double dwellTime = DwellTime.fromSections(currentSection, sections.get(i + 1));
 
                 // check consistency of dwell time from network graphic against dwell time from category
-                DwellTime.warnOnInconsistency(dwellTime, train, targetNode, fachCategory);
+                DwellTime.warnOnInconsistency(toDuration(dwellTime), train, targetNode, fachCategory);
 
-                visits.add(new Visit(targetNode, false, time, time.plus(dwellTime)));
-                time = time.plus(dwellTime);
+                elapsed += dwellTime;
+                visits.add(new Visit(targetNode, false, arrival, toDuration(elapsed)));
             }
         }
 
@@ -474,17 +487,20 @@ public class NetworkGraphicConverter<T> {
             return Duration.ofSeconds(Math.round(trainrunCategoryHaltezeit.getHaltezeit() * SECONDS_PER_MINUTE));
         }
 
-        private static Duration fromSections(TrainrunSection currentSection, TrainrunSection nextSection) {
+        /**
+         * Get the dwell time at the node between two sections in minutes, unrounded.
+         */
+        private static double fromSections(TrainrunSection currentSection, TrainrunSection nextSection) {
             double arrivalTime = currentSection.getTargetArrival().getTime();
             double departureTime = nextSection.getSourceDeparture().getTime();
 
             if (arrivalTime > departureTime) {
                 // special case: The departure time is in the next hour
                 // example: arrivalTime = 59, departureTime = 1; actual dwell time = 2 minutes
-                return Duration.ofSeconds(Math.round((departureTime + 60 - arrivalTime) * SECONDS_PER_MINUTE));
+                return departureTime + 60 - arrivalTime;
             } else {
                 // normal case: Arrival time is before departure time within the same hour
-                return Duration.ofSeconds(Math.round((departureTime - arrivalTime) * SECONDS_PER_MINUTE));
+                return departureTime - arrivalTime;
             }
         }
 

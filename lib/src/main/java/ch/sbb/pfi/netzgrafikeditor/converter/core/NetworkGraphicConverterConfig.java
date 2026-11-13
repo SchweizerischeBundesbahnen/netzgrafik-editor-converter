@@ -30,7 +30,8 @@ public class NetworkGraphicConverterConfig {
      * validation, since they are not used in this case.
      * <p>
      * With the service day boundary {@link ServiceDayBoundary#DEPOT}, the strategy also handles lines without a stop
-     * labelled as depot, see {@link ValidationStrategy}.
+     * labelled as depot, see {@link ValidationStrategy}. The MATSim supply builder takes a strategy of its own for the
+     * tracks of the infrastructure repository; the command line application passes this one.
      */
     @Builder.Default
     ValidationStrategy validationStrategy = ValidationStrategy.WARN_ON_ISSUES;

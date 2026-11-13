@@ -4,6 +4,7 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.DepartureInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RollingStockRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TrackNodeInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TrackSegmentInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitLineInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitRouteInfo;
@@ -24,6 +25,7 @@ import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.pt.transitSchedule.api.TransitLine;
 import org.matsim.pt.transitSchedule.api.TransitSchedule;
+import org.matsim.pt.utils.TransitScheduleValidator;
 import org.matsim.vehicles.Vehicles;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -148,14 +150,17 @@ class MatsimSupplyBuilderTest {
                 .addDeparture("lineSimple_R", Default.SERVICE_DAY_START.plus(11, ChronoUnit.MINUTES))
                 .build();
 
-        // assert
+        // assert: 4 stops and 3 junctions, which both directions share; 4 stop links and 6 track links per direction
         Network network = scenario.getNetwork();
         assertNotNull(network);
-        assertEquals(16, network.getNodes().size(), "Expected 16 nodes in the network");
+        assertEquals(7, network.getNodes().size(), "Expected 7 nodes in the network");
         assertEquals(16, network.getLinks().size(), "Expected 16 links in the network");
 
         TransitSchedule schedule = scenario.getTransitSchedule();
         assertNotNull(schedule);
+        TransitScheduleValidator.ValidationResult routes = TransitScheduleValidator.validateNetworkRoutes(schedule,
+                network);
+        assertTrue(routes.isValid(), () -> "Expected continuous network routes, but: " + routes.getErrors());
         assertEquals(4, schedule.getFacilities().size(), "Expected 4 stop facilities");
         assertEquals(1, schedule.getTransitLines().size(), "Expected 1 transit line in the schedule");
         assertTrue(schedule.getTransitLines().containsKey(Id.create("lineSimple", TransitLine.class)),
@@ -182,26 +187,45 @@ class MatsimSupplyBuilderTest {
 
     @RequiredArgsConstructor
     @Getter
+    enum TrackNode {
+        A(new TrackNodeInfo("A", new Coordinate(0, 0))),
+        B(new TrackNodeInfo("B", new Coordinate(1, 1))),
+        C(new TrackNodeInfo("C", new Coordinate(2, 2))),
+        D(new TrackNodeInfo("D", new Coordinate(3, 3))),
+        // junctions between the stops
+        BC(new TrackNodeInfo("junction_B-C", new Coordinate(1.5, 1.5))),
+        CD1(new TrackNodeInfo("junction_C-D1", new Coordinate(2.3, 2.3))),
+        CD2(new TrackNodeInfo("junction_C-D2", new Coordinate(2.7, 2.7)));
+
+        private final TrackNodeInfo trackNodeInfo;
+    }
+
+    @RequiredArgsConstructor
+    @Getter
     enum Segments {
         // A -- B
-        A_B(List.of(new TrackSegmentInfo("segment_A-B", new Coordinate(0, 0), new Coordinate(1, 1), 1000))),
-        B_A(List.of(new TrackSegmentInfo("segment_B-A", new Coordinate(1, 1), new Coordinate(0, 0), 1000))),
+        A_B(List.of(segment("segment_A-B", TrackNode.A, TrackNode.B, 1000))),
+        B_A(List.of(segment("segment_B-A", TrackNode.B, TrackNode.A, 1000))),
 
-        // B -- C
-        B_C(List.of(new TrackSegmentInfo("segment_B-C1", new Coordinate(1, 1), new Coordinate(1.5, 1.5), 500),
-                new TrackSegmentInfo("segment_B-C2", new Coordinate(1.5, 1.5), new Coordinate(2, 2), 500))),
-        C_B(List.of(new TrackSegmentInfo("segment_C-B1", new Coordinate(1.5, 1.5), new Coordinate(1, 1), 500),
-                new TrackSegmentInfo("segment_C-B2", new Coordinate(2, 2), new Coordinate(1.5, 1.5), 500))),
+        // B -- C, over one junction
+        B_C(List.of(segment("segment_B-C1", TrackNode.B, TrackNode.BC, 500),
+                segment("segment_B-C2", TrackNode.BC, TrackNode.C, 500))),
+        C_B(List.of(segment("segment_C-B1", TrackNode.C, TrackNode.BC, 500),
+                segment("segment_C-B2", TrackNode.BC, TrackNode.B, 500))),
 
-        // C -- D
-        C_D(List.of(new TrackSegmentInfo("segment_C-D1", new Coordinate(2, 2), new Coordinate(2.3, 2.3), 300),
-                new TrackSegmentInfo("segment_C-D2", new Coordinate(2.3, 2.3), new Coordinate(2.7, 2.7), 400),
-                new TrackSegmentInfo("segment_C-D3", new Coordinate(2.7, 2.7), new Coordinate(3, 3), 300))),
-        D_C(List.of(new TrackSegmentInfo("segment_D_C1", new Coordinate(2.3, 2.3), new Coordinate(2, 2), 300),
-                new TrackSegmentInfo("segment_D_C2", new Coordinate(2.7, 2.7), new Coordinate(2.3, 2.3), 400),
-                new TrackSegmentInfo("segment_D_C3", new Coordinate(3, 3), new Coordinate(2.7, 2.7), 300)));
+        // C -- D, over two junctions
+        C_D(List.of(segment("segment_C-D1", TrackNode.C, TrackNode.CD1, 300),
+                segment("segment_C-D2", TrackNode.CD1, TrackNode.CD2, 400),
+                segment("segment_C-D3", TrackNode.CD2, TrackNode.D, 300))),
+        D_C(List.of(segment("segment_D-C1", TrackNode.D, TrackNode.CD2, 300),
+                segment("segment_D-C2", TrackNode.CD2, TrackNode.CD1, 400),
+                segment("segment_D-C3", TrackNode.CD1, TrackNode.C, 300)));
 
         private final List<TrackSegmentInfo> segments;
+
+        private static TrackSegmentInfo segment(String id, TrackNode from, TrackNode to, double length) {
+            return new TrackSegmentInfo(id, from.getTrackNodeInfo(), to.getTrackNodeInfo(), length);
+        }
     }
 
     @RequiredArgsConstructor

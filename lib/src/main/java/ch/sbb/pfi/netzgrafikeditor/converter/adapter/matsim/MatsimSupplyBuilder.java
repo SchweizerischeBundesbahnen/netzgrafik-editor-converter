@@ -8,6 +8,7 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleAllocation;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleTypeInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.validation.ValidationStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.core.config.ConfigUtils;
@@ -28,11 +29,24 @@ public class MatsimSupplyBuilder extends BaseSupplyBuilder<Scenario> {
     private final InfrastructureBuilder infrastructureBuilder;
     private final Scenario scenario;
 
+    /**
+     * Creates a MATSim supply builder that warns about tracks of the infrastructure repository that do not form a
+     * continuous path between their stops.
+     */
     public MatsimSupplyBuilder(InfrastructureRepository infrastructureRepository, RollingStockRepository rollingStockRepository, VehicleCircuitsPlanner vehicleCircuitsPlanner) {
+        this(infrastructureRepository, rollingStockRepository, vehicleCircuitsPlanner,
+                ValidationStrategy.WARN_ON_ISSUES);
+    }
+
+    /**
+     * Creates a MATSim supply builder that handles tracks of the infrastructure repository that do not form a
+     * continuous path between their stops according to the validation strategy.
+     */
+    public MatsimSupplyBuilder(InfrastructureRepository infrastructureRepository, RollingStockRepository rollingStockRepository, VehicleCircuitsPlanner vehicleCircuitsPlanner, ValidationStrategy validationStrategy) {
         super(infrastructureRepository, rollingStockRepository, vehicleCircuitsPlanner);
         this.scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
         factory = new MatsimSupplyFactory(scenario);
-        infrastructureBuilder = new InfrastructureBuilder(scenario, factory, infrastructureRepository);
+        infrastructureBuilder = new InfrastructureBuilder(factory, infrastructureRepository, validationStrategy);
     }
 
     @Override
@@ -74,6 +88,7 @@ public class MatsimSupplyBuilder extends BaseSupplyBuilder<Scenario> {
 
     @Override
     protected Scenario getResult() {
+        infrastructureBuilder.handleTrackIssues();
         return scenario;
     }
 

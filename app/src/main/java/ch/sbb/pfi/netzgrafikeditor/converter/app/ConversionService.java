@@ -59,7 +59,8 @@ public class ConversionService {
 
             case MATSIM -> {
                 SupplyBuilder<Scenario> builder = new MatsimSupplyBuilder(infrastructureRepository,
-                        rollingStockRepository, vehicleCircuitsPlanner);
+                        rollingStockRepository, vehicleCircuitsPlanner,
+                        request.converterConfig.getValidationStrategy());
                 ConverterSink<Scenario> sink = new TransitScheduleXmlWriter(request.outputDirectory);
 
                 yield new NetworkGraphicConverter<>(request.converterConfig, source, builder, sink);

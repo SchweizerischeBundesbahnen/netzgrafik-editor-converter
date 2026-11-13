@@ -34,5 +34,13 @@ class CsvInfrastructureRepositoryTest {
                 new StopFacilityInfo("B", "Stop B", null), null);
         assertEquals(1, trackSegmentInfos.size());
         assertEquals(655.3, trackSegmentInfos.getFirst().getLength(), 0.1);
+
+        // the segment runs from the node of the from stop to the node of the to stop, at the coordinates of the stops
+        TrackSegmentInfo segment = trackSegmentInfos.getFirst();
+        assertEquals("A", segment.getFromNode().getId());
+        assertEquals("B", segment.getToNode().getId());
+        assertEquals(repo.getStopFacility("A", "Stop A", 0., 0.).getCoordinate(),
+                segment.getFromNode().getCoordinate());
+        assertEquals(repo.getStopFacility("B", "Stop B", 0., 0.).getCoordinate(), segment.getToNode().getCoordinate());
     }
 }

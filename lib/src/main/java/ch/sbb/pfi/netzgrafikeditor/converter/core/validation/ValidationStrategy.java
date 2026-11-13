@@ -1,6 +1,7 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.core.validation;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.core.ServiceDayBoundary;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -8,7 +9,9 @@ import lombok.extern.slf4j.Slf4j;
  * <p>
  * The strategy applies to invalid IDs of nodes and trainruns and, with the service day boundary
  * {@link ServiceDayBoundary#DEPOT}, to lines without a stop labelled as depot, whose trips then only start and end at
- * the line termini. Missing depots cannot be repaired, so the repairing strategies only warn about them.
+ * the line termini. With the MATSim output, it also applies to tracks of the infrastructure repository that do not form
+ * a continuous path between their stops (see {@link InfrastructureRepository#getTrack}). Missing depots and broken
+ * tracks cannot be repaired, so the repairing strategies only warn about them.
  */
 @Slf4j
 public enum ValidationStrategy {

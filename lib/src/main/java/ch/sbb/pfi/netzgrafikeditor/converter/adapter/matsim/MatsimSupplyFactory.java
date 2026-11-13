@@ -122,9 +122,20 @@ class MatsimSupplyFactory {
         return node;
     }
 
+    /**
+     * Creates a link named after the nodes it connects.
+     */
     Link createLink(LinkType linkType, Node fromNode, Node toNode, double length, Map<String, Object> attributes) {
-        Id<Link> linkId = Id.create(String.format(IdPattern.LINK, linkType.getPrefix(), fromNode.getId().toString(),
-                toNode.getId().toString()), Link.class);
+        return createLink(linkType, String.format("%s-%s", fromNode.getId(), toNode.getId()), fromNode, toNode, length,
+                attributes);
+    }
+
+    /**
+     * Creates a link with an id of its own, for example the id of a track segment, so that parallel links between the
+     * same nodes stay distinct.
+     */
+    Link createLink(LinkType linkType, String id, Node fromNode, Node toNode, double length, Map<String, Object> attributes) {
+        Id<Link> linkId = Id.create(String.format(IdPattern.LINK, linkType.getPrefix(), id), Link.class);
         Link link = network.getLinks().get(linkId);
 
         if (link != null) {
@@ -218,7 +229,7 @@ class MatsimSupplyFactory {
         private static final String TRANSIT_STOP = "%s";
         private static final String VEHICLE = "%s";
         private static final String VEHICLE_TYPE = "%s";
-        private static final String LINK = "%s_%s-%s";
+        private static final String LINK = "%s_%s";
         private static final String NODE = "%s";
     }
 

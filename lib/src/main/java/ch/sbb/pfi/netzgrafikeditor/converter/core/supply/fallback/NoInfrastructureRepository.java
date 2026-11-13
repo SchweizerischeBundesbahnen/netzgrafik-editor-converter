@@ -2,6 +2,7 @@ package ch.sbb.pfi.netzgrafikeditor.converter.core.supply.fallback;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TrackNodeInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TrackSegmentInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitRouteInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.util.spatial.Coordinate;
@@ -29,9 +30,9 @@ public class NoInfrastructureRepository implements InfrastructureRepository {
 
         double distance = euclideanDistance(fromCoord, toCoord);
 
-        return List.of(
-                new TrackSegmentInfo(String.format("%s-%s", fromStop.getId(), toStop.getId()), fromCoord, toCoord,
-                        distance));
+        // one straight segment from the node of the from stop to the node of the to stop
+        return List.of(new TrackSegmentInfo(String.format("%s-%s", fromStop.getId(), toStop.getId()),
+                new TrackNodeInfo(fromStop.getId(), fromCoord), new TrackNodeInfo(toStop.getId(), toCoord), distance));
     }
 
     private double euclideanDistance(Coordinate from, Coordinate to) {

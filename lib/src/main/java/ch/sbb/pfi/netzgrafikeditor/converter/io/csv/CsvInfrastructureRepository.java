@@ -2,6 +2,7 @@ package ch.sbb.pfi.netzgrafikeditor.converter.io.csv;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TrackNodeInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TrackSegmentInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitRouteInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.util.spatial.Coordinate;
@@ -34,8 +35,9 @@ public class CsvInfrastructureRepository extends CsvRepository<StopFacilityInfo>
         Coordinate fromCoord = getEntity(fromStop.getId()).getCoordinate();
         Coordinate toCoord = getEntity(toStop.getId()).getCoordinate();
 
-        return List.of(
-                new TrackSegmentInfo(String.format("%s-%s", fromStop.getId(), toStop.getId()), fromCoord, toCoord,
-                        HaversineDistance.calculate(fromCoord, toCoord)));
+        // one straight segment from the node of the from stop to the node of the to stop
+        return List.of(new TrackSegmentInfo(String.format("%s-%s", fromStop.getId(), toStop.getId()),
+                new TrackNodeInfo(fromStop.getId(), fromCoord), new TrackNodeInfo(toStop.getId(), toCoord),
+                HaversineDistance.calculate(fromCoord, toCoord)));
     }
 }

@@ -4,7 +4,17 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    commit-message:
+      prefix: "build" # Conventional commit type, results in 'build(deps): ...'
+      include: "scope"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+    commit-message:
+      prefix: "build"
+      include: "scope"
+    groups:
+      github-actions:
+        patterns:
+          - "*"

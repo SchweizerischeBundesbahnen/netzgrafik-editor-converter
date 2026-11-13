@@ -73,6 +73,23 @@ class NetworkGraphicConverterTest {
     }
 
     @Test
+    void run_fractionalTravelTime() throws IOException {
+        configureServiceDay(ServiceDayTime.MIN, ServiceDayTime.NOON, ServiceDayBoundary.FULL);
+        when(source.load()).thenReturn(new JsonDeserializer().read(TestCase.FRACTIONAL_TRAVEL_TIMES.getPath()));
+        converter.run();
+
+        // forward, 1.5 minutes per section, B passed: rounded per section, C would be reached after 4 instead of 3
+        // minutes and D 2 instead of 1.5 minutes after leaving C
+        verify(builder).addRouteStop("IC_A_D_FORWARD", "C", Duration.ofSeconds(180), Duration.ofSeconds(30));
+        verify(builder).addRouteStop(eq("IC_A_D_FORWARD"), eq("D"), eq(Duration.ofSeconds(90)), any());
+
+        // backward, 1.4 minutes per section, B passed: rounded per section, C would be reached after 1 instead of 1.4
+        // minutes and A 2 instead of 2.8 minutes after leaving C
+        verify(builder).addRouteStop("IC_A_D_REVERSE", "C", Duration.ofSeconds(84), Duration.ofSeconds(30));
+        verify(builder).addRouteStop(eq("IC_A_D_REVERSE"), eq("A"), eq(Duration.ofSeconds(168)), any());
+    }
+
+    @Test
     void run_clipServiceDayStart() throws IOException {
         configureServiceDay(ServiceDayTime.of(6, 0, 0), ServiceDayTime.of(25, 0, 0), ServiceDayBoundary.CLIP);
         when(source.load()).thenReturn(new JsonDeserializer().read(TestCase.CYCLE.getPath()));

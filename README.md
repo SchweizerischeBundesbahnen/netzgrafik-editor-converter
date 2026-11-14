@@ -11,11 +11,14 @@ the entire service day in different formats, as for example GTFS static or MATSi
 Run the command line tool to convert a network graphic to either a GTFS or MATSim timetable:
 
 ```text
-Usage: convert [-htV] [-b=<serviceDayBoundary>] [-d=<depotLabel>]
-               [-e=<serviceDayEnd>] [-f=<outputFormat>] [-i=<stopFacilityCsv>]
-               [-r=<rollingStockCsv>] [-s=<serviceDayStart>]
-               [-v=<validationStrategy>] <networkGraphicFile> <outputDirectory>
-               
+Usage: convert [-htV] [--non-passenger-network] [-b=<serviceDayBoundary>]
+               [-d=<depotLabel>] [-e=<serviceDayEnd>] [-f=<outputFormat>]
+               [-i=<stopFacilityCsv>] [-r=<rollingStockCsv>]
+               [-s=<serviceDayStart>] [-v=<validationStrategy>]
+               [--non-passenger-categories=<nonPassengerCategories>[,
+               <nonPassengerCategories>...]]... <networkGraphicFile>
+               <outputDirectory>
+
 Converts network graphics into timetables in various formats.
       <networkGraphicFile>   The network graphic file to convert.
       <outputDirectory>      The output directory for the converted timetable.
@@ -33,6 +36,16 @@ Converts network graphics into timetables in various formats.
   -i, --stop-facility-csv=<stopFacilityCsv>
                              File which contains the coordinates of the stop
                                facilities.
+      --non-passenger-categories=<nonPassengerCategories>[,
+        <nonPassengerCategories>...]
+                             Trainrun categories without passenger service, as
+                               comma-separated short names (e.g. G,GEX). Their
+                               trains run, but cannot be boarded.
+      --non-passenger-network
+                             Convert only the trainruns without passenger
+                               service, as a network of their own in which they
+                               can be boarded, with transfers only at the drawn
+                               connections (GTFS only).
   -r, --rolling-stock-csv=<rollingStockCsv>
                              File which contains the vehicle types to be mapped
                                to network graphic categories.
@@ -84,6 +97,20 @@ count as depots.
 See [Service Day Boundary](docs/service-day-boundary/service-day-boundary.md) for the exact rules, the handling of lines
 without depot by the validation strategy, and time-distance diagrams.
 
+### Connections
+
+The connections drawn in the nodes of the Netzgrafik-Editor become GTFS transfers between the trips they link: a timed
+transfer (`transfer_type` 1) from the arriving to the departing trip, which waits for it. With different frequencies,
+only the trips that meet as drawn are connected. MATSim relates transfers to stop facilities only, so the connections
+are left out there.
+
+Trainruns without passenger service, such as freight trains, empty runs, or construction, rescue and shunting trains,
+are marked by their category (`--non-passenger-categories`, e.g. `G,GEX`). Their trains run, but nobody boards them.
+With `--non-passenger-network`, the converter writes these trainruns alone and lets them be boarded, as a GTFS network
+in which a train changes to another trainrun only at a drawn connection, in no time.
+See [Connections](docs/connections/connections.md) for the rules, the handling of connections that cannot be converted
+as drawn by the validation strategy, and an example.
+
 ### Converter in Java
 
 In most cases, the repositories for infrastructure, rolling stock, and vehicle circuits used by the supply builder will
@@ -122,7 +149,7 @@ public class Example {
             InfrastructureRepository customInfrastructureRepository, RollingStockRepository customRollingStockRepository,
             VehicleCircuitsPlanner customVehicleCircuitsPlanner, NetworkGraphicSource source) {
         SupplyBuilder<Scenario> builder = new MatsimSupplyBuilder(customInfrastructureRepository,
-                customRollingStockRepository, customVehicleCircuitsPlanner);
+                customRollingStockRepository, customVehicleCircuitsPlanner, CONFIG.getValidationStrategy());
         ConverterSink<Scenario> sink = new TransitScheduleXmlWriter(Example.OUTPUT_DIRECTORY, "");
 
         return new NetworkGraphicConverter<>(CONFIG, source, builder, sink);

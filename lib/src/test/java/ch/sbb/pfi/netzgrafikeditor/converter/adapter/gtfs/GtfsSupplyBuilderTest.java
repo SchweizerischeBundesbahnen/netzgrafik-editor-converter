@@ -4,6 +4,7 @@ import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.GtfsSchedule;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.DepartureInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RollingStockRepository;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopAccess;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitLineInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitRouteInfo;
@@ -77,10 +78,13 @@ class GtfsSupplyBuilderTest {
                 .addStopFacility("c", "Stop C", 2, 0)
                 .addStopFacility("d", "Stop D", 3, 0)
                 .addTransitLine("lineId", "rail")
-                .addTransitRoute("routeId", "lineId", "a", Duration.of(5, ChronoUnit.MINUTES))
+                .addTransitRoute("routeId", "lineId", "a", Duration.of(5, ChronoUnit.MINUTES),
+                        StopAccess.BOARDING_AND_ALIGHTING)
                 .addRoutePass("routeId", "b")
-                .addRouteStop("routeId", "c", Duration.of(10, ChronoUnit.MINUTES), Duration.of(5, ChronoUnit.MINUTES))
-                .addRouteStop("routeId", "d", Duration.of(10, ChronoUnit.MINUTES), Duration.of(5, ChronoUnit.MINUTES))
+                .addRouteStop("routeId", "c", Duration.of(10, ChronoUnit.MINUTES), Duration.of(5, ChronoUnit.MINUTES),
+                        StopAccess.BOARDING_AND_ALIGHTING)
+                .addRouteStop("routeId", "d", Duration.of(10, ChronoUnit.MINUTES), Duration.of(5, ChronoUnit.MINUTES),
+                        StopAccess.BOARDING_AND_ALIGHTING)
                 .addDeparture("routeId", ServiceDayTime.NOON)
                 .build();
 

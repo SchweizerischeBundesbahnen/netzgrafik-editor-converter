@@ -7,19 +7,25 @@ import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Route;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.RouteType;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Stop;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.StopTime;
+import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Transfer;
+import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.TransferType;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Trip;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.BaseSupplyBuilder;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.ConnectionInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RollingStockRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteElement;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteElementVisitor;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RoutePass;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteStop;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopAccess;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransitRouteInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TransportMode;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleAllocation;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
 import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -29,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Slf4j
 public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
 
     public static final String ROUTE_NAME_FORMAT = "%s: %s - %s";
@@ -37,10 +44,12 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
     private final List<Route> routes = new ArrayList<>();
     private final List<Trip> trips = new ArrayList<>();
     private final List<StopTime> stopTimes = new ArrayList<>();
+    private final List<Transfer> transfers = new ArrayList<>();
 
     private final Set<String> createdRoutes = new HashSet<>();
     private final Map<String, Integer> tripCounts = new HashMap<>();
     private final Map<String, List<RouteElement>> routeElements = new HashMap<>();
+    private final Map<Departure, String> tripIds = new HashMap<>();
 
     public GtfsSupplyBuilder(InfrastructureRepository infrastructureRepository, RollingStockRepository rollingStockRepository, VehicleCircuitsPlanner vehicleCircuitsPlanner) {
         super(infrastructureRepository, rollingStockRepository, vehicleCircuitsPlanner);
@@ -84,6 +93,7 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
 
         String routeId = vehicleAllocation.getDepartureInfo().getTransitRouteInfo().getId();
         String tripId = String.format("%s_%d", routeId, tripCounts.merge(routeId, 1, Integer::sum));
+        tripIds.put(new Departure(routeId, vehicleAllocation.getDepartureInfo().getTime()), tripId);
         List<RouteElement> currentRouteElements = routeElements.get(routeId);
 
         // create and add trip
@@ -118,12 +128,15 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
                     time[0] = time[0].plus(dwellTime);
                     ServiceDayTime departureTime = time[0];
 
+                    StopAccess access = routeStop.getAccess();
                     stopTimes.add(StopTime.builder()
                             .tripId(tripId)
                             .arrivalTime(arrivalTime)
                             .departureTime(departureTime)
                             .stopId(routeStop.getStopFacilityInfo().getId())
                             .stopSequence(count[0]++)
+                            .pickupType(access.isBoarding() ? null : StopTime.NOT_AVAILABLE)
+                            .dropOffType(access.isAlighting() ? null : StopTime.NOT_AVAILABLE)
                             .build());
                 }
 
@@ -137,9 +150,54 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
 
     }
 
+    /**
+     * Builds a connection as a timed transfer from the arriving to the departing trip, which takes precedence over a
+     * transfer between the stops alone.
+     */
+    @Override
+    protected void buildConnection(ConnectionInfo connectionInfo) {
+        String fromTripId = getTripId(connectionInfo.getFromTransitRouteInfo(), connectionInfo.getFromDeparture());
+        String toTripId = getTripId(connectionInfo.getToTransitRouteInfo(), connectionInfo.getToDeparture());
+        if (fromTripId == null || toTripId == null) {
+            log.warn("No trip for connection at {} from {} at {} to {} at {}, skipping",
+                    connectionInfo.getStopFacilityInfo().getId(), connectionInfo.getFromTransitRouteInfo().getId(),
+                    connectionInfo.getFromDeparture(), connectionInfo.getToTransitRouteInfo().getId(),
+                    connectionInfo.getToDeparture());
+            return;
+        }
+
+        String stopId = connectionInfo.getStopFacilityInfo().getId();
+        transfers.add(Transfer.builder()
+                .fromStopId(stopId)
+                .toStopId(stopId)
+                .fromTripId(fromTripId)
+                .toTripId(toTripId)
+                .transferType(TransferType.TIMED)
+                .build());
+    }
+
+    @Override
+    protected void buildTransferRestriction(StopFacilityInfo stopFacilityInfo) {
+        transfers.add(Transfer.builder()
+                .fromStopId(stopFacilityInfo.getId())
+                .toStopId(stopFacilityInfo.getId())
+                .transferType(TransferType.NOT_POSSIBLE)
+                .build());
+    }
+
     @Override
     protected GtfsSchedule getResult() {
-        return GtfsSchedule.builder().stops(stops).routes(routes).trips(trips).stopTimes(stopTimes).build();
+        return GtfsSchedule.builder()
+                .stops(stops)
+                .routes(routes)
+                .trips(trips)
+                .stopTimes(stopTimes)
+                .transfers(transfers)
+                .build();
+    }
+
+    private String getTripId(TransitRouteInfo transitRouteInfo, ServiceDayTime departure) {
+        return tripIds.get(new Departure(transitRouteInfo.getId(), departure));
     }
 
     @Override
@@ -170,4 +228,11 @@ public class GtfsSupplyBuilder extends BaseSupplyBuilder<GtfsSchedule> {
             createdRoutes.add(routeId);
         }
     }
+
+    /**
+     * A departure of a transit route, by its time at the first stop of the route.
+     */
+    private record Departure(String routeId, ServiceDayTime time) {
+    }
+
 }

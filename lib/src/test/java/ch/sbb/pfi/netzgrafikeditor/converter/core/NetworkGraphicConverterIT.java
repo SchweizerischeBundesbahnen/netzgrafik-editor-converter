@@ -113,7 +113,8 @@ public class NetworkGraphicConverterIT {
             NetworkGraphicSource source = new JsonFileReader(path);
             RollingStockRepository rollingStockRepository = new NoRollingStockRepository();
             SupplyBuilder<Scenario> builder = new MatsimSupplyBuilder(new NoInfrastructureRepository(),
-                    rollingStockRepository, new NoVehicleCircuitsPlanner(rollingStockRepository));
+                    rollingStockRepository, new NoVehicleCircuitsPlanner(rollingStockRepository),
+                    config.getValidationStrategy());
 
             // store scenario and write schedule
             ConverterSink<Scenario> sink = result -> {

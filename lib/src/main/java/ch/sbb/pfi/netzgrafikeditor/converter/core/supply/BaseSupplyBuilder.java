@@ -7,8 +7,10 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 public abstract class BaseSupplyBuilder<T> implements SupplyBuilder<T> {
@@ -21,6 +23,8 @@ public abstract class BaseSupplyBuilder<T> implements SupplyBuilder<T> {
     private final Map<String, StopFacilityInfo> stopFacilityInfos = new HashMap<>();
     // insertion order: the first route added to a line names the line in formats like GTFS
     private final Map<String, TransitRouteContainer> transitRouteContainers = new LinkedHashMap<>();
+    private final List<ConnectionInfo> connectionInfos = new ArrayList<>();
+    private final Set<StopFacilityInfo> transferRestrictions = new LinkedHashSet<>();
 
     public BaseSupplyBuilder(InfrastructureRepository infrastructureRepository, RollingStockRepository rollingStockRepository, VehicleCircuitsPlanner vehicleCircuitsPlanner) {
         this.infrastructureRepository = infrastructureRepository;
@@ -61,7 +65,7 @@ public abstract class BaseSupplyBuilder<T> implements SupplyBuilder<T> {
     }
 
     @Override
-    public SupplyBuilder<T> addTransitRoute(String id, String lineId, String originStopId, Duration dwellTimeAtOrigin) {
+    public SupplyBuilder<T> addTransitRoute(String id, String lineId, String originStopId, Duration dwellTimeAtOrigin, StopAccess access) {
         TransitLineInfo transitLineInfo = transitLineInfos.get(lineId);
         if (transitLineInfo == null) {
             throw new IllegalArgumentException("Transit line not existing for id " + lineId);
@@ -78,13 +82,13 @@ public abstract class BaseSupplyBuilder<T> implements SupplyBuilder<T> {
         }
 
         transitRouteContainers.put(id, new TransitRouteContainer(new TransitRouteInfo(id, transitLineInfo),
-                new ArrayList<>(List.of(new RouteStop(originStop, Duration.ZERO, dwellTimeAtOrigin)))));
+                new ArrayList<>(List.of(new RouteStop(originStop, Duration.ZERO, dwellTimeAtOrigin, access)))));
 
         return this;
     }
 
     @Override
-    public SupplyBuilder<T> addRouteStop(String routeId, String stopId, Duration travelTime, Duration dwellTime) {
+    public SupplyBuilder<T> addRouteStop(String routeId, String stopId, Duration travelTime, Duration dwellTime, StopAccess access) {
         TransitRouteContainer transitRouteContainer = transitRouteContainers.get(routeId);
         if (transitRouteContainer == null) {
             throw new IllegalArgumentException("Transit route not existing with id " + routeId);
@@ -96,7 +100,7 @@ public abstract class BaseSupplyBuilder<T> implements SupplyBuilder<T> {
                     String.format("Route stop for route %s at not existing with id %s", routeId, stopId));
         }
 
-        transitRouteContainer.routeElements.add(new RouteStop(stopFacilityInfo, travelTime, dwellTime));
+        transitRouteContainer.routeElements.add(new RouteStop(stopFacilityInfo, travelTime, dwellTime, access));
 
         return this;
     }
@@ -133,6 +137,31 @@ public abstract class BaseSupplyBuilder<T> implements SupplyBuilder<T> {
     }
 
     @Override
+    public SupplyBuilder<T> addConnection(String stopId, String fromRouteId, ServiceDayTime fromDeparture, String toRouteId, ServiceDayTime toDeparture) {
+        StopFacilityInfo stopFacilityInfo = stopFacilityInfos.get(stopId);
+        if (stopFacilityInfo == null) {
+            throw new IllegalArgumentException("Connection at not existing stop with id " + stopId);
+        }
+
+        connectionInfos.add(new ConnectionInfo(stopFacilityInfo, getTransitRouteInfo(fromRouteId), fromDeparture,
+                getTransitRouteInfo(toRouteId), toDeparture));
+
+        return this;
+    }
+
+    @Override
+    public SupplyBuilder<T> forbidTransfers(String stopId) {
+        StopFacilityInfo stopFacilityInfo = stopFacilityInfos.get(stopId);
+        if (stopFacilityInfo == null) {
+            throw new IllegalArgumentException("Transfer restriction at not existing stop with id " + stopId);
+        }
+
+        transferRestrictions.add(stopFacilityInfo);
+
+        return this;
+    }
+
+    @Override
     public T build() {
 
         for (StopFacilityInfo stopFacilityInfo : stopFacilityInfos.values()) {
@@ -152,6 +181,15 @@ public abstract class BaseSupplyBuilder<T> implements SupplyBuilder<T> {
 
         for (VehicleAllocation vehicleAllocation : vehicleAllocations) {
             buildDeparture(vehicleAllocation);
+        }
+
+        // after the departures, so that a connection can refer to the trips built from them
+        for (ConnectionInfo connectionInfo : connectionInfos) {
+            buildConnection(connectionInfo);
+        }
+
+        for (StopFacilityInfo stopFacilityInfo : transferRestrictions) {
+            buildTransferRestriction(stopFacilityInfo);
         }
 
         return getResult();
@@ -181,7 +219,20 @@ public abstract class BaseSupplyBuilder<T> implements SupplyBuilder<T> {
 
     protected abstract void buildDeparture(VehicleAllocation vehicleAllocation);
 
+    protected abstract void buildConnection(ConnectionInfo connectionInfo);
+
+    protected abstract void buildTransferRestriction(StopFacilityInfo stopFacilityInfo);
+
     protected abstract T getResult();
+
+    private TransitRouteInfo getTransitRouteInfo(String routeId) {
+        TransitRouteContainer transitRouteContainer = transitRouteContainers.get(routeId);
+        if (transitRouteContainer == null) {
+            throw new IllegalArgumentException("Transit route not existing with id " + routeId);
+        }
+
+        return transitRouteContainer.transitRouteInfo;
+    }
 
     protected record TransitRouteContainer(TransitRouteInfo transitRouteInfo, List<RouteElement> routeElements) {
     }

@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -57,20 +58,42 @@ class CommandLineConverterIT {
         runConverter(testCase, output, format);
     }
 
+    @Test
+    void testConvertCommand_nonPassengerNetwork_gtfs(CapturedOutput output) throws IOException {
+        runConverter(output, "GTFS", true, "", "--non-passenger-categories", "IR", "--non-passenger-network");
+    }
+
+    @Test
+    void testConvertCommand_nonPassengerNetworkWithoutCategories(CapturedOutput output) throws IOException {
+        runConverter(output, "GTFS", false, "The non-passenger network needs non-passenger categories",
+                "--non-passenger-network");
+    }
+
+    @Test
+    void testConvertCommand_nonPassengerNetwork_matsim(CapturedOutput output) throws IOException {
+        runConverter(output, "MATSIM", false,
+                "The non-passenger network needs transfers between particular trips, which MATSim cannot express",
+                "--non-passenger-categories", "IR", "--non-passenger-network");
+    }
+
     private void runConverter(TestCase testCase, CapturedOutput output, String format) throws IOException {
+        runConverter(output, format, testCase.success, testCase.exception, testCase.args);
+    }
+
+    private void runConverter(CapturedOutput output, String format, boolean success, String exception, String... options) throws IOException {
         // arrange
         args.add(outputDir.toString());
         args.addAll(List.of("-f", format));
         args.addAll(List.of("-i", TEST_SCENARIO.getStopFacilityInfoCsvFilePath().toString()));
         args.addAll(List.of("-r", TEST_SCENARIO.getRollingStockInfoCsvFilePath().toString()));
-        args.addAll(Arrays.asList(testCase.args));
+        args.addAll(Arrays.asList(options));
 
         // act
         int exitCode = SpringApplication.exit(
                 SpringApplication.run(CommandLineConverter.class, args.toArray(new String[0])));
 
         // assert
-        if (testCase.success) {
+        if (success) {
             assertThat(exitCode).isEqualTo(0);
             assertThat(Files.exists(outputDir)).isTrue();
             assertThat(Files.list(outputDir)).isNotEmpty();
@@ -79,7 +102,7 @@ class CommandLineConverterIT {
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(outputDir)) {
                 assertThat(stream.iterator().hasNext()).isFalse();
             }
-            assertThat(output).contains(testCase.exception);
+            assertThat(output).contains(exception);
         }
     }
 
@@ -96,7 +119,8 @@ class CommandLineConverterIT {
         SERVICE_DAY_START(new String[]{"-s", "03:30"}, true, ""),
         SERVICE_DAY_END(new String[]{"-e", "24:15"}, true, ""),
         SERVICE_DAY_BOUNDARY_CLIP(new String[]{"-b", "CLIP"}, true, ""),
-        SERVICE_DAY_BOUNDARY_DEPOT(new String[]{"-b", "DEPOT"}, true, "");
+        SERVICE_DAY_BOUNDARY_DEPOT(new String[]{"-b", "DEPOT"}, true, ""),
+        NON_PASSENGER_CATEGORIES(new String[]{"--non-passenger-categories", "IR,G"}, true, "");
 
         private final String[] args;
         private final boolean success;

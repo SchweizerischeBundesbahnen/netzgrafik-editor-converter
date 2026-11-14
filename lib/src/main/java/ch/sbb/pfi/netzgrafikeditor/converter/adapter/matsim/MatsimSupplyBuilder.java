@@ -1,6 +1,7 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.adapter.matsim;
 
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.BaseSupplyBuilder;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.ConnectionInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.DepartureInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RollingStockRepository;
@@ -28,15 +29,7 @@ public class MatsimSupplyBuilder extends BaseSupplyBuilder<Scenario> {
     private final MatsimSupplyFactory factory;
     private final InfrastructureBuilder infrastructureBuilder;
     private final Scenario scenario;
-
-    /**
-     * Creates a MATSim supply builder that warns about tracks of the infrastructure repository that do not form a
-     * continuous path between their stops.
-     */
-    public MatsimSupplyBuilder(InfrastructureRepository infrastructureRepository, RollingStockRepository rollingStockRepository, VehicleCircuitsPlanner vehicleCircuitsPlanner) {
-        this(infrastructureRepository, rollingStockRepository, vehicleCircuitsPlanner,
-                ValidationStrategy.WARN_ON_ISSUES);
-    }
+    private boolean connectionsLeftOut;
 
     /**
      * Creates a MATSim supply builder that handles tracks of the infrastructure repository that do not form a
@@ -84,6 +77,33 @@ public class MatsimSupplyBuilder extends BaseSupplyBuilder<Scenario> {
 
         // add departure to the corresponding transit route
         transitRoutes.get(departureInfo.getTransitRouteInfo().getId()).addDeparture(departure);
+    }
+
+    /**
+     * Leaves the connection out: a MATSim transit schedule relates transfers to stop facilities only, not to particular
+     * trips, so the connection cannot be expressed.
+     */
+    @Override
+    protected void buildConnection(ConnectionInfo connectionInfo) {
+        if (!connectionsLeftOut) {
+            log.info("MATSim has no transfers between particular trips, leaving out the connections");
+            connectionsLeftOut = true;
+        }
+        log.debug("Leaving out connection at {} from {} at {} to {} at {}",
+                connectionInfo.getStopFacilityInfo().getId(), connectionInfo.getFromTransitRouteInfo().getId(),
+                connectionInfo.getFromDeparture(), connectionInfo.getToTransitRouteInfo().getId(),
+                connectionInfo.getToDeparture());
+    }
+
+    /**
+     * Fails: without transfers between particular trips, a stop that forbids all other transfers would forbid every
+     * transfer, so the restriction cannot be expressed.
+     */
+    @Override
+    protected void buildTransferRestriction(StopFacilityInfo stopFacilityInfo) {
+        throw new UnsupportedOperationException(String.format(
+                "MATSim cannot restrict the transfers at stop %s to particular trips; convert to a format that can, e.g. GTFS",
+                stopFacilityInfo.getId()));
     }
 
     @Override

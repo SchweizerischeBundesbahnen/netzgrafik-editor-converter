@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import picocli.CommandLine;
 
 import java.nio.file.Path;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 @Component
@@ -39,6 +41,10 @@ public class ConvertCommand implements Callable<Integer> {
     private ServiceDayBoundary serviceDayBoundary;
     @CommandLine.Option(names = {"-d", "--depot-label"}, description = "Node label which marks the depots in the network graphic.", defaultValue = "Depot")
     private String depotLabel;
+    @CommandLine.Option(names = {"--non-passenger-categories"}, split = ",", description = "Trainrun categories without passenger service, as comma-separated short names (e.g. G,GEX). Their trains run, but cannot be boarded.")
+    private Set<String> nonPassengerCategories = new LinkedHashSet<>();
+    @CommandLine.Option(names = {"--non-passenger-network"}, description = "Convert only the trainruns without passenger service, as a network of their own in which they can be boarded, with transfers only at the drawn connections (GTFS only).")
+    private boolean nonPassengerNetwork;
 
     // format and repositories
     @CommandLine.Option(names = {"-f", "--format"}, description = "Output format (GTFS or MATSim).", defaultValue = "GTFS")
@@ -73,6 +79,8 @@ public class ConvertCommand implements Callable<Integer> {
                 .serviceDayEnd(serviceDayEnd)
                 .serviceDayBoundary(serviceDayBoundary)
                 .depotLabel(depotLabel)
+                .nonPassengerCategories(Set.copyOf(nonPassengerCategories))
+                .nonPassengerNetwork(nonPassengerNetwork)
                 .build();
     }
 

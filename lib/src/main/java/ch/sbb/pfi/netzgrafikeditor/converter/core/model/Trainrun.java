@@ -8,7 +8,7 @@ import lombok.extern.jackson.Jacksonized;
 
 
 @Value
-@Builder
+@Builder(toBuilder = true)
 @Jacksonized
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Trainrun implements Identifiable {

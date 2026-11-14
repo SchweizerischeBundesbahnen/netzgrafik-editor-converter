@@ -13,6 +13,7 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.model.TrainrunFrequency;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.TrainrunSection;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.TrainrunTimeCategory;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.Transition;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopAccess;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.SupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.validation.NetworkGraphicValidator;
 import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,6 +50,10 @@ public class NetworkGraphicConverter<T> {
     private Lookup lookup;
     private Set<Integer> depots;
     private Set<String> linesWithoutDepot;
+    private Map<ConnectionResolver.Endpoint, StopAccess> technicalStops;
+    private Map<PatternKey, RoutePattern> patterns;
+    private Set<String> servedStops;
+    private List<ConnectionIssue> connectionIssues;
 
     private static String createTransitRouteId(String lineId, RouteDirection direction) {
         return String.format("%s_%s", lineId, direction.name());
@@ -58,6 +64,34 @@ public class NetworkGraphicConverter<T> {
      */
     private static Duration toDuration(double minutes) {
         return Duration.ofSeconds(Math.round(minutes * SECONDS_PER_MINUTE));
+    }
+
+    private static StopAccess combine(StopAccess first, StopAccess second) {
+        return StopAccess.of(first.isBoarding() || second.isBoarding(), first.isAlighting() || second.isAlighting());
+    }
+
+    /**
+     * Get the slack of a connection in seconds, from the arrival to the nearest departure of the other trainrun, given
+     * the frequencies of both: a departure up to half their common period before the arrival is a missed connection
+     * (negative slack), not a wait for almost a period.
+     */
+    private static int getSlack(RoutePattern arrivingPattern, Visit arrival, RoutePattern departingPattern, Visit departure) {
+        int period = gcd(arrivingPattern.frequency(), departingPattern.frequency());
+        int difference = departingPattern.departurePattern() + (int) departure.departure()
+                .toSeconds() - arrivingPattern.departurePattern() - (int) arrival.arrival().toSeconds();
+
+        return Math.floorMod(difference + period / 2, period) - period / 2;
+    }
+
+    private static int gcd(int a, int b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+
+    /**
+     * Get the consecutive departure time at the first node in seconds, which the departures repeat from.
+     */
+    private static int getDeparturePattern(TrainrunSection firstSection) {
+        return (int) Math.round(firstSection.getSourceDeparture().getConsecutiveTime() * SECONDS_PER_MINUTE);
     }
 
     public void run() throws IOException {
@@ -71,15 +105,24 @@ public class NetworkGraphicConverter<T> {
         addStops();
         addTrains();
         handleLinesWithoutDepot();
+        handleConnectionIssues();
 
         sink.save(builder.build());
     }
 
     private void initialize(NetworkGraphic network) {
+        if (config.isNonPassengerNetwork() && config.getNonPassengerCategories().isEmpty()) {
+            throw new IllegalStateException("The non-passenger network needs non-passenger categories");
+        }
+
         lineCounter = new HashMap<>();
         lookup = new Lookup(network);
         depots = config.getServiceDayBoundary() == ServiceDayBoundary.DEPOT ? findDepots(network) : Set.of();
         linesWithoutDepot = new TreeSet<>();
+        technicalStops = Map.of();
+        patterns = new HashMap<>();
+        servedStops = new TreeSet<>();
+        connectionIssues = new ArrayList<>();
     }
 
     private Set<Integer> findDepots(NetworkGraphic network) {
@@ -123,14 +166,74 @@ public class NetworkGraphicConverter<T> {
             sequence.add(section);
         }
 
-        // add a transit line with a transit route per direction for each train
+        Map<Integer, EnumMap<RouteDirection, List<TrainrunSection>>> directedSequences = new LinkedHashMap<>();
         for (Map.Entry<Integer, SectionSequenceBuilder> entry : sequences.entrySet()) {
             Trainrun train = lookup.trains.get(entry.getKey());
-            SectionSequenceBuilder sequence = entry.getValue();
+            directedSequences.put(train.getId(), entry.getValue().build(train.getDirection()));
+        }
+
+        // resolve the connections before the routes: in the non-passenger network, they turn passes into stops
+        ConnectionResolver.Resolution connections = new ConnectionResolver(lookup.nodes, lookup.ports, lookup.sections,
+                lookup.trains, directedSequences).resolve();
+        List<ConnectionResolver.Leg> legs = connections.legs();
+        if (config.isNonPassengerNetwork()) {
+            technicalStops = findTechnicalStops(legs);
+        }
+
+        // add a transit line with a transit route per direction for each train
+        for (Map.Entry<Integer, EnumMap<RouteDirection, List<TrainrunSection>>> entry : directedSequences.entrySet()) {
+            Trainrun train = lookup.trains.get(entry.getKey());
+            if (config.isNonPassengerNetwork() && isPassenger(train)) {
+                log.debug("Leaving out train {} with passenger service from the non-passenger network",
+                        train.getName());
+                continue;
+            }
 
             log.debug("Adding train {}", train.getName());
-            createAndAddTransitLine(train, sequence.build(train.getDirection()));
+            createAndAddTransitLine(train, entry.getValue());
         }
+
+        addConnections(legs);
+        reportUnresolvedConnections(connections.unresolved());
+
+        // in the non-passenger network, a train changes to another trainrun only at a connection
+        if (config.isNonPassengerNetwork()) {
+            servedStops.forEach(builder::forbidTransfers);
+        }
+    }
+
+    /**
+     * Whether a trainrun carries passengers: unless its category is one without passenger service.
+     */
+    private boolean isPassenger(Trainrun train) {
+        String category = lookup.categories.get(train.getCategoryId()).getShortName();
+        return !config.getNonPassengerCategories().contains(category);
+    }
+
+    /**
+     * Whether passengers can board and alight at the stops of a trainrun: in the non-passenger network, the trains
+     * without passenger service are the ones routed; otherwise, nobody boards them.
+     */
+    private StopAccess stopAccess(Trainrun train) {
+        return config.isNonPassengerNetwork() || isPassenger(train) ? StopAccess.BOARDING_AND_ALIGHTING :
+                StopAccess.NONE;
+    }
+
+    /**
+     * Find the passes that connections of the non-passenger network make a stop of: where a train alights from a
+     * trainrun to change to another, or boards a trainrun after the change.
+     */
+    private Map<ConnectionResolver.Endpoint, StopAccess> findTechnicalStops(List<ConnectionResolver.Leg> legs) {
+        Map<ConnectionResolver.Endpoint, StopAccess> stops = new HashMap<>();
+        for (ConnectionResolver.Leg leg : legs) {
+            if (isPassenger(lookup.trains.get(leg.arriving().trainrunId())) || isPassenger(
+                    lookup.trains.get(leg.departing().trainrunId()))) {
+                continue;
+            }
+            stops.merge(leg.arriving(), StopAccess.ALIGHTING_ONLY, NetworkGraphicConverter::combine);
+            stops.merge(leg.departing(), StopAccess.BOARDING_ONLY, NetworkGraphicConverter::combine);
+        }
+        return stops;
     }
 
     private void createAndAddTransitLine(Trainrun train, EnumMap<RouteDirection, List<TrainrunSection>> sequence) {
@@ -149,13 +252,16 @@ public class NetworkGraphicConverter<T> {
         // create transit route over all nodes of the sections
         String routeId = createTransitRouteId(lineId, direction);
         String fachCategory = lookup.categories.get(train.getCategoryId()).getFachCategory();
-        List<Visit> visits = createVisits(train, sections, fachCategory);
+        List<Visit> visits = createVisits(train, direction, sections, fachCategory);
+        RoutePattern pattern = new RoutePattern(visits, getDeparturePattern(sections.getFirst()), getFrequency(train),
+                new ArrayList<>());
+        patterns.put(new PatternKey(train.getId(), direction), pattern);
         addTransitRoute(routeId, lineId, visits, 0, visits.size() - 1, fachCategory);
 
         // trainruns with day time intervals always run full trips, the boundary only applies to the whole service day
         List<DayTimeInterval> timeIntervals = lookup.times.get(train.getTrainrunTimeCategoryId()).getDayTimeIntervals();
         if (timeIntervals.isEmpty() && config.getServiceDayBoundary() != ServiceDayBoundary.FULL) {
-            addBoundedDepartures(routeId, lineId, train, sections.getFirst(), visits, fachCategory);
+            addBoundedDepartures(pattern, routeId, lineId, train, sections.getFirst(), fachCategory);
             return;
         }
 
@@ -170,7 +276,16 @@ public class NetworkGraphicConverter<T> {
         // derive departures in time intervals and add to supply builder
         List<ServiceDayTime> departures = createDepartureTimes(timeIntervals, train, sections.getFirst());
         log.debug("Adding departures to {} at: {}", routeId, departures);
-        departures.forEach(departure -> builder.addDeparture(routeId, departure));
+        departures.forEach(departure -> addDeparture(pattern, routeId, 0, visits.size() - 1, departure));
+    }
+
+    /**
+     * Add a departure of a transit route that runs from the visit at index from to the visit at index to of the
+     * pattern, and keep it to connect its trip.
+     */
+    private void addDeparture(RoutePattern pattern, String routeId, int from, int to, ServiceDayTime time) {
+        builder.addDeparture(routeId, time);
+        pattern.departures().add(new RouteDeparture(routeId, from, to, time));
     }
 
     /**
@@ -180,11 +295,12 @@ public class NetworkGraphicConverter<T> {
      * up unrounded and only each visit time is rounded, once, to the second. Rounding the durations instead would carry
      * the error of every section into all the visits after it.
      */
-    private List<Visit> createVisits(Trainrun train, List<TrainrunSection> sections, String fachCategory) {
+    private List<Visit> createVisits(Trainrun train, RouteDirection direction, List<TrainrunSection> sections, String fachCategory) {
+        StopAccess access = stopAccess(train);
         List<Visit> visits = new ArrayList<>();
         Node sourceNode = lookup.nodes.get(sections.getFirst().getSourceNodeId());
-        visits.add(new Visit(sourceNode, false, DwellTime.fromCategory(sourceNode, fachCategory).negated(),
-                Duration.ZERO));
+        visits.add(new Visit(sourceNode, false, terminalDwellTime(sourceNode, fachCategory).negated(), Duration.ZERO,
+                access));
 
         // minutes since the departure at the first node, never rounded
         double elapsed = 0;
@@ -196,12 +312,19 @@ public class NetworkGraphicConverter<T> {
 
             if (i == sections.size() - 1) {
                 // last stop: dwell time from category
-                Duration dwellTime = DwellTime.fromCategory(targetNode, fachCategory);
-                visits.add(new Visit(targetNode, false, arrival, arrival.plus(dwellTime)));
+                Duration dwellTime = terminalDwellTime(targetNode, fachCategory);
+                visits.add(new Visit(targetNode, false, arrival, arrival.plus(dwellTime), access));
 
             } else if (isPass(targetNode, currentSection.getId())) {
-                // pass: nonstop at node
-                visits.add(new Visit(targetNode, true, arrival, arrival));
+                StopAccess technicalStop = technicalStops.get(
+                        new ConnectionResolver.Endpoint(train.getId(), direction, i + 1));
+                if (technicalStop != null) {
+                    // technical stop: the train changes to or from another trainrun here without stopping
+                    visits.add(new Visit(targetNode, false, arrival, arrival, technicalStop));
+                } else {
+                    // pass: nonstop at node
+                    visits.add(new Visit(targetNode, true, arrival, arrival, StopAccess.NONE));
+                }
 
             } else {
                 // stop: dwell time from network graphic
@@ -211,7 +334,7 @@ public class NetworkGraphicConverter<T> {
                 DwellTime.warnOnInconsistency(toDuration(dwellTime), train, targetNode, fachCategory);
 
                 elapsed += dwellTime;
-                visits.add(new Visit(targetNode, false, arrival, toDuration(elapsed)));
+                visits.add(new Visit(targetNode, false, arrival, toDuration(elapsed), access));
             }
         }
 
@@ -225,9 +348,9 @@ public class NetworkGraphicConverter<T> {
 
         // clipped routes start and end with the dwell time from the category, as the full route does at its termini
         Visit origin = visits.get(from);
-        Duration dwellTimeAtOrigin = from == 0 ? origin.dwellTime() : DwellTime.fromCategory(origin.node(),
-                fachCategory);
-        builder.addTransitRoute(routeId, lineId, origin.stopId(), dwellTimeAtOrigin);
+        Duration dwellTimeAtOrigin = from == 0 ? origin.dwellTime() : terminalDwellTime(origin.node(), fachCategory);
+        builder.addTransitRoute(routeId, lineId, origin.stopId(), dwellTimeAtOrigin, origin.access());
+        servedStops.add(origin.stopId());
 
         Duration departure = origin.departure();
         for (int i = from + 1; i <= to; i++) {
@@ -237,11 +360,21 @@ public class NetworkGraphicConverter<T> {
                 continue;
             }
 
-            Duration dwellTime = i == to && to < visits.size() - 1 ? DwellTime.fromCategory(visit.node(),
+            Duration dwellTime = i == to && to < visits.size() - 1 ? terminalDwellTime(visit.node(),
                     fachCategory) : visit.dwellTime();
-            builder.addRouteStop(routeId, visit.stopId(), visit.arrival().minus(departure), dwellTime);
+            builder.addRouteStop(routeId, visit.stopId(), visit.arrival().minus(departure), dwellTime,
+                    visit.access());
+            servedStops.add(visit.stopId());
             departure = visit.departure();
         }
+    }
+
+    /**
+     * Get the dwell time at the first or last node of a route: from the category, or none in the non-passenger network,
+     * where a train changes to another trainrun in no time.
+     */
+    private Duration terminalDwellTime(Node node, String fachCategory) {
+        return config.isNonPassengerNetwork() ? Duration.ZERO : DwellTime.fromCategory(node, fachCategory);
     }
 
     /**
@@ -250,7 +383,8 @@ public class NetworkGraphicConverter<T> {
      * A clipped trip starts at the first stop departing at or after the start and ends at the last stop arriving at or
      * before the end of the service day.
      */
-    private void addBoundedDepartures(String routeId, String lineId, Trainrun train, TrainrunSection firstSection, List<Visit> visits, String fachCategory) {
+    private void addBoundedDepartures(RoutePattern pattern, String routeId, String lineId, Trainrun train, TrainrunSection firstSection, String fachCategory) {
+        final List<Visit> visits = pattern.visits();
         final int start = config.getServiceDayStart().toSecondOfDay();
         final int end = config.getServiceDayEnd().toSecondOfDay();
         final int frequency = getFrequency(train);
@@ -307,7 +441,7 @@ public class NetworkGraphicConverter<T> {
 
             int departureAtOrigin = departure + (int) visits.get(from).departure().toSeconds();
             log.debug("Adding departure to {} at: {}", boundedRouteId, departureAtOrigin);
-            builder.addDeparture(boundedRouteId, new ServiceDayTime(departureAtOrigin));
+            addDeparture(pattern, boundedRouteId, from, to, new ServiceDayTime(departureAtOrigin));
         }
     }
 
@@ -334,6 +468,162 @@ public class NetworkGraphicConverter<T> {
             case FAIL_ON_ISSUES -> throw new IllegalStateException(message);
             default -> log.warn("{}, their trips only start and end at the termini", message);
         }
+    }
+
+    /**
+     * Add the connections of the trains in the output as connections between their trips: from each trip arriving at
+     * the node to the trip departing from it as drawn.
+     */
+    private void addConnections(List<ConnectionResolver.Leg> legs) {
+        for (ConnectionResolver.Leg leg : legs) {
+            if (!isConverted(leg.connectionId(), leg.node(), lookup.trains.get(leg.arriving().trainrunId()),
+                    lookup.trains.get(leg.departing().trainrunId()))) {
+                continue;
+            }
+
+            RoutePattern arrivingPattern = patterns.get(
+                    new PatternKey(leg.arriving().trainrunId(), leg.arriving().direction()));
+            RoutePattern departingPattern = patterns.get(
+                    new PatternKey(leg.departing().trainrunId(), leg.departing().direction()));
+            Visit arrival = arrivingPattern.visits().get(leg.arriving().visitIndex());
+            Visit departure = departingPattern.visits().get(leg.departing().visitIndex());
+            if (arrival.pass() || departure.pass()) {
+                reportConnectionIssue(ConnectionIssueType.AT_PASS, leg,
+                        "a train of the connection passes the node without stopping");
+                continue;
+            }
+
+            int slack = getSlack(arrivingPattern, arrival, departingPattern, departure);
+            if (slack < 0) {
+                reportConnectionIssue(ConnectionIssueType.MISSED, leg,
+                        String.format("the departing train leaves %d s before the arriving train arrives", -slack));
+                continue;
+            }
+
+            int connectionTime = (int) Math.round(leg.node().getConnectionTime() * SECONDS_PER_MINUTE);
+            if (!config.isNonPassengerNetwork() && slack < connectionTime) {
+                reportConnectionIssue(ConnectionIssueType.BELOW_CONNECTION_TIME, leg,
+                        String.format("%d s to change, below the connection time of the node of %d s", slack,
+                                connectionTime));
+            }
+
+            if (addTripConnections(leg, arrivingPattern, arrival, departingPattern, departure, slack) == 0) {
+                reportConnectionIssue(ConnectionIssueType.WITHOUT_TRIPS, leg,
+                        "no pair of trips within the service day");
+            }
+        }
+    }
+
+    /**
+     * Add a connection from each trip arriving at the node to the trip departing from it the slack later, and return
+     * how many; a trip without such a partner, e.g. of a trainrun running twice as often, has no connection.
+     */
+    private int addTripConnections(ConnectionResolver.Leg leg, RoutePattern arrivingPattern, Visit arrival, RoutePattern departingPattern, Visit departure, int slack) {
+        int arrivalIndex = leg.arriving().visitIndex();
+        int departureIndex = leg.departing().visitIndex();
+
+        // the trips departing from the node by their time there: those whose route goes on from the node
+        Map<Integer, RouteDeparture> departures = new HashMap<>();
+        for (RouteDeparture candidate : departingPattern.departures()) {
+            if (candidate.from() <= departureIndex && departureIndex < candidate.to()) {
+                departures.put(candidate.timeAt(departingPattern, departure.departure()), candidate);
+            }
+        }
+
+        // the trips arriving at the node: those whose route comes from before the node
+        int count = 0;
+        for (RouteDeparture candidate : arrivingPattern.departures()) {
+            if (candidate.from() < arrivalIndex && arrivalIndex <= candidate.to()) {
+                RouteDeparture connecting = departures.get(
+                        candidate.timeAt(arrivingPattern, arrival.arrival()) + slack);
+                if (connecting != null) {
+                    builder.addConnection(leg.node().getBetriebspunktName(), candidate.routeId(), candidate.time(),
+                            connecting.routeId(), connecting.time());
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    private void reportUnresolvedConnections(List<ConnectionResolver.Unresolved> connections) {
+        for (ConnectionResolver.Unresolved connection : connections) {
+            Trainrun train1 = lookup.trains.get(connection.trainrunId1());
+            Trainrun train2 = lookup.trains.get(connection.trainrunId2());
+            if (isConverted(connection.connectionId(), connection.node(), train1, train2)) {
+                reportConnectionIssue(ConnectionIssueType.AGAINST_DIRECTION, connection.connectionId(),
+                        connection.node(), train1, train2,
+                        "neither trainrun arrives at the node where the other departs from it");
+            }
+        }
+    }
+
+    /**
+     * Whether the connection between the trainruns is converted: in the non-passenger network between trainruns without
+     * passenger service, otherwise between trainruns with passenger service. Reports a connection to a trainrun that
+     * the non-passenger network leaves out.
+     */
+    private boolean isConverted(int connectionId, Node node, Trainrun from, Trainrun to) {
+        boolean fromPassenger = isPassenger(from);
+        boolean toPassenger = isPassenger(to);
+
+        if (config.isNonPassengerNetwork()) {
+            if (fromPassenger && toPassenger) {
+                return false; // neither trainrun is in the non-passenger network
+            }
+            if (fromPassenger || toPassenger) {
+                reportConnectionIssue(ConnectionIssueType.TO_EXCLUDED_TRAINRUN, connectionId, node, from, to,
+                        "connects to a trainrun with passenger service, which the non-passenger network leaves out");
+                return false;
+            }
+            return true;
+        }
+
+        if (!fromPassenger || !toPassenger) {
+            log.debug("Leaving out connection {} at node {}, a trainrun has no passenger service", connectionId,
+                    node.getBetriebspunktName());
+            return false;
+        }
+        return true;
+    }
+
+    private void reportConnectionIssue(ConnectionIssueType type, ConnectionResolver.Leg leg, String detail) {
+        reportConnectionIssue(type, leg.connectionId(), leg.node(), lookup.trains.get(leg.arriving().trainrunId()),
+                lookup.trains.get(leg.departing().trainrunId()), detail);
+    }
+
+    private void reportConnectionIssue(ConnectionIssueType type, int connectionId, Node node, Trainrun from, Trainrun to, String detail) {
+        connectionIssues.add(
+                new ConnectionIssue(type, connectionId, node.getBetriebspunktName(), describe(from), describe(to),
+                        detail));
+    }
+
+    /**
+     * Handle the connections that cannot be converted as drawn, according to the validation strategy; they cannot be
+     * repaired, so the repairing strategies warn about them.
+     */
+    private void handleConnectionIssues() {
+        if (connectionIssues.isEmpty()) {
+            return;
+        }
+
+        switch (config.getValidationStrategy()) {
+            case SKIP_VALIDATION -> connectionIssues.forEach(issue -> log.debug("Invalid connection: {}", issue));
+            case FAIL_ON_ISSUES -> {
+                connectionIssues.forEach(issue -> log.warn("Invalid connection: {}", issue));
+                throw new IllegalStateException(String.format(
+                        "Found %d connections that cannot be converted as drawn and option fail on issues is set.",
+                        connectionIssues.size()));
+            }
+            default -> connectionIssues.forEach(issue -> log.warn("Invalid connection: {}", issue));
+        }
+    }
+
+    private String describe(Trainrun train) {
+        String category = lookup.categories.get(train.getCategoryId()).getShortName();
+        return String.format("%s %s", category, train.getName().isBlank() ? "#" + train.getId() : train.getName()
+                .strip());
     }
 
     private String createTransitLineId(Trainrun train, List<TrainrunSection> sections, String category) {
@@ -388,9 +678,7 @@ public class NetworkGraphicConverter<T> {
      * which also defines the hour of trainruns with a frequency above 60 minutes (e.g. odd hours).
      */
     private int firstDepartureAtOrAfter(Trainrun train, TrainrunSection firstSection, int time) {
-        int pattern = (int) Math.round(firstSection.getSourceDeparture().getConsecutiveTime() * SECONDS_PER_MINUTE);
-
-        return time + Math.floorMod(pattern - time, getFrequency(train));
+        return time + Math.floorMod(getDeparturePattern(firstSection) - time, getFrequency(train));
     }
 
     /**
@@ -432,10 +720,83 @@ public class NetworkGraphicConverter<T> {
         return false;
     }
 
+    private enum ConnectionIssueType {
+        /**
+         * The departing train leaves before the arriving train arrives.
+         */
+        MISSED,
+        /**
+         * Less time to change than the connection time of the node, the Netzgrafik-Editor's own warning; the connection
+         * is converted, as the departing train waits.
+         */
+        BELOW_CONNECTION_TIME,
+        /**
+         * A train of the connection passes the node without stopping, so passengers cannot change there.
+         */
+        AT_PASS,
+        /**
+         * The non-passenger network leaves out the trainrun with passenger service of the connection.
+         */
+        TO_EXCLUDED_TRAINRUN,
+        /**
+         * No trip arriving has a trip departing the slack later within the service day.
+         */
+        WITHOUT_TRIPS,
+        /**
+         * Neither trainrun arrives at the node where the other departs from it, e.g. two one-way trainruns that both
+         * end there.
+         */
+        AGAINST_DIRECTION
+    }
+
+    /**
+     * A trainrun in a direction, as the key of its {@link RoutePattern}.
+     */
+    private record PatternKey(int trainrunId, RouteDirection direction) {
+    }
+
+    /**
+     * The visits of a trainrun in a direction, the departure pattern and frequency they repeat with (in seconds), and
+     * the departures of its routes: the full route, or the routes clipped to the service day.
+     */
+    private record RoutePattern(List<Visit> visits, int departurePattern, int frequency,
+                                List<RouteDeparture> departures) {
+    }
+
+    /**
+     * A departure of a route that runs from the visit at index from to the visit at index to of its pattern, by its
+     * time at the visit at index from.
+     */
+    private record RouteDeparture(String routeId, int from, int to, ServiceDayTime time) {
+
+        /**
+         * Get the time of the trip at a visit of its pattern in seconds, from the offset of the visit relative to the
+         * departure at the first node of the pattern.
+         */
+        private int timeAt(RoutePattern pattern, Duration offset) {
+            return time.toSecondOfDay() - (int) pattern.visits()
+                    .get(from)
+                    .departure()
+                    .toSeconds() + (int) offset.toSeconds();
+        }
+
+    }
+
+    private record ConnectionIssue(ConnectionIssueType type, int connectionId, String node, String from, String to,
+                                   String detail) {
+
+        @Override
+        public String toString() {
+            return String.format("type=%s, connection=%d, node=%s, from=%s, to=%s, %s", type, connectionId, node, from,
+                    to, detail);
+        }
+
+    }
+
     /**
      * Visit of a node on a transit route, with arrival and departure relative to the departure at the first node.
      */
-    private record Visit(Node node, boolean pass, Duration arrival, Duration departure) {
+    private record Visit(Node node, boolean pass, Duration arrival, Duration departure, StopAccess access) {
 
         private String stopId() {
             return node.getBetriebspunktName();

@@ -26,4 +26,7 @@ public class GtfsSchedule {
     @Builder.Default
     List<Calendar> calendars = List.of(Calendar.builder().build());
 
+    @Builder.Default
+    List<Transfer> transfers = List.of();
+
 }

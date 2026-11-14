@@ -20,39 +20,17 @@ public class NetworkGraphicSanitizer {
 
     public NetworkGraphic run() {
 
+        // copy every other field as is, so that none is lost when the model grows
         List<Node> fixedNodes = new ArrayList<>();
         for (Node node : original.getNodes()) {
-            String fixedBetriebspunktName = process(node.getBetriebspunktName());
-            Node fixedNode = Node.builder()
-                    .id(node.getId())
-                    .betriebspunktName(fixedBetriebspunktName)
-                    .fullName(node.getFullName())
-                    .positionX(node.getPositionX())
-                    .positionY(node.getPositionY())
-                    .perronkanten(node.getPerronkanten())
-                    .connectionTime(node.getConnectionTime())
-                    .ports(node.getPorts())
-                    .transitions(node.getTransitions())
-                    .trainrunCategoryHaltezeiten(node.getTrainrunCategoryHaltezeiten())
-                    .labelIds(node.getLabelIds())
-                    .build();
-            fixedNodes.add(fixedNode);
+            fixedNodes.add(node.toBuilder().betriebspunktName(process(node.getBetriebspunktName())).build());
         }
 
         List<Trainrun> fixedTrainruns = original.getTrainruns();
         if (considerTrainruns) {
             fixedTrainruns = new ArrayList<>();
             for (Trainrun trainrun : original.getTrainruns()) {
-                String fixedName = process(trainrun.getName());
-                Trainrun fixedTrainrun = Trainrun.builder()
-                        .id(trainrun.getId())
-                        .name(fixedName)
-                        .categoryId(trainrun.getCategoryId())
-                        .frequencyId(trainrun.getFrequencyId())
-                        .trainrunTimeCategoryId(trainrun.getTrainrunTimeCategoryId())
-                        .direction(trainrun.getDirection())
-                        .build();
-                fixedTrainruns.add(fixedTrainrun);
+                fixedTrainruns.add(trainrun.toBuilder().name(process(trainrun.getName())).build());
             }
         }
 

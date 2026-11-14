@@ -106,7 +106,7 @@ class InfrastructureBuilder {
         RouteStop firstRouteStop = (RouteStop) routeElements.getFirst();
         final TransitStopFacility[] stopFacility = {stopFacilities.get(firstRouteStop.getStopFacilityInfo().getId())};
         TransitRouteStop transitRouteStop = factory.createTransitRouteStop(stopFacility[0], OptionalTime.undefined(),
-                OptionalTime.zeroSeconds());
+                OptionalTime.zeroSeconds(), firstRouteStop.getAccess());
         routeStops.add(transitRouteStop);
         routeLinks.add(stopFacility[0].getLinkId());
 
@@ -132,7 +132,7 @@ class InfrastructureBuilder {
                     // add route stop
                     stopFacility[0] = stopFacilities.get(routeStop.getStopFacilityInfo().getId());
                     TransitRouteStop transitRouteStop = factory.createTransitRouteStop(stopFacility[0], arrivalOffset,
-                            departureOffset);
+                            departureOffset, routeStop.getAccess());
                     routeStops.add(transitRouteStop);
 
                     travelTime[0] = travelTime[0] + dwellTime;

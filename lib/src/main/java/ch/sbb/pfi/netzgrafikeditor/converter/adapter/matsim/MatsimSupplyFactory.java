@@ -1,5 +1,6 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.adapter.matsim;
 
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopAccess;
 import lombok.extern.slf4j.Slf4j;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
@@ -79,11 +80,13 @@ class MatsimSupplyFactory {
         return transitRoute;
     }
 
-    TransitRouteStop createTransitRouteStop(TransitStopFacility transitStopFacility, OptionalTime arrivalOffset, OptionalTime departureOffset) {
+    TransitRouteStop createTransitRouteStop(TransitStopFacility transitStopFacility, OptionalTime arrivalOffset, OptionalTime departureOffset, StopAccess access) {
         log.debug("Creating TransitRouteStop at TransitStopFacility {}", transitStopFacility.getId());
         TransitRouteStop transitRouteStop = sf.createTransitRouteStop(transitStopFacility, arrivalOffset,
                 departureOffset);
         transitRouteStop.setAwaitDepartureTime(true);
+        transitRouteStop.setAllowBoarding(access.isBoarding());
+        transitRouteStop.setAllowAlighting(access.isAlighting());
 
         return transitRouteStop;
     }

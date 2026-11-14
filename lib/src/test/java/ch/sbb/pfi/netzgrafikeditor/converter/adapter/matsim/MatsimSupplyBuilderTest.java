@@ -3,6 +3,7 @@ package ch.sbb.pfi.netzgrafikeditor.converter.adapter.matsim;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.DepartureInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RollingStockRepository;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopAccess;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TrackNodeInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TrackSegmentInfo;
@@ -13,6 +14,7 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleAllocation;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.VehicleTypeInfo;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.validation.ValidationStrategy;
 import ch.sbb.pfi.netzgrafikeditor.converter.util.spatial.Coordinate;
 import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 import lombok.Getter;
@@ -87,7 +89,7 @@ class MatsimSupplyBuilderTest {
     @BeforeEach
     void setUp() {
         matsimSupplyBuilder = new MatsimSupplyBuilder(infrastructureRepository, rollingStockRepository,
-                vehicleCircuitsPlanner);
+                vehicleCircuitsPlanner, ValidationStrategy.WARN_ON_ISSUES);
     }
 
     /**
@@ -134,14 +136,16 @@ class MatsimSupplyBuilderTest {
                 .addStopFacility("C", "Stop C", 2, 2)
                 .addStopFacility("D", "Stop D", 3, 3)
                 .addTransitLine("lineSimple", "vehicleType")
-                .addTransitRoute("lineSimple_F", "lineSimple", "A", Default.DWELL_TIME)
-                .addRouteStop("lineSimple_F", "B", Default.TRAVEL_TIME, Default.DWELL_TIME)
+                .addTransitRoute("lineSimple_F", "lineSimple", "A", Default.DWELL_TIME, Default.ACCESS)
+                .addRouteStop("lineSimple_F", "B", Default.TRAVEL_TIME, Default.DWELL_TIME, Default.ACCESS)
                 .addRoutePass("lineSimple_F", "C")
-                .addRouteStop("lineSimple_F", "D", Default.TRAVEL_TIME.plus(Default.TRAVEL_TIME), Default.DWELL_TIME)
-                .addTransitRoute("lineSimple_R", "lineSimple", "D", Default.DWELL_TIME)
-                .addRouteStop("lineSimple_R", "C", Default.TRAVEL_TIME, Default.DWELL_TIME)
+                .addRouteStop("lineSimple_F", "D", Default.TRAVEL_TIME.plus(Default.TRAVEL_TIME), Default.DWELL_TIME,
+                        Default.ACCESS)
+                .addTransitRoute("lineSimple_R", "lineSimple", "D", Default.DWELL_TIME, Default.ACCESS)
+                .addRouteStop("lineSimple_R", "C", Default.TRAVEL_TIME, Default.DWELL_TIME, Default.ACCESS)
                 .addRoutePass("lineSimple_R", "B")
-                .addRouteStop("lineSimple_R", "A", Default.TRAVEL_TIME.plus(Default.TRAVEL_TIME), Default.DWELL_TIME)
+                .addRouteStop("lineSimple_R", "A", Default.TRAVEL_TIME.plus(Default.TRAVEL_TIME), Default.DWELL_TIME,
+                        Default.ACCESS)
                 .addDeparture("lineSimple_F", Default.SERVICE_DAY_START.plus(0, ChronoUnit.MINUTES))
                 .addDeparture("lineSimple_F", Default.SERVICE_DAY_START.plus(5, ChronoUnit.MINUTES))
                 .addDeparture("lineSimple_F", Default.SERVICE_DAY_START.plus(10, ChronoUnit.MINUTES))
@@ -241,5 +245,6 @@ class MatsimSupplyBuilderTest {
         private static final Duration DWELL_TIME = Duration.ofSeconds(2 * 60);
         private static final Duration TRAVEL_TIME = Duration.ofSeconds(5 * 60);
         private static final ServiceDayTime SERVICE_DAY_START = ServiceDayTime.of(6, 0, 0);
+        private static final StopAccess ACCESS = StopAccess.BOARDING_AND_ALIGHTING;
     }
 }

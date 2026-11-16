@@ -19,11 +19,4 @@ public enum StopAccess {
     private final boolean boarding;
     private final boolean alighting;
 
-    public static StopAccess of(boolean boarding, boolean alighting) {
-        if (boarding) {
-            return alighting ? BOARDING_AND_ALIGHTING : BOARDING_ONLY;
-        }
-        return alighting ? ALIGHTING_ONLY : NONE;
-    }
-
 }

@@ -44,7 +44,8 @@ Converts network graphics into timetables in various formats.
       --non-passenger-network
                              Convert only the trainruns without passenger
                                service, as a network of their own in which they
-                               can be boarded, with transfers only at the drawn
+                               can be boarded and left at every node they run
+                               through, with transfers only at the drawn
                                connections (GTFS only).
   -r, --rolling-stock-csv=<rollingStockCsv>
                              File which contains the vehicle types to be mapped
@@ -106,8 +107,9 @@ are left out there.
 
 Trainruns without passenger service, such as freight trains, empty runs, or construction, rescue and shunting trains,
 are marked by their category (`--non-passenger-categories`, e.g. `G,GEX`). Their trains run, but nobody boards them.
-With `--non-passenger-network`, the converter writes these trainruns alone and lets them be boarded, as a GTFS network
-in which a train changes to another trainrun only at a drawn connection, in no time.
+With `--non-passenger-network`, the converter writes these trainruns alone and lets them be boarded and left at every
+node they run through, as a GTFS network in which a train changes to another trainrun only at a drawn connection, in no
+time.
 See [Connections](docs/connections/connections.md) for the rules, the handling of connections that cannot be converted
 as drawn by the validation strategy, and an example.
 

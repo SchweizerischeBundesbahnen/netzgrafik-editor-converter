@@ -30,7 +30,8 @@ import static org.mockito.Mockito.*;
  * G2. The freight trainruns are in category G. In {@code connection-times.json}, P arrives at B 1 min after Q departs
  * (missed) and 2 min before R departs (below the connection time of 3 min). In {@code connection-one-way.json}, the
  * freight trainruns F and H run one way, from A to B and from B to C, and the connection at B is drawn from H to F; in
- * {@code connection-against-direction.json}, F and K both end at B.
+ * {@code connection-against-direction.json}, F and K both end at B. In {@code simple-pass.json} of the test cases, the
+ * trainrun passes B without a connection.
  */
 @ExtendWith(MockitoExtension.class)
 class NetworkGraphicConverterConnectionsTest {
@@ -40,6 +41,7 @@ class NetworkGraphicConverterConnectionsTest {
     private static final TestFile CONNECTION_ONE_WAY = new TestFile("ng/connections", "connection-one-way.json");
     private static final TestFile CONNECTION_AGAINST_DIRECTION = new TestFile("ng/connections",
             "connection-against-direction.json");
+    private static final TestFile SIMPLE_PASS = new TestFile("ng/cases", "simple-pass.json");
 
     @Mock
     private SupplyBuilder<GtfsSchedule> builder;
@@ -84,6 +86,7 @@ class NetworkGraphicConverterConnectionsTest {
                     ServiceDayTime.of(7, 50, 0));
 
             // G2 passes B without stopping, so nobody changes to or from it; no transfer is forbidden
+            verify(builder).addRoutePass("G_E_C_FORWARD", "B");
             verify(builder, times(4)).addConnection(anyString(), anyString(), any(), anyString(), any());
             verify(builder, never()).forbidTransfers(anyString());
         }
@@ -137,6 +140,7 @@ class NetworkGraphicConverterConnectionsTest {
 
             verify(builder).addTransitRoute(eq("G_D_B_FORWARD"), eq("G_D_B"), eq("D"), any(), eq(StopAccess.NONE));
             verify(builder).addRouteStop(eq("G_D_B_FORWARD"), eq("B"), any(), any(), eq(StopAccess.NONE));
+            verify(builder).addRoutePass("G_E_C_FORWARD", "B");
             verify(builder, atLeastOnce()).addRouteStop(eq("IC_A_B_FORWARD"), eq("B"), any(), any(),
                     eq(StopAccess.BOARDING_AND_ALIGHTING));
             verify(builder, times(4)).addConnection(anyString(), anyString(), any(), anyString(), any());
@@ -176,13 +180,25 @@ class NetworkGraphicConverterConnectionsTest {
         void passWithAConnectionBecomesATechnicalStop() throws IOException {
             convert(CONNECTIONS, network(ValidationStrategy.WARN_ON_ISSUES));
 
-            // G2 stops at B in no time: boarding only where it departs after the change, alighting only where it
-            // arrives for the change
+            // G2 stops at B in no time, open both ways: a train changes there, or joins or leaves G2
             verify(builder).addRouteStop("G_E_C_FORWARD", "B", Duration.ofMinutes(5), Duration.ZERO,
-                    StopAccess.BOARDING_ONLY);
+                    StopAccess.BOARDING_AND_ALIGHTING);
             verify(builder).addRouteStop("G_E_C_REVERSE", "B", Duration.ofMinutes(6), Duration.ZERO,
-                    StopAccess.ALIGHTING_ONLY);
-            verify(builder, never()).addRoutePass(anyString(), eq("B"));
+                    StopAccess.BOARDING_AND_ALIGHTING);
+            verify(builder, never()).addRoutePass(anyString(), anyString());
+        }
+
+        @Test
+        void passWithoutAConnectionBecomesATechnicalStop() throws IOException {
+            convert(SIMPLE_PASS, config(ValidationStrategy.WARN_ON_ISSUES).nonPassengerCategories(Set.of("IC"))
+                    .nonPassengerNetwork(true)
+                    .build());
+
+            // a train joins or leaves the trainrun where it passes B, but changes to no other trainrun there
+            verify(builder).addRouteStop("IC_A_D_FORWARD", "B", Duration.ofMinutes(15), Duration.ZERO,
+                    StopAccess.BOARDING_AND_ALIGHTING);
+            verify(builder, never()).addRoutePass(anyString(), anyString());
+            verify(builder).forbidTransfers("B");
         }
 
         @Test

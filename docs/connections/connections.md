@@ -54,16 +54,15 @@ A connection of a trainrun without passenger service is left out.
 ## Non-passenger network
 
 With `--non-passenger-network`, the converter writes the trainruns without passenger service alone, as the network
-that is routed, e.g. to find the train paths a freight train can take. A train does not change trains there: it changes
-to another train path at a node by setting the points, without stopping and in no time. So a train changes to another
-trainrun only where a connection is drawn:
+that is routed, e.g. to find the train paths a freight train can take from any node they run through to any other. A
+train does not change trains there: it changes to another train path at a node by setting the points, without stopping
+and in no time. So a train changes to another trainrun only where a connection is drawn:
 
 1. Only the trainruns without passenger service are written, and they can be boarded, as they are what is routed.
 2. A trainrun starts and ends without dwell time at its first and last node: its arrival equals its departure.
-3. Where a connection attaches to a trainrun that passes the node without stopping, the trainrun gets a **technical
-   stop** there, with its arrival equal to its departure. Only the side the connection needs is open: alighting only
-   where the trainrun arrives for the change, boarding only where it departs after the change (`pickup_type` and
-   `drop_off_type` 1 on the other side). The other passes stay without a stop.
+3. Every node a trainrun passes without stopping is a **technical stop** of it, with its arrival equal to its
+   departure, open for boarding and alighting: a train joins or leaves the train path there, or changes to another one
+   where a connection is drawn.
 4. Every stop forbids transfers (`transfer_type` 3 from the stop to itself). The connections are written as above and
    override this for the trips they link.
 
@@ -78,8 +77,8 @@ at 06:20 without stopping. A connection is drawn from G1 to G2 at B, and both ar
 stop_times.txt
 trip_id,arrival_time,departure_time,stop_id,stop_sequence,pickup_type,drop_off_type
 G_D_B_FORWARD_1,06:20:00,06:20:00,B,2,,
-G_E_C_FORWARD_1,06:20:00,06:20:00,B,2,,1
-G_E_C_REVERSE_1,06:40:00,06:40:00,B,2,1,
+G_E_C_FORWARD_1,06:20:00,06:20:00,B,2,,
+G_E_C_REVERSE_1,06:40:00,06:40:00,B,2,,
 G_D_B_REVERSE_1,06:40:00,06:40:00,B,1,,
 
 transfers.txt
@@ -90,7 +89,8 @@ B,B,,,,,3,
 ```
 
 G2 stops at B in no time: in its forward direction a train boards it there after arriving with G1, in its reverse
-direction a train alights there to continue with G1. No other transfer is possible at B.
+direction a train alights there to continue with G1. A train can also join or leave G2 at B, as at every node G2
+passes, but no other transfer is possible at B.
 
 ## Validation
 

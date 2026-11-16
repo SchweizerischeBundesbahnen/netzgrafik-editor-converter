@@ -43,7 +43,7 @@ public class ConvertCommand implements Callable<Integer> {
     private String depotLabel;
     @CommandLine.Option(names = {"--non-passenger-categories"}, split = ",", description = "Trainrun categories without passenger service, as comma-separated short names (e.g. G,GEX). Their trains run, but cannot be boarded.")
     private Set<String> nonPassengerCategories = new LinkedHashSet<>();
-    @CommandLine.Option(names = {"--non-passenger-network"}, description = "Convert only the trainruns without passenger service, as a network of their own in which they can be boarded, with transfers only at the drawn connections (GTFS only).")
+    @CommandLine.Option(names = {"--non-passenger-network"}, description = "Convert only the trainruns without passenger service, as a network of their own in which they can be boarded and left at every node they run through, with transfers only at the drawn connections (GTFS only).")
     private boolean nonPassengerNetwork;
 
     // format and repositories

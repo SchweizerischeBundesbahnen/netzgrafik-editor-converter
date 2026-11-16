@@ -50,7 +50,6 @@ public class NetworkGraphicConverter<T> {
     private Lookup lookup;
     private Set<Integer> depots;
     private Set<String> linesWithoutDepot;
-    private Map<ConnectionResolver.Endpoint, StopAccess> technicalStops;
     private Map<PatternKey, RoutePattern> patterns;
     private Set<String> servedStops;
     private List<ConnectionIssue> connectionIssues;
@@ -64,10 +63,6 @@ public class NetworkGraphicConverter<T> {
      */
     private static Duration toDuration(double minutes) {
         return Duration.ofSeconds(Math.round(minutes * SECONDS_PER_MINUTE));
-    }
-
-    private static StopAccess combine(StopAccess first, StopAccess second) {
-        return StopAccess.of(first.isBoarding() || second.isBoarding(), first.isAlighting() || second.isAlighting());
     }
 
     /**
@@ -119,7 +114,6 @@ public class NetworkGraphicConverter<T> {
         lookup = new Lookup(network);
         depots = config.getServiceDayBoundary() == ServiceDayBoundary.DEPOT ? findDepots(network) : Set.of();
         linesWithoutDepot = new TreeSet<>();
-        technicalStops = Map.of();
         patterns = new HashMap<>();
         servedStops = new TreeSet<>();
         connectionIssues = new ArrayList<>();
@@ -172,14 +166,6 @@ public class NetworkGraphicConverter<T> {
             directedSequences.put(train.getId(), entry.getValue().build(train.getDirection()));
         }
 
-        // resolve the connections before the routes: in the non-passenger network, they turn passes into stops
-        ConnectionResolver.Resolution connections = new ConnectionResolver(lookup.nodes, lookup.ports, lookup.sections,
-                lookup.trains, directedSequences).resolve();
-        List<ConnectionResolver.Leg> legs = connections.legs();
-        if (config.isNonPassengerNetwork()) {
-            technicalStops = findTechnicalStops(legs);
-        }
-
         // add a transit line with a transit route per direction for each train
         for (Map.Entry<Integer, EnumMap<RouteDirection, List<TrainrunSection>>> entry : directedSequences.entrySet()) {
             Trainrun train = lookup.trains.get(entry.getKey());
@@ -193,7 +179,9 @@ public class NetworkGraphicConverter<T> {
             createAndAddTransitLine(train, entry.getValue());
         }
 
-        addConnections(legs);
+        ConnectionResolver.Resolution connections = new ConnectionResolver(lookup.nodes, lookup.ports, lookup.sections,
+                lookup.trains, directedSequences).resolve();
+        addConnections(connections.legs());
         reportUnresolvedConnections(connections.unresolved());
 
         // in the non-passenger network, a train changes to another trainrun only at a connection
@@ -219,23 +207,6 @@ public class NetworkGraphicConverter<T> {
                 StopAccess.NONE;
     }
 
-    /**
-     * Find the passes that connections of the non-passenger network make a stop of: where a train alights from a
-     * trainrun to change to another, or boards a trainrun after the change.
-     */
-    private Map<ConnectionResolver.Endpoint, StopAccess> findTechnicalStops(List<ConnectionResolver.Leg> legs) {
-        Map<ConnectionResolver.Endpoint, StopAccess> stops = new HashMap<>();
-        for (ConnectionResolver.Leg leg : legs) {
-            if (isPassenger(lookup.trains.get(leg.arriving().trainrunId())) || isPassenger(
-                    lookup.trains.get(leg.departing().trainrunId()))) {
-                continue;
-            }
-            stops.merge(leg.arriving(), StopAccess.ALIGHTING_ONLY, NetworkGraphicConverter::combine);
-            stops.merge(leg.departing(), StopAccess.BOARDING_ONLY, NetworkGraphicConverter::combine);
-        }
-        return stops;
-    }
-
     private void createAndAddTransitLine(Trainrun train, EnumMap<RouteDirection, List<TrainrunSection>> sequence) {
 
         String category = lookup.categories.get(train.getCategoryId()).getShortName();
@@ -252,7 +223,7 @@ public class NetworkGraphicConverter<T> {
         // create transit route over all nodes of the sections
         String routeId = createTransitRouteId(lineId, direction);
         String fachCategory = lookup.categories.get(train.getCategoryId()).getFachCategory();
-        List<Visit> visits = createVisits(train, direction, sections, fachCategory);
+        List<Visit> visits = createVisits(train, sections, fachCategory);
         RoutePattern pattern = new RoutePattern(visits, getDeparturePattern(sections.getFirst()), getFrequency(train),
                 new ArrayList<>());
         patterns.put(new PatternKey(train.getId(), direction), pattern);
@@ -295,7 +266,7 @@ public class NetworkGraphicConverter<T> {
      * up unrounded and only each visit time is rounded, once, to the second. Rounding the durations instead would carry
      * the error of every section into all the visits after it.
      */
-    private List<Visit> createVisits(Trainrun train, RouteDirection direction, List<TrainrunSection> sections, String fachCategory) {
+    private List<Visit> createVisits(Trainrun train, List<TrainrunSection> sections, String fachCategory) {
         StopAccess access = stopAccess(train);
         List<Visit> visits = new ArrayList<>();
         Node sourceNode = lookup.nodes.get(sections.getFirst().getSourceNodeId());
@@ -316,11 +287,9 @@ public class NetworkGraphicConverter<T> {
                 visits.add(new Visit(targetNode, false, arrival, arrival.plus(dwellTime), access));
 
             } else if (isPass(targetNode, currentSection.getId())) {
-                StopAccess technicalStop = technicalStops.get(
-                        new ConnectionResolver.Endpoint(train.getId(), direction, i + 1));
-                if (technicalStop != null) {
-                    // technical stop: the train changes to or from another trainrun here without stopping
-                    visits.add(new Visit(targetNode, false, arrival, arrival, technicalStop));
+                if (config.isNonPassengerNetwork()) {
+                    // technical stop: a train joins, leaves or changes trainruns here without stopping
+                    visits.add(new Visit(targetNode, false, arrival, arrival, access));
                 } else {
                     // pass: nonstop at node
                     visits.add(new Visit(targetNode, true, arrival, arrival, StopAccess.NONE));

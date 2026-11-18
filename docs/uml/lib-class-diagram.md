@@ -29,9 +29,12 @@ package netzgrafikeditor.converter.core {
         interface SupplyBuilder<T> {
             +addStopFacility(...)
             +addTransitLine(...)
+            +addTransitRoute(...)
             +addRouteStop(...)
             +addRoutePass(...)
             +addDeparture(...)
+            +addConnection(...)
+            +forbidTransfers(...)
             +build(): T
         }
 
@@ -39,6 +42,8 @@ package netzgrafikeditor.converter.core {
             #{abstract}buildStopFacility(...)
             #{abstract}buildTransitRoute(...)
             #{abstract}buildDeparture(...)
+            #{abstract}buildConnection(...)
+            #{abstract}buildTransferRestriction(...)
         }
 
         interface InfrastructureRepository {

@@ -10,6 +10,7 @@ public class RouteStop implements RouteElement {
     StopFacilityInfo stopFacilityInfo;
     Duration travelTime;
     Duration dwellTime;
+    StopAccess access;
 
     @Override
     public void accept(RouteElementVisitor visitor) {

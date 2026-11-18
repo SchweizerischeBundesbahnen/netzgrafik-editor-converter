@@ -1,5 +1,6 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.core.validation;
 
+import ch.sbb.pfi.netzgrafikeditor.converter.core.model.Connection;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.Label;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.NetworkGraphic;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.model.Node;
@@ -68,13 +69,6 @@ class NetworkGraphicValidatorTest {
                 assertEquals(List.of("validTrainrun", "in_validTrainrun", "invalidTrainrun", "invalidTrainrun",
                         "inVlidTrinrn"), getTrainrunIds(validated));
             }
-            case REMOVE_DOTS_AND_REPLACE_WHITESPACE -> {
-                NetworkGraphic validated = validator.run();
-                assertEquals(List.of("validNode", "in_validNode", "_invalidNode", "invalidNode_", "inVälidNöde"),
-                        getNodeIds(validated));
-                assertEquals(List.of("validTrainrun", "in_validTrainrun", "_invalidTrainrun", "invalidTrainrun_",
-                        "inVälidTräinrün"), getTrainrunIds(validated));
-            }
         }
     }
 
@@ -91,5 +85,21 @@ class NetworkGraphicValidatorTest {
 
         assertEquals(labels, sanitized.getLabels());
         assertEquals(List.of(1), sanitized.getNodes().getFirst().getLabelIds());
+    }
+
+    @Test
+    void run_sanitizingChangesOnlyTheNames() {
+        Node node = Node.builder()
+                .betriebspunktName("in validNode")
+                .connections(List.of(Connection.builder().id(1).port1Id(11).port2Id(12).build()))
+                .build();
+        Trainrun trainrun = Trainrun.builder().name("in validTrainrun").direction(Trainrun.Direction.ONE_WAY).build();
+        NetworkGraphic connected = NetworkGraphic.builder().nodes(List.of(node)).trainruns(List.of(trainrun)).build();
+
+        NetworkGraphic sanitized = new NetworkGraphicValidator(ValidationStrategy.REPLACE_WHITESPACE, true,
+                connected).run();
+
+        assertEquals(List.of(node.toBuilder().betriebspunktName("in_validNode").build()), sanitized.getNodes());
+        assertEquals(List.of(trainrun.toBuilder().name("in_validTrainrun").build()), sanitized.getTrainruns());
     }
 }

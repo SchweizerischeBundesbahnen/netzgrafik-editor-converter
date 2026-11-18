@@ -58,6 +58,10 @@ public class ConversionService {
             }
 
             case MATSIM -> {
+                if (request.converterConfig.isNonPassengerNetwork()) {
+                    throw new IllegalArgumentException(
+                            "The non-passenger network needs transfers between particular trips, which MATSim cannot express; convert it to GTFS.");
+                }
                 SupplyBuilder<Scenario> builder = new MatsimSupplyBuilder(infrastructureRepository,
                         rollingStockRepository, vehicleCircuitsPlanner,
                         request.converterConfig.getValidationStrategy());

@@ -1,476 +1,473 @@
-<svg xmlns="http://www.w3.org/2000/svg" contentStyleType="text/css"
-     height="826px" preserveAspectRatio="none" style="width:1604px;height:826px;background:#FFFFFF;" version="1.1"
-     viewBox="0 0 1604 826" width="1604px" zoomAndPan="magnify">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+     data-diagram-type="CLASS" style="width:1612px;height:883px;background:#FFFFFF;" width="1612px" height="883px"
+     viewBox="0 0 1612 883" zoomAndPan="magnify" preserveAspectRatio="none"
+     contentStyleType="text/css"><?plantuml 1.2026.9beta4?>
     <defs/>
-    <g><!--cluster netzgrafikeditor.converter.core-->
-        <g id="cluster_netzgrafikeditor.converter.core">
-            <path d="M8.5,6 L259.3604,6 A3.75,3.75 0 0 1 261.8604,8.5 L268.8604,28.2969 L949.5,28.2969 A2.5,2.5 0 0 1 952,30.7969 L952,817.21 A2.5,2.5 0 0 1 949.5,819.71 L8.5,819.71 A2.5,2.5 0 0 1 6,817.21 L6,8.5 A2.5,2.5 0 0 1 8.5,6 "
-                  fill="none" style="stroke:#000000;stroke-width:1.5;"/>
-            <line style="stroke:#000000;stroke-width:1.5;" x1="6" x2="268.8604" y1="28.2969" y2="28.2969"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing"
-                  textLength="249.8604" x="10" y="20.9951">netzgrafikeditor.converter.core
+    <g font-family="sans-serif" lengthAdjust="spacing"><!--cluster netzgrafikeditor.converter.core-->
+        <g class="cluster" data-qualified-name="netzgrafikeditor.converter.core" id="ent0001" data-source-line="4">
+            <path d="M8.5,6 L259.36,6 A3.75,3.75 0 0 1 261.86,8.5 L268.86,28.297 L949.5,28.297 A2.5,2.5 0 0 1 952,30.797 L952,866.1 A2.5,2.5 0 0 1 949.5,868.6 L8.5,868.6 A2.5,2.5 0 0 1 6,866.1 L6,8.5 A2.5,2.5 0 0 1 8.5,6"
+                  style="stroke:#000;stroke-width:1.5;" fill="none"/>
+            <line x1="6" y1="28.297" x2="268.86" y2="28.297" style="stroke:#000;stroke-width:1.5;"/>
+            <text x="10" y="20.995" fill="#000" font-size="14" textLength="249.86" font-weight="700">
+                netzgrafikeditor.converter.core
             </text>
         </g><!--cluster supply-->
-        <g id="cluster_supply">
-            <path d="M32.5,441.33 L85.7676,441.33 A3.75,3.75 0 0 1 88.2676,443.83 L95.2676,463.6269 L925.5,463.6269 A2.5,2.5 0 0 1 928,466.1269 L928,793.21 A2.5,2.5 0 0 1 925.5,795.71 L32.5,795.71 A2.5,2.5 0 0 1 30,793.21 L30,443.83 A2.5,2.5 0 0 1 32.5,441.33 "
-                  fill="none" style="stroke:#000000;stroke-width:1.5;"/>
-            <line style="stroke:#000000;stroke-width:1.5;" x1="30" x2="95.2676" y1="463.6269" y2="463.6269"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing"
-                  textLength="52.2676" x="34" y="456.3251">supply
-            </text>
+        <g class="cluster" data-qualified-name="netzgrafikeditor.converter.core.supply" id="ent0006"
+           data-source-line="24">
+            <path d="M32.5,441.33 L85.768,441.33 A3.75,3.75 0 0 1 88.268,443.83 L95.268,463.627 L925.5,463.627 A2.5,2.5 0 0 1 928,466.127 L928,842.1 A2.5,2.5 0 0 1 925.5,844.6 L32.5,844.6 A2.5,2.5 0 0 1 30,842.1 L30,443.83 A2.5,2.5 0 0 1 32.5,441.33"
+                  style="stroke:#000;stroke-width:1.5;" fill="none"/>
+            <line x1="30" y1="463.627" x2="95.268" y2="463.627" style="stroke:#000;stroke-width:1.5;"/>
+            <text x="34" y="456.325" fill="#000" font-size="14" textLength="52.268" font-weight="700">supply</text>
         </g><!--cluster adapter-->
-        <g id="cluster_adapter">
-            <path d="M978.5,252.19 L1041.5293,252.19 A3.75,3.75 0 0 1 1044.0293,254.69 L1051.0293,274.4869 L1378.5,274.4869 A2.5,2.5 0 0 1 1381,276.9869 L1381,348.69 A2.5,2.5 0 0 1 1378.5,351.19 L978.5,351.19 A2.5,2.5 0 0 1 976,348.69 L976,254.69 A2.5,2.5 0 0 1 978.5,252.19 "
-                  fill="none" style="stroke:#000000;stroke-width:1.5;"/>
-            <line style="stroke:#000000;stroke-width:1.5;" x1="976" x2="1051.0293" y1="274.4869" y2="274.4869"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing"
-                  textLength="62.0293" x="980" y="267.1851">adapter
-            </text>
+        <g class="cluster" data-qualified-name="adapter" id="ent0012" data-source-line="61">
+            <path d="M978.5,252.19 L1041.529,252.19 A3.75,3.75 0 0 1 1044.029,254.69 L1051.029,274.487 L1378.5,274.487 A2.5,2.5 0 0 1 1381,276.987 L1381,348.69 A2.5,2.5 0 0 1 1378.5,351.19 L978.5,351.19 A2.5,2.5 0 0 1 976,348.69 L976,254.69 A2.5,2.5 0 0 1 978.5,252.19"
+                  style="stroke:#000;stroke-width:1.5;" fill="none"/>
+            <line x1="976" y1="274.487" x2="1051.029" y2="274.487" style="stroke:#000;stroke-width:1.5;"/>
+            <text x="980" y="267.185" fill="#000" font-size="14" textLength="62.029" font-weight="700">adapter</text>
         </g><!--cluster io-->
-        <g id="cluster_io">
-            <path d="M978.5,38.59 L993.917,38.59 A3.75,3.75 0 0 1 996.417,41.09 L1003.417,60.8869 L1594.5,60.8869 A2.5,2.5 0 0 1 1597,63.3869 L1597,135.09 A2.5,2.5 0 0 1 1594.5,137.59 L978.5,137.59 A2.5,2.5 0 0 1 976,135.09 L976,41.09 A2.5,2.5 0 0 1 978.5,38.59 "
-                  fill="none" style="stroke:#000000;stroke-width:1.5;"/>
-            <line style="stroke:#000000;stroke-width:1.5;" x1="976" x2="1003.417" y1="60.8869" y2="60.8869"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing"
-                  textLength="14.417" x="980" y="53.5851">io
-            </text>
+        <g class="cluster" data-qualified-name="io" id="ent0015" data-source-line="69">
+            <path d="M978.5,38.59 L993.917,38.59 A3.75,3.75 0 0 1 996.417,41.09 L1003.417,60.887 L1594.5,60.887 A2.5,2.5 0 0 1 1597,63.387 L1597,135.09 A2.5,2.5 0 0 1 1594.5,137.59 L978.5,137.59 A2.5,2.5 0 0 1 976,135.09 L976,41.09 A2.5,2.5 0 0 1 978.5,38.59"
+                  style="stroke:#000;stroke-width:1.5;" fill="none"/>
+            <line x1="976" y1="60.887" x2="1003.417" y2="60.887" style="stroke:#000;stroke-width:1.5;"/>
+            <text x="980" y="53.585" fill="#000" font-size="14" textLength="14.417" font-weight="700">io</text>
         </g><!--class NetzgrafikConverter-->
-        <g id="elem_NetzgrafikConverter">
-            <rect codeLine="5" fill="#F1F1F1" height="64.2969" id="NetzgrafikConverter" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="185.1279" x="398.44" y="65.44"/>
-            <ellipse cx="413.44" cy="81.44" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
-            <path d="M416.4088,87.0806 Q415.8306,87.3775 415.19,87.5181 Q414.5494,87.6744 413.8463,87.6744 Q411.3463,87.6744 410.0181,86.0338 Q408.7056,84.3775 408.7056,81.2525 Q408.7056,78.1275 410.0181,76.4713 Q411.3463,74.815 413.8463,74.815 Q414.5494,74.815 415.19,74.9713 Q415.8463,75.1275 416.4088,75.4244 L416.4088,78.1431 Q415.7838,77.565 415.19,77.2994 Q414.5963,77.0181 413.9713,77.0181 Q412.6275,77.0181 411.94,78.0963 Q411.2525,79.1588 411.2525,81.2525 Q411.2525,83.3463 411.94,84.4244 Q412.6275,85.4869 413.9713,85.4869 Q414.5963,85.4869 415.19,85.2213 Q415.7838,84.94 416.4088,84.3619 L416.4088,87.0806 Z "
-                  fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="141.7979"
-                  x="427.44" y="86.2867">NetzgrafikConverter
-            </text>
-            <rect fill="#FFFFFF" height="15.9688" style="stroke:#181818;stroke-width:1;stroke-dasharray:2.0,2.0;"
-                  width="9.3301" x="577.2379" y="62.44"/>
-            <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing"
-                  textLength="7.3301" x="578.2379" y="74.5787">T
-            </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="399.44" x2="582.5679" y1="97.44" y2="97.44"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="399.44" x2="582.5679" y1="105.44" y2="105.44"/>
-            <ellipse cx="409.44" cy="119.0884" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="34.4258"
-                  x="418.44" y="122.4351">run()
-            </text>
+        <g class="entity" data-qualified-name="netzgrafikeditor.converter.core.NetzgrafikConverter" id="ent0002"
+           data-source-line="5">
+            <rect x="398.44" y="65.44" width="185.128" height="64.297" fill="#F1F1F1"
+                  style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5"/>
+            <ellipse cx="413.44" cy="81.44" rx="11" ry="11" fill="#ADD1B2" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M416.409,87.081 Q415.831,87.378 415.19,87.518 Q414.549,87.674 413.846,87.674 Q411.346,87.674 410.018,86.034 Q408.706,84.378 408.706,81.253 Q408.706,78.128 410.018,76.471 Q411.346,74.815 413.846,74.815 Q414.549,74.815 415.19,74.971 Q415.846,75.128 416.409,75.424 L416.409,78.143 Q415.784,77.565 415.19,77.299 Q414.596,77.018 413.971,77.018 Q412.628,77.018 411.94,78.096 Q411.253,79.159 411.253,81.253 Q411.253,83.346 411.94,84.424 Q412.628,85.487 413.971,85.487 Q414.596,85.487 415.19,85.221 Q415.784,84.94 416.409,84.362 L416.409,87.081 Z "
+                  fill="#000"/>
+            <text x="427.44" y="86.287" fill="#000" font-size="14" textLength="141.798">NetzgrafikConverter</text>
+            <rect x="577.238" y="62.44" width="9.33" height="15.969" fill="#FFF"
+                  style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;"/>
+            <text x="578.238" y="74.579" fill="#000" font-size="12" font-style="italic">T</text>
+            <line x1="399.44" y1="97.44" x2="582.568" y2="97.44" style="stroke:#181818;stroke-width:0.5;"/>
+            <line x1="399.44" y1="105.44" x2="582.568" y2="105.44" style="stroke:#181818;stroke-width:0.5;"/>
+            <g data-visibility-modifier="PUBLIC_METHOD">
+                <ellipse cx="409.44" cy="119.088" rx="3" ry="3" fill="#84BE84" style="stroke:#038048;stroke-width:1;"/>
+            </g>
+            <text x="418.44" y="122.435" fill="#000" font-size="14" textLength="34.426">run()</text>
         </g><!--class NetzgrafikConverterConfig-->
-        <g id="elem_NetzgrafikConverterConfig">
-            <rect codeLine="9" fill="#F1F1F1" height="113.1875" id="NetzgrafikConverterConfig" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="294.2832" x="641.86" y="41"/>
-            <ellipse cx="691.3932" cy="57" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
-            <path d="M694.362,62.6406 Q693.7838,62.9375 693.1432,63.0781 Q692.5026,63.2344 691.7995,63.2344 Q689.2995,63.2344 687.9713,61.5938 Q686.6588,59.9375 686.6588,56.8125 Q686.6588,53.6875 687.9713,52.0313 Q689.2995,50.375 691.7995,50.375 Q692.5026,50.375 693.1432,50.5313 Q693.7995,50.6875 694.362,50.9844 L694.362,53.7031 Q693.737,53.125 693.1432,52.8594 Q692.5495,52.5781 691.9245,52.5781 Q690.5807,52.5781 689.8932,53.6563 Q689.2057,54.7188 689.2057,56.8125 Q689.2057,58.9063 689.8932,59.9844 Q690.5807,61.0469 691.9245,61.0469 Q692.5495,61.0469 693.1432,60.7813 Q693.737,60.5 694.362,59.9219 L694.362,62.6406 Z "
-                  fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="186.7168"
-                  x="711.8932" y="61.8467">NetzgrafikConverterConfig
+        <g class="entity" data-qualified-name="netzgrafikeditor.converter.core.NetzgrafikConverterConfig" id="ent0003"
+           data-source-line="9">
+            <rect x="641.86" y="41" width="294.283" height="113.188" fill="#F1F1F1"
+                  style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5"/>
+            <ellipse cx="691.393" cy="57" rx="11" ry="11" fill="#ADD1B2" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M694.362,62.641 Q693.784,62.938 693.143,63.078 Q692.503,63.234 691.799,63.234 Q689.299,63.234 687.971,61.594 Q686.659,59.938 686.659,56.813 Q686.659,53.688 687.971,52.031 Q689.299,50.375 691.799,50.375 Q692.503,50.375 693.143,50.531 Q693.799,50.688 694.362,50.984 L694.362,53.703 Q693.737,53.125 693.143,52.859 Q692.549,52.578 691.924,52.578 Q690.581,52.578 689.893,53.656 Q689.206,54.719 689.206,56.813 Q689.206,58.906 689.893,59.984 Q690.581,61.047 691.924,61.047 Q692.549,61.047 693.143,60.781 Q693.737,60.5 694.362,59.922 L694.362,62.641 Z "
+                  fill="#000"/>
+            <text x="711.893" y="61.847" fill="#000" font-size="14" textLength="186.717">NetzgrafikConverterConfig
             </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="642.86" x2="935.1432" y1="73" y2="73"/>
-            <rect fill="none" height="6" style="stroke:#C82930;stroke-width:1;" width="6" x="649.86" y="83.6484"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="174.166"
-                  x="661.86" y="89.9951">useTrainNames: boolean
+            <line x1="642.86" y1="73" x2="935.143" y2="73" style="stroke:#181818;stroke-width:0.5;"/>
+            <g data-visibility-modifier="PRIVATE_FIELD">
+                <rect x="649.86" y="83.648" width="6" height="6" fill="none" style="stroke:#C82930;stroke-width:1;"/>
+            </g>
+            <text x="661.86" y="89.995" fill="#000" font-size="14" textLength="174.166">useTrainNames: boolean</text>
+            <g data-visibility-modifier="PRIVATE_FIELD">
+                <rect x="649.86" y="99.945" width="6" height="6" fill="none" style="stroke:#C82930;stroke-width:1;"/>
+            </g>
+            <text x="661.86" y="106.292" fill="#000" font-size="14" textLength="268.283">validationStrategy:
+                ValidationStrategy
             </text>
-            <rect fill="none" height="6" style="stroke:#C82930;stroke-width:1;" width="6" x="649.86" y="99.9453"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="268.2832"
-                  x="661.86" y="106.292">validationStrategy: ValidationStrategy
+            <g data-visibility-modifier="PRIVATE_FIELD">
+                <rect x="649.86" y="116.242" width="6" height="6" fill="none" style="stroke:#C82930;stroke-width:1;"/>
+            </g>
+            <text x="661.86" y="122.589" fill="#000" font-size="14" textLength="192.384">serviceDayStart: LocalTime
             </text>
-            <rect fill="none" height="6" style="stroke:#C82930;stroke-width:1;" width="6" x="649.86" y="116.2422"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="192.3838"
-                  x="661.86" y="122.5889">serviceDayStart: LocalTime
-            </text>
-            <rect fill="none" height="6" style="stroke:#C82930;stroke-width:1;" width="6" x="649.86" y="132.5391"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="184.7891"
-                  x="661.86" y="138.8857">serviceDayEnd: LocalTime
-            </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="642.86" x2="935.1432" y1="146.1875" y2="146.1875"/>
+            <g data-visibility-modifier="PRIVATE_FIELD">
+                <rect x="649.86" y="132.539" width="6" height="6" fill="none" style="stroke:#C82930;stroke-width:1;"/>
+            </g>
+            <text x="661.86" y="138.886" fill="#000" font-size="14" textLength="184.789">serviceDayEnd: LocalTime</text>
+            <line x1="642.86" y1="146.188" x2="935.143" y2="146.188" style="stroke:#181818;stroke-width:0.5;"/>
         </g><!--class NetworkGraphicSource-->
-        <g id="elem_NetworkGraphicSource">
-            <rect codeLine="16" fill="#F1F1F1" height="64.2969" id="NetworkGraphicSource" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="193.376" x="558.31" y="279.04"/>
-            <ellipse cx="573.31" cy="295.04" fill="#B4A7E5" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
-            <path d="M569.2319,290.8056 L569.2319,288.6494 L576.6225,288.6494 L576.6225,290.8056 L574.1538,290.8056 L574.1538,298.8838 L576.6225,298.8838 L576.6225,301.04 L569.2319,301.04 L569.2319,298.8838 L571.7006,298.8838 L571.7006,290.8056 L569.2319,290.8056 Z "
-                  fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
-                  textLength="161.376" x="587.31" y="299.8867">NetworkGraphicSource
+        <g class="entity" data-qualified-name="netzgrafikeditor.converter.core.NetworkGraphicSource" id="ent0004"
+           data-source-line="16">
+            <rect x="558.31" y="279.04" width="193.376" height="64.297" fill="#F1F1F1"
+                  style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5"/>
+            <ellipse cx="573.31" cy="295.04" rx="11" ry="11" fill="#B4A7E5" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M569.232,290.806 L569.232,288.649 L576.623,288.649 L576.623,290.806 L574.154,290.806 L574.154,298.884 L576.623,298.884 L576.623,301.04 L569.232,301.04 L569.232,298.884 L571.701,298.884 L571.701,290.806 L569.232,290.806 Z "
+                  fill="#000"/>
+            <text x="587.31" y="299.887" fill="#000" font-size="14" textLength="161.376" font-style="italic">
+                NetworkGraphicSource
             </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="559.31" x2="750.686" y1="311.04" y2="311.04"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="559.31" x2="750.686" y1="319.04" y2="319.04"/>
-            <ellipse cx="569.31" cy="332.6884" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="40.8447"
-                  x="578.31" y="336.0351">load()
-            </text>
+            <line x1="559.31" y1="311.04" x2="750.686" y2="311.04" style="stroke:#181818;stroke-width:0.5;"/>
+            <line x1="559.31" y1="319.04" x2="750.686" y2="319.04" style="stroke:#181818;stroke-width:0.5;"/>
+            <g data-visibility-modifier="PUBLIC_METHOD">
+                <ellipse cx="569.31" cy="332.688" rx="3" ry="3" fill="#84BE84" style="stroke:#038048;stroke-width:1;"/>
+            </g>
+            <text x="578.31" y="336.035" fill="#000" font-size="14" textLength="40.845">load()</text>
         </g><!--class ConverterSink-->
-        <g id="elem_ConverterSink">
-            <rect codeLine="20" fill="#F1F1F1" height="64.2969" id="ConverterSink" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="142.8135" x="793.59" y="279.04"/>
-            <ellipse cx="808.59" cy="295.04" fill="#B4A7E5" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
-            <path d="M804.5119,290.8056 L804.5119,288.6494 L811.9025,288.6494 L811.9025,290.8056 L809.4338,290.8056 L809.4338,298.8838 L811.9025,298.8838 L811.9025,301.04 L804.5119,301.04 L804.5119,298.8838 L806.9806,298.8838 L806.9806,290.8056 L804.5119,290.8056 Z "
-                  fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
-                  textLength="99.4834" x="822.59" y="299.8867">ConverterSink
+        <g class="entity" data-qualified-name="netzgrafikeditor.converter.core.ConverterSink" id="ent0005"
+           data-source-line="20">
+            <rect x="793.59" y="279.04" width="142.813" height="64.297" fill="#F1F1F1"
+                  style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5"/>
+            <ellipse cx="808.59" cy="295.04" rx="11" ry="11" fill="#B4A7E5" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M804.512,290.806 L804.512,288.649 L811.903,288.649 L811.903,290.806 L809.434,290.806 L809.434,298.884 L811.903,298.884 L811.903,301.04 L804.512,301.04 L804.512,298.884 L806.981,298.884 L806.981,290.806 L804.512,290.806 Z "
+                  fill="#000"/>
+            <text x="822.59" y="299.887" fill="#000" font-size="14" textLength="99.483" font-style="italic">
+                ConverterSink
             </text>
-            <rect fill="#FFFFFF" height="15.9688" style="stroke:#181818;stroke-width:1;stroke-dasharray:2.0,2.0;"
-                  width="9.3301" x="930.0734" y="276.04"/>
-            <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing"
-                  textLength="7.3301" x="931.0734" y="288.1787">T
-            </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="794.59" x2="935.4035" y1="311.04" y2="311.04"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="794.59" x2="935.4035" y1="319.04" y2="319.04"/>
-            <ellipse cx="804.59" cy="332.6884" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="57.0459"
-                  x="813.59" y="336.0351">save(...)
-            </text>
+            <rect x="930.073" y="276.04" width="9.33" height="15.969" fill="#FFF"
+                  style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;"/>
+            <text x="931.073" y="288.179" fill="#000" font-size="12" font-style="italic">T</text>
+            <line x1="794.59" y1="311.04" x2="935.403" y2="311.04" style="stroke:#181818;stroke-width:0.5;"/>
+            <line x1="794.59" y1="319.04" x2="935.403" y2="319.04" style="stroke:#181818;stroke-width:0.5;"/>
+            <g data-visibility-modifier="PUBLIC_METHOD">
+                <ellipse cx="804.59" cy="332.688" rx="3" ry="3" fill="#84BE84" style="stroke:#038048;stroke-width:1;"/>
+            </g>
+            <text x="813.59" y="336.035" fill="#000" font-size="14" textLength="57.046">save(...)</text>
         </g><!--class SupplyBuilder-->
-        <g id="elem_SupplyBuilder">
-            <rect codeLine="25" fill="#F1F1F1" height="145.7813" id="SupplyBuilder" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="158.2275" x="413.89" y="476.33"/>
-            <ellipse cx="436.8445" cy="492.33" fill="#B4A7E5" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
-            <path d="M432.7664,488.0956 L432.7664,485.9394 L440.157,485.9394 L440.157,488.0956 L437.6883,488.0956 L437.6883,496.1738 L440.157,496.1738 L440.157,498.33 L432.7664,498.33 L432.7664,496.1738 L435.2352,496.1738 L435.2352,488.0956 L432.7664,488.0956 Z "
-                  fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
-                  textLength="97.2207" x="452.6122" y="497.1767">SupplyBuilder
+        <g class="entity" data-qualified-name="netzgrafikeditor.converter.core.supply.SupplyBuilder" id="ent0007"
+           data-source-line="25">
+            <rect x="394.84" y="476.33" width="166.328" height="194.672" fill="#F1F1F1"
+                  style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5"/>
+            <ellipse cx="421.44" cy="492.33" rx="11" ry="11" fill="#B4A7E5" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M417.362,488.096 L417.362,485.939 L424.752,485.939 L424.752,488.096 L422.284,488.096 L422.284,496.174 L424.752,496.174 L424.752,498.33 L417.362,498.33 L417.362,496.174 L419.83,496.174 L419.83,488.096 L417.362,488.096 Z "
+                  fill="#000"/>
+            <text x="438.018" y="497.177" fill="#000" font-size="14" textLength="97.221" font-style="italic">
+                SupplyBuilder
             </text>
-            <rect fill="#FFFFFF" height="15.9688" style="stroke:#181818;stroke-width:1;stroke-dasharray:2.0,2.0;"
-                  width="9.3301" x="565.7875" y="473.33"/>
-            <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing"
-                  textLength="7.3301" x="566.7875" y="485.4687">T
-            </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="414.89" x2="571.1175" y1="508.33" y2="508.33"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="414.89" x2="571.1175" y1="516.33" y2="516.33"/>
-            <ellipse cx="424.89" cy="529.9784" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="132.2275"
-                  x="433.89" y="533.3251">addStopFacility(...)
-            </text>
-            <ellipse cx="424.89" cy="546.2753" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="128.2354"
-                  x="433.89" y="549.622">addTransitLine(...)
-            </text>
-            <ellipse cx="424.89" cy="562.5722" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="123.7236"
-                  x="433.89" y="565.9189">addRouteStop(...)
-            </text>
-            <ellipse cx="424.89" cy="578.8691" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="123.5049"
-                  x="433.89" y="582.2157">addRoutePass(...)
-            </text>
-            <ellipse cx="424.89" cy="595.1659" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="121.9736"
-                  x="433.89" y="598.5126">addDeparture(...)
-            </text>
-            <ellipse cx="424.89" cy="611.4628" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="63.0684"
-                  x="433.89" y="614.8095">build(): T
-            </text>
+            <rect x="554.838" y="473.33" width="9.33" height="15.969" fill="#FFF"
+                  style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;"/>
+            <text x="555.838" y="485.469" fill="#000" font-size="12" font-style="italic">T</text>
+            <line x1="395.84" y1="508.33" x2="560.168" y2="508.33" style="stroke:#181818;stroke-width:0.5;"/>
+            <line x1="395.84" y1="516.33" x2="560.168" y2="516.33" style="stroke:#181818;stroke-width:0.5;"/>
+            <g data-visibility-modifier="PUBLIC_METHOD">
+                <ellipse cx="405.84" cy="529.978" rx="3" ry="3" fill="#84BE84" style="stroke:#038048;stroke-width:1;"/>
+            </g>
+            <text x="414.84" y="533.325" fill="#000" font-size="14" textLength="132.228">addStopFacility(...)</text>
+            <g data-visibility-modifier="PUBLIC_METHOD">
+                <ellipse cx="405.84" cy="546.275" rx="3" ry="3" fill="#84BE84" style="stroke:#038048;stroke-width:1;"/>
+            </g>
+            <text x="414.84" y="549.622" fill="#000" font-size="14" textLength="128.235">addTransitLine(...)</text>
+            <g data-visibility-modifier="PUBLIC_METHOD">
+                <ellipse cx="405.84" cy="562.572" rx="3" ry="3" fill="#84BE84" style="stroke:#038048;stroke-width:1;"/>
+            </g>
+            <text x="414.84" y="565.919" fill="#000" font-size="14" textLength="140.328">addTransitRoute(...)</text>
+            <g data-visibility-modifier="PUBLIC_METHOD">
+                <ellipse cx="405.84" cy="578.869" rx="3" ry="3" fill="#84BE84" style="stroke:#038048;stroke-width:1;"/>
+            </g>
+            <text x="414.84" y="582.216" fill="#000" font-size="14" textLength="123.724">addRouteStop(...)</text>
+            <g data-visibility-modifier="PUBLIC_METHOD">
+                <ellipse cx="405.84" cy="595.166" rx="3" ry="3" fill="#84BE84" style="stroke:#038048;stroke-width:1;"/>
+            </g>
+            <text x="414.84" y="598.513" fill="#000" font-size="14" textLength="123.505">addRoutePass(...)</text>
+            <g data-visibility-modifier="PUBLIC_METHOD">
+                <ellipse cx="405.84" cy="611.463" rx="3" ry="3" fill="#84BE84" style="stroke:#038048;stroke-width:1;"/>
+            </g>
+            <text x="414.84" y="614.809" fill="#000" font-size="14" textLength="121.974">addDeparture(...)</text>
+            <g data-visibility-modifier="PUBLIC_METHOD">
+                <ellipse cx="405.84" cy="627.76" rx="3" ry="3" fill="#84BE84" style="stroke:#038048;stroke-width:1;"/>
+            </g>
+            <text x="414.84" y="631.106" fill="#000" font-size="14" textLength="129.842">addConnection(...)</text>
+            <g data-visibility-modifier="PUBLIC_METHOD">
+                <ellipse cx="405.84" cy="644.057" rx="3" ry="3" fill="#84BE84" style="stroke:#038048;stroke-width:1;"/>
+            </g>
+            <text x="414.84" y="647.403" fill="#000" font-size="14" textLength="130.833">forbidTransfers(...)</text>
+            <g data-visibility-modifier="PUBLIC_METHOD">
+                <ellipse cx="405.84" cy="660.353" rx="3" ry="3" fill="#84BE84" style="stroke:#038048;stroke-width:1;"/>
+            </g>
+            <text x="414.84" y="663.7" fill="#000" font-size="14" textLength="63.068">build(): T</text>
         </g><!--class BaseSupplyBuilder-->
-        <g id="elem_BaseSupplyBuilder">
-            <rect codeLine="34" fill="#F1F1F1" height="96.8906" id="BaseSupplyBuilder" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="174.6416" x="701.68" y="500.78"/>
-            <ellipse cx="716.68" cy="516.78" fill="#A9DCDF" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
-            <path d="M716.7894,512.1238 L715.6331,517.2019 L717.9613,517.2019 L716.7894,512.1238 Z M715.305,509.8894 L718.2894,509.8894 L721.6488,522.28 L719.1956,522.28 L718.43,519.2175 L715.1488,519.2175 L714.3988,522.28 L711.9613,522.28 L715.305,509.8894 Z "
-                  fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
-                  textLength="131.3115" x="730.68" y="521.6267">BaseSupplyBuilder
+        <g class="entity" data-qualified-name="netzgrafikeditor.converter.core.supply.BaseSupplyBuilder" id="ent0008"
+           data-source-line="37">
+            <rect x="689.83" y="508.93" width="218.336" height="129.484" fill="#F1F1F1"
+                  style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5"/>
+            <ellipse cx="724.492" cy="524.93" rx="11" ry="11" fill="#A9DCDF" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M724.602,520.274 L723.446,525.352 L725.774,525.352 L724.602,520.274 Z M723.117,518.039 L726.102,518.039 L729.461,530.43 L727.008,530.43 L726.242,527.368 L722.961,527.368 L722.211,530.43 L719.774,530.43 L723.117,518.039 Z "
+                  fill="#000"/>
+            <text x="742.862" y="529.777" fill="#000" font-size="14" textLength="131.312" font-style="italic">
+                BaseSupplyBuilder
             </text>
-            <rect fill="#FFFFFF" height="15.9688" style="stroke:#181818;stroke-width:1;stroke-dasharray:2.0,2.0;"
-                  width="9.3301" x="869.9915" y="497.78"/>
-            <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing"
-                  textLength="7.3301" x="870.9915" y="509.9187">T
+            <rect x="901.836" y="505.93" width="9.33" height="15.969" fill="#FFF"
+                  style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;"/>
+            <text x="902.836" y="518.069" fill="#000" font-size="12" font-style="italic">T</text>
+            <line x1="690.83" y1="540.93" x2="907.166" y2="540.93" style="stroke:#181818;stroke-width:0.5;"/>
+            <line x1="690.83" y1="548.93" x2="907.166" y2="548.93" style="stroke:#181818;stroke-width:0.5;"/>
+            <g data-visibility-modifier="PROTECTED_METHOD">
+                <polygon points="700.83,557.578,704.83,561.578,700.83,565.578,696.83,561.578" fill="#FF4"
+                         style="stroke:#B38D22;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            </g>
+            <text x="709.83" y="565.925" fill="#000" font-size="14" textLength="140.301" font-style="italic">
+                buildStopFacility(...)
             </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="702.68" x2="875.3216" y1="532.78" y2="532.78"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="702.68" x2="875.3216" y1="540.78" y2="540.78"/>
-            <polygon fill="#FFFF44" points="712.68,549.4284,716.68,553.4284,712.68,557.4284,708.68,553.4284"
-                     style="stroke:#B38D22;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
-                  textLength="140.3008" x="721.68" y="557.7751">buildStopFacility(...)
+            <g data-visibility-modifier="PROTECTED_METHOD">
+                <polygon points="700.83,573.875,704.83,577.875,700.83,581.875,696.83,577.875" fill="#FF4"
+                         style="stroke:#B38D22;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            </g>
+            <text x="709.83" y="582.222" fill="#000" font-size="14" textLength="148.401" font-style="italic">
+                buildTransitRoute(...)
             </text>
-            <polygon fill="#FFFF44" points="712.68,565.7253,716.68,569.7253,712.68,573.7253,708.68,569.7253"
-                     style="stroke:#B38D22;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
-                  textLength="148.4014" x="721.68" y="574.072">buildTransitRoute(...)
+            <g data-visibility-modifier="PROTECTED_METHOD">
+                <polygon points="700.83,590.172,704.83,594.172,700.83,598.172,696.83,594.172" fill="#FF4"
+                         style="stroke:#B38D22;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            </g>
+            <text x="709.83" y="598.519" fill="#000" font-size="14" textLength="130.047" font-style="italic">
+                buildDeparture(...)
             </text>
-            <polygon fill="#FFFF44" points="712.68,582.0222,716.68,586.0222,712.68,590.0222,708.68,586.0222"
-                     style="stroke:#B38D22;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
-                  textLength="130.0469" x="721.68" y="590.3689">buildDeparture(...)
+            <g data-visibility-modifier="PROTECTED_METHOD">
+                <polygon points="700.83,606.469,704.83,610.469,700.83,614.469,696.83,610.469" fill="#FF4"
+                         style="stroke:#B38D22;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            </g>
+            <text x="709.83" y="614.816" fill="#000" font-size="14" textLength="137.915" font-style="italic">
+                buildConnection(...)
+            </text>
+            <g data-visibility-modifier="PROTECTED_METHOD">
+                <polygon points="700.83,622.766,704.83,626.766,700.83,630.766,696.83,626.766" fill="#FF4"
+                         style="stroke:#B38D22;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            </g>
+            <text x="709.83" y="631.113" fill="#000" font-size="14" textLength="192.336" font-style="italic">
+                buildTransferRestriction(...)
             </text>
         </g><!--class InfrastructureRepository-->
-        <g id="elem_InfrastructureRepository">
-            <rect codeLine="40" fill="#F1F1F1" height="80.5938" id="InfrastructureRepository" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="272.1279" x="45.94" y="699.12"/>
-            <ellipse cx="92.1646" cy="715.12" fill="#B4A7E5" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
-            <path d="M88.0865,710.8856 L88.0865,708.7294 L95.4771,708.7294 L95.4771,710.8856 L93.0084,710.8856 L93.0084,718.9638 L95.4771,718.9638 L95.4771,721.12 L88.0865,721.12 L88.0865,718.9638 L90.5552,718.9638 L90.5552,710.8856 L88.0865,710.8856 Z "
-                  fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
-                  textLength="171.1787" x="112.6646" y="719.9667">InfrastructureRepository
+        <g class="entity" data-qualified-name="netzgrafikeditor.converter.core.supply.InfrastructureRepository"
+           id="ent0009" data-source-line="45">
+            <rect x="45.94" y="748.01" width="272.128" height="80.594" fill="#F1F1F1"
+                  style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5"/>
+            <ellipse cx="92.165" cy="764.01" rx="11" ry="11" fill="#B4A7E5" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M88.086,759.776 L88.086,757.619 L95.477,757.619 L95.477,759.776 L93.008,759.776 L93.008,767.854 L95.477,767.854 L95.477,770.01 L88.086,770.01 L88.086,767.854 L90.555,767.854 L90.555,759.776 L88.086,759.776 Z "
+                  fill="#000"/>
+            <text x="112.665" y="768.857" fill="#000" font-size="14" textLength="171.179" font-style="italic">
+                InfrastructureRepository
             </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="46.94" x2="317.0679" y1="731.12" y2="731.12"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="46.94" x2="317.0679" y1="739.12" y2="739.12"/>
-            <ellipse cx="56.94" cy="752.7684" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="246.1279"
-                  x="65.94" y="756.1151">getStopFacility(...): StopFacilityInfo
+            <line x1="46.94" y1="780.01" x2="317.068" y2="780.01" style="stroke:#181818;stroke-width:0.5;"/>
+            <line x1="46.94" y1="788.01" x2="317.068" y2="788.01" style="stroke:#181818;stroke-width:0.5;"/>
+            <g data-visibility-modifier="PUBLIC_METHOD">
+                <ellipse cx="56.94" cy="801.658" rx="3" ry="3" fill="#84BE84" style="stroke:#038048;stroke-width:1;"/>
+            </g>
+            <text x="65.94" y="805.005" fill="#000" font-size="14" textLength="246.128">getStopFacility(...):
+                StopFacilityInfo
             </text>
-            <ellipse cx="56.94" cy="769.0653" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="244.7471"
-                  x="65.94" y="772.412">getTrack(...): List&lt;TrackSegment&gt;
-            </text>
+            <g data-visibility-modifier="PUBLIC_METHOD">
+                <ellipse cx="56.94" cy="817.955" rx="3" ry="3" fill="#84BE84" style="stroke:#038048;stroke-width:1;"/>
+            </g>
+            <text x="65.94" y="821.302" fill="#000" font-size="14" textLength="244.747">getTrack(...): List&lt;TrackSegment></text>
         </g><!--class RollingStockRepository-->
-        <g id="elem_RollingStockRepository">
-            <rect codeLine="45" fill="#F1F1F1" height="64.2969" id="RollingStockRepository" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="279.9072" x="353.05" y="707.26"/>
-            <ellipse cx="407.9836" cy="723.26" fill="#B4A7E5" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
-            <path d="M403.9055,719.0256 L403.9055,716.8694 L411.2961,716.8694 L411.2961,719.0256 L408.8273,719.0256 L408.8273,727.1038 L411.2961,727.1038 L411.2961,729.26 L403.9055,729.26 L403.9055,727.1038 L406.3742,727.1038 L406.3742,719.0256 L403.9055,719.0256 Z "
-                  fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
-                  textLength="161.54" x="428.4836" y="728.1067">RollingStockRepository
+        <g class="entity" data-qualified-name="netzgrafikeditor.converter.core.supply.RollingStockRepository"
+           id="ent0010" data-source-line="50">
+            <rect x="353.05" y="756.15" width="279.907" height="64.297" fill="#F1F1F1"
+                  style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5"/>
+            <ellipse cx="407.984" cy="772.15" rx="11" ry="11" fill="#B4A7E5" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M403.905,767.916 L403.905,765.759 L411.296,765.759 L411.296,767.916 L408.827,767.916 L408.827,775.994 L411.296,775.994 L411.296,778.15 L403.905,778.15 L403.905,775.994 L406.374,775.994 L406.374,767.916 L403.905,767.916 Z "
+                  fill="#000"/>
+            <text x="428.484" y="776.997" fill="#000" font-size="14" textLength="161.54" font-style="italic">
+                RollingStockRepository
             </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="354.05" x2="631.9572" y1="739.26" y2="739.26"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="354.05" x2="631.9572" y1="747.26" y2="747.26"/>
-            <ellipse cx="364.05" cy="760.9084" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="253.9072"
-                  x="373.05" y="764.2551">getVehicleType(...): VehicleTypeInfo
+            <line x1="354.05" y1="788.15" x2="631.957" y2="788.15" style="stroke:#181818;stroke-width:0.5;"/>
+            <line x1="354.05" y1="796.15" x2="631.957" y2="796.15" style="stroke:#181818;stroke-width:0.5;"/>
+            <g data-visibility-modifier="PUBLIC_METHOD">
+                <ellipse cx="364.05" cy="809.798" rx="3" ry="3" fill="#84BE84" style="stroke:#038048;stroke-width:1;"/>
+            </g>
+            <text x="373.05" y="813.145" fill="#000" font-size="14" textLength="253.907">getVehicleType(...):
+                VehicleTypeInfo
             </text>
         </g><!--class VehicleCircuitsPlanner-->
-        <g id="elem_VehicleCircuitsPlanner">
-            <rect codeLine="49" fill="#F1F1F1" height="80.5938" id="VehicleCircuitsPlanner" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="244.4219" x="667.79" y="699.12"/>
-            <ellipse cx="707.8002" cy="715.12" fill="#B4A7E5" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
-            <path d="M703.722,710.8856 L703.722,708.7294 L711.1127,708.7294 L711.1127,710.8856 L708.6439,710.8856 L708.6439,718.9638 L711.1127,718.9638 L711.1127,721.12 L703.722,721.12 L703.722,718.9638 L706.1908,718.9638 L706.1908,710.8856 L703.722,710.8856 Z "
-                  fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
-                  textLength="156.8438" x="727.358" y="719.9667">VehicleCircuitsPlanner
+        <g class="entity" data-qualified-name="netzgrafikeditor.converter.core.supply.VehicleCircuitsPlanner"
+           id="ent0011" data-source-line="54">
+            <rect x="667.79" y="748.01" width="244.422" height="80.594" fill="#F1F1F1"
+                  style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5"/>
+            <ellipse cx="707.8" cy="764.01" rx="11" ry="11" fill="#B4A7E5" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M703.722,759.776 L703.722,757.619 L711.113,757.619 L711.113,759.776 L708.644,759.776 L708.644,767.854 L711.113,767.854 L711.113,770.01 L703.722,770.01 L703.722,767.854 L706.191,767.854 L706.191,759.776 L703.722,759.776 Z "
+                  fill="#000"/>
+            <text x="727.358" y="768.857" fill="#000" font-size="14" textLength="156.844" font-style="italic">
+                VehicleCircuitsPlanner
             </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="668.79" x2="911.2119" y1="731.12" y2="731.12"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="668.79" x2="911.2119" y1="739.12" y2="739.12"/>
-            <ellipse cx="678.79" cy="752.7684" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="78.5723"
-                  x="687.79" y="756.1151">register(...)
-            </text>
-            <ellipse cx="678.79" cy="769.0653" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="218.4219"
-                  x="687.79" y="772.412">plan(): List&lt;VehicleAllocation&gt;
-            </text>
+            <line x1="668.79" y1="780.01" x2="911.212" y2="780.01" style="stroke:#181818;stroke-width:0.5;"/>
+            <line x1="668.79" y1="788.01" x2="911.212" y2="788.01" style="stroke:#181818;stroke-width:0.5;"/>
+            <g data-visibility-modifier="PUBLIC_METHOD">
+                <ellipse cx="678.79" cy="801.658" rx="3" ry="3" fill="#84BE84" style="stroke:#038048;stroke-width:1;"/>
+            </g>
+            <text x="687.79" y="805.005" fill="#000" font-size="14" textLength="78.572">register(...)</text>
+            <g data-visibility-modifier="PUBLIC_METHOD">
+                <ellipse cx="678.79" cy="817.955" rx="3" ry="3" fill="#84BE84" style="stroke:#038048;stroke-width:1;"/>
+            </g>
+            <text x="687.79" y="821.302" fill="#000" font-size="14" textLength="218.422">plan(): List&lt;VehicleAllocation></text>
         </g><!--class MatsimSupplyBuilder-->
-        <g id="elem_MatsimSupplyBuilder">
-            <rect codeLine="57" fill="#F1F1F1" height="48" id="MatsimSupplyBuilder" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="180.1895" x="991.91" y="287.19"/>
-            <ellipse cx="1006.91" cy="303.19" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
-            <path d="M1009.8788,308.8306 Q1009.3006,309.1275 1008.66,309.2681 Q1008.0194,309.4244 1007.3163,309.4244 Q1004.8163,309.4244 1003.4881,307.7838 Q1002.1756,306.1275 1002.1756,303.0025 Q1002.1756,299.8775 1003.4881,298.2213 Q1004.8163,296.565 1007.3163,296.565 Q1008.0194,296.565 1008.66,296.7213 Q1009.3163,296.8775 1009.8788,297.1744 L1009.8788,299.8931 Q1009.2538,299.315 1008.66,299.0494 Q1008.0663,298.7681 1007.4413,298.7681 Q1006.0975,298.7681 1005.41,299.8463 Q1004.7225,300.9088 1004.7225,303.0025 Q1004.7225,305.0963 1005.41,306.1744 Q1006.0975,307.2369 1007.4413,307.2369 Q1008.0663,307.2369 1008.66,306.9713 Q1009.2538,306.69 1009.8788,306.1119 L1009.8788,308.8306 Z "
-                  fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="148.1895"
-                  x="1020.91" y="308.0367">MatsimSupplyBuilder
-            </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="992.91" x2="1171.0995" y1="319.19" y2="319.19"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="992.91" x2="1171.0995" y1="327.19" y2="327.19"/>
+        <g class="entity" data-qualified-name="adapter.MatsimSupplyBuilder" id="ent0013" data-source-line="62">
+            <rect x="991.91" y="287.19" width="180.189" height="48" fill="#F1F1F1"
+                  style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5"/>
+            <ellipse cx="1006.91" cy="303.19" rx="11" ry="11" fill="#ADD1B2" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M1009.879,308.831 Q1009.301,309.128 1008.66,309.268 Q1008.019,309.424 1007.316,309.424 Q1004.816,309.424 1003.488,307.784 Q1002.176,306.128 1002.176,303.003 Q1002.176,299.878 1003.488,298.221 Q1004.816,296.565 1007.316,296.565 Q1008.019,296.565 1008.66,296.721 Q1009.316,296.878 1009.879,297.174 L1009.879,299.893 Q1009.254,299.315 1008.66,299.049 Q1008.066,298.768 1007.441,298.768 Q1006.098,298.768 1005.41,299.846 Q1004.723,300.909 1004.723,303.003 Q1004.723,305.096 1005.41,306.174 Q1006.098,307.237 1007.441,307.237 Q1008.066,307.237 1008.66,306.971 Q1009.254,306.69 1009.879,306.112 L1009.879,308.831 Z "
+                  fill="#000"/>
+            <text x="1020.91" y="308.037" fill="#000" font-size="14" textLength="148.189">MatsimSupplyBuilder</text>
+            <line x1="992.91" y1="319.19" x2="1171.099" y2="319.19" style="stroke:#181818;stroke-width:0.5;"/>
+            <line x1="992.91" y1="327.19" x2="1171.099" y2="327.19" style="stroke:#181818;stroke-width:0.5;"/>
         </g><!--class GtfsSupplyBuilder-->
-        <g id="elem_GtfsSupplyBuilder">
-            <rect codeLine="60" fill="#F1F1F1" height="48" id="GtfsSupplyBuilder" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="157.7813" x="1207.11" y="287.19"/>
-            <ellipse cx="1222.11" cy="303.19" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
-            <path d="M1225.0788,308.8306 Q1224.5006,309.1275 1223.86,309.2681 Q1223.2194,309.4244 1222.5163,309.4244 Q1220.0163,309.4244 1218.6881,307.7838 Q1217.3756,306.1275 1217.3756,303.0025 Q1217.3756,299.8775 1218.6881,298.2213 Q1220.0163,296.565 1222.5163,296.565 Q1223.2194,296.565 1223.86,296.7213 Q1224.5163,296.8775 1225.0788,297.1744 L1225.0788,299.8931 Q1224.4538,299.315 1223.86,299.0494 Q1223.2663,298.7681 1222.6413,298.7681 Q1221.2975,298.7681 1220.61,299.8463 Q1219.9225,300.9088 1219.9225,303.0025 Q1219.9225,305.0963 1220.61,306.1744 Q1221.2975,307.2369 1222.6413,307.2369 Q1223.2663,307.2369 1223.86,306.9713 Q1224.4538,306.69 1225.0788,306.1119 L1225.0788,308.8306 Z "
-                  fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="125.7813"
-                  x="1236.11" y="308.0367">GtfsSupplyBuilder
-            </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="1208.11" x2="1363.8913" y1="319.19" y2="319.19"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="1208.11" x2="1363.8913" y1="327.19" y2="327.19"/>
+        <g class="entity" data-qualified-name="adapter.GtfsSupplyBuilder" id="ent0014" data-source-line="65">
+            <rect x="1207.11" y="287.19" width="157.781" height="48" fill="#F1F1F1"
+                  style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5"/>
+            <ellipse cx="1222.11" cy="303.19" rx="11" ry="11" fill="#ADD1B2" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M1225.079,308.831 Q1224.501,309.128 1223.86,309.268 Q1223.219,309.424 1222.516,309.424 Q1220.016,309.424 1218.688,307.784 Q1217.376,306.128 1217.376,303.003 Q1217.376,299.878 1218.688,298.221 Q1220.016,296.565 1222.516,296.565 Q1223.219,296.565 1223.86,296.721 Q1224.516,296.878 1225.079,297.174 L1225.079,299.893 Q1224.454,299.315 1223.86,299.049 Q1223.266,298.768 1222.641,298.768 Q1221.298,298.768 1220.61,299.846 Q1219.923,300.909 1219.923,303.003 Q1219.923,305.096 1220.61,306.174 Q1221.298,307.237 1222.641,307.237 Q1223.266,307.237 1223.86,306.971 Q1224.454,306.69 1225.079,306.112 L1225.079,308.831 Z "
+                  fill="#000"/>
+            <text x="1236.11" y="308.037" fill="#000" font-size="14" textLength="125.781">GtfsSupplyBuilder</text>
+            <line x1="1208.11" y1="319.19" x2="1363.891" y2="319.19" style="stroke:#181818;stroke-width:0.5;"/>
+            <line x1="1208.11" y1="327.19" x2="1363.891" y2="327.19" style="stroke:#181818;stroke-width:0.5;"/>
         </g><!--class GtfsScheduleWriter-->
-        <g id="elem_GtfsScheduleWriter">
-            <rect codeLine="65" fill="#F1F1F1" height="48" id="GtfsScheduleWriter" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="168.2402" x="1412.88" y="73.59"/>
-            <ellipse cx="1427.88" cy="89.59" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
-            <path d="M1430.8488,95.2306 Q1430.2706,95.5275 1429.63,95.6681 Q1428.9894,95.8244 1428.2863,95.8244 Q1425.7863,95.8244 1424.4581,94.1838 Q1423.1456,92.5275 1423.1456,89.4025 Q1423.1456,86.2775 1424.4581,84.6213 Q1425.7863,82.965 1428.2863,82.965 Q1428.9894,82.965 1429.63,83.1213 Q1430.2863,83.2775 1430.8488,83.5744 L1430.8488,86.2931 Q1430.2238,85.715 1429.63,85.4494 Q1429.0363,85.1681 1428.4113,85.1681 Q1427.0675,85.1681 1426.38,86.2463 Q1425.6925,87.3088 1425.6925,89.4025 Q1425.6925,91.4963 1426.38,92.5744 Q1427.0675,93.6369 1428.4113,93.6369 Q1429.0363,93.6369 1429.63,93.3713 Q1430.2238,93.09 1430.8488,92.5119 L1430.8488,95.2306 Z "
-                  fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="136.2402"
-                  x="1441.88" y="94.4367">GtfsScheduleWriter
-            </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="1413.88" x2="1580.1202" y1="105.59" y2="105.59"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="1413.88" x2="1580.1202" y1="113.59" y2="113.59"/>
+        <g class="entity" data-qualified-name="io.GtfsScheduleWriter" id="ent0016" data-source-line="70">
+            <rect x="1412.88" y="73.59" width="168.24" height="48" fill="#F1F1F1"
+                  style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5"/>
+            <ellipse cx="1427.88" cy="89.59" rx="11" ry="11" fill="#ADD1B2" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M1430.849,95.231 Q1430.271,95.528 1429.63,95.668 Q1428.989,95.824 1428.286,95.824 Q1425.786,95.824 1424.458,94.184 Q1423.146,92.528 1423.146,89.403 Q1423.146,86.278 1424.458,84.621 Q1425.786,82.965 1428.286,82.965 Q1428.989,82.965 1429.63,83.121 Q1430.286,83.278 1430.849,83.574 L1430.849,86.293 Q1430.224,85.715 1429.63,85.449 Q1429.036,85.168 1428.411,85.168 Q1427.068,85.168 1426.38,86.246 Q1425.693,87.309 1425.693,89.403 Q1425.693,91.496 1426.38,92.574 Q1427.068,93.637 1428.411,93.637 Q1429.036,93.637 1429.63,93.371 Q1430.224,93.09 1430.849,92.512 L1430.849,95.231 Z "
+                  fill="#000"/>
+            <text x="1441.88" y="94.437" fill="#000" font-size="14" textLength="136.24">GtfsScheduleWriter</text>
+            <line x1="1413.88" y1="105.59" x2="1580.12" y2="105.59" style="stroke:#181818;stroke-width:0.5;"/>
+            <line x1="1413.88" y1="113.59" x2="1580.12" y2="113.59" style="stroke:#181818;stroke-width:0.5;"/>
         </g><!--class TransitScheduleXmlWriter-->
-        <g id="elem_TransitScheduleXmlWriter">
-            <rect codeLine="68" fill="#F1F1F1" height="48" id="TransitScheduleXmlWriter" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="215.2305" x="1162.38" y="73.59"/>
-            <ellipse cx="1177.38" cy="89.59" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
-            <path d="M1180.3488,95.2306 Q1179.7706,95.5275 1179.13,95.6681 Q1178.4894,95.8244 1177.7863,95.8244 Q1175.2863,95.8244 1173.9581,94.1838 Q1172.6456,92.5275 1172.6456,89.4025 Q1172.6456,86.2775 1173.9581,84.6213 Q1175.2863,82.965 1177.7863,82.965 Q1178.4894,82.965 1179.13,83.1213 Q1179.7863,83.2775 1180.3488,83.5744 L1180.3488,86.2931 Q1179.7238,85.715 1179.13,85.4494 Q1178.5363,85.1681 1177.9113,85.1681 Q1176.5675,85.1681 1175.88,86.2463 Q1175.1925,87.3088 1175.1925,89.4025 Q1175.1925,91.4963 1175.88,92.5744 Q1176.5675,93.6369 1177.9113,93.6369 Q1178.5363,93.6369 1179.13,93.3713 Q1179.7238,93.09 1180.3488,92.5119 L1180.3488,95.2306 Z "
-                  fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="183.2305"
-                  x="1191.38" y="94.4367">TransitScheduleXmlWriter
-            </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="1163.38" x2="1376.6105" y1="105.59" y2="105.59"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="1163.38" x2="1376.6105" y1="113.59" y2="113.59"/>
+        <g class="entity" data-qualified-name="io.TransitScheduleXmlWriter" id="ent0017" data-source-line="73">
+            <rect x="1162.38" y="73.59" width="215.23" height="48" fill="#F1F1F1"
+                  style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5"/>
+            <ellipse cx="1177.38" cy="89.59" rx="11" ry="11" fill="#ADD1B2" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M1180.349,95.231 Q1179.771,95.528 1179.13,95.668 Q1178.489,95.824 1177.786,95.824 Q1175.286,95.824 1173.958,94.184 Q1172.646,92.528 1172.646,89.403 Q1172.646,86.278 1173.958,84.621 Q1175.286,82.965 1177.786,82.965 Q1178.489,82.965 1179.13,83.121 Q1179.786,83.278 1180.349,83.574 L1180.349,86.293 Q1179.724,85.715 1179.13,85.449 Q1178.536,85.168 1177.911,85.168 Q1176.568,85.168 1175.88,86.246 Q1175.193,87.309 1175.193,89.403 Q1175.193,91.496 1175.88,92.574 Q1176.568,93.637 1177.911,93.637 Q1178.536,93.637 1179.13,93.371 Q1179.724,93.09 1180.349,92.512 L1180.349,95.231 Z "
+                  fill="#000"/>
+            <text x="1191.38" y="94.437" fill="#000" font-size="14" textLength="183.23">TransitScheduleXmlWriter</text>
+            <line x1="1163.38" y1="105.59" x2="1376.61" y2="105.59" style="stroke:#181818;stroke-width:0.5;"/>
+            <line x1="1163.38" y1="113.59" x2="1376.61" y2="113.59" style="stroke:#181818;stroke-width:0.5;"/>
         </g><!--class JsonFileReader-->
-        <g id="elem_JsonFileReader">
-            <rect codeLine="71" fill="#F1F1F1" height="48" id="JsonFileReader" rx="2.5" ry="2.5"
-                  style="stroke:#181818;stroke-width:0.5;" width="135.4824" x="992.26" y="73.59"/>
-            <ellipse cx="1007.26" cy="89.59" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1;"/>
-            <path d="M1010.2288,95.2306 Q1009.6506,95.5275 1009.01,95.6681 Q1008.3694,95.8244 1007.6663,95.8244 Q1005.1663,95.8244 1003.8381,94.1838 Q1002.5256,92.5275 1002.5256,89.4025 Q1002.5256,86.2775 1003.8381,84.6213 Q1005.1663,82.965 1007.6663,82.965 Q1008.3694,82.965 1009.01,83.1213 Q1009.6663,83.2775 1010.2288,83.5744 L1010.2288,86.2931 Q1009.6038,85.715 1009.01,85.4494 Q1008.4163,85.1681 1007.7913,85.1681 Q1006.4475,85.1681 1005.76,86.2463 Q1005.0725,87.3088 1005.0725,89.4025 Q1005.0725,91.4963 1005.76,92.5744 Q1006.4475,93.6369 1007.7913,93.6369 Q1008.4163,93.6369 1009.01,93.3713 Q1009.6038,93.09 1010.2288,92.5119 L1010.2288,95.2306 Z "
-                  fill="#000000"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="103.4824"
-                  x="1021.26" y="94.4367">JsonFileReader
-            </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="993.26" x2="1126.7424" y1="105.59" y2="105.59"/>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="993.26" x2="1126.7424" y1="113.59" y2="113.59"/>
+        <g class="entity" data-qualified-name="io.JsonFileReader" id="ent0018" data-source-line="76">
+            <rect x="992.26" y="73.59" width="135.482" height="48" fill="#F1F1F1"
+                  style="stroke:#181818;stroke-width:0.5;" rx="2.5" ry="2.5"/>
+            <ellipse cx="1007.26" cy="89.59" rx="11" ry="11" fill="#ADD1B2" style="stroke:#181818;stroke-width:1;"/>
+            <path d="M1010.229,95.231 Q1009.651,95.528 1009.01,95.668 Q1008.369,95.824 1007.666,95.824 Q1005.166,95.824 1003.838,94.184 Q1002.526,92.528 1002.526,89.403 Q1002.526,86.278 1003.838,84.621 Q1005.166,82.965 1007.666,82.965 Q1008.369,82.965 1009.01,83.121 Q1009.666,83.278 1010.229,83.574 L1010.229,86.293 Q1009.604,85.715 1009.01,85.449 Q1008.416,85.168 1007.791,85.168 Q1006.448,85.168 1005.76,86.246 Q1005.073,87.309 1005.073,89.403 Q1005.073,91.496 1005.76,92.574 Q1006.448,93.637 1007.791,93.637 Q1008.416,93.637 1009.01,93.371 Q1009.604,93.09 1010.229,92.512 L1010.229,95.231 Z "
+                  fill="#000"/>
+            <text x="1021.26" y="94.437" fill="#000" font-size="14" textLength="103.482">JsonFileReader</text>
+            <line x1="993.26" y1="105.59" x2="1126.742" y2="105.59" style="stroke:#181818;stroke-width:0.5;"/>
+            <line x1="993.26" y1="113.59" x2="1126.742" y2="113.59" style="stroke:#181818;stroke-width:0.5;"/>
         </g><!--reverse link NetzgrafikConverter to NetzgrafikConverterConfig-->
-        <g id="link_NetzgrafikConverter_NetzgrafikConverterConfig">
-            <path codeLine="75" d="M596.06,97.59 C614.34,97.59 621.92,97.59 641.47,97.59 " fill="none"
-                  id="NetzgrafikConverter-backto-NetzgrafikConverterConfig" style="stroke:#181818;stroke-width:1;"/>
-            <polygon fill="#181818" points="584.06,97.59,590.06,101.59,596.06,97.59,590.06,93.59,584.06,97.59"
-                     style="stroke:#181818;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="22.9785"
-                  x="601.71" y="90.6569">has
-            </text>
+        <g class="link" data-entity-1="ent0002" data-entity-2="ent0003" id="lnk19" data-source-line="80"
+           data-link-type="composition">
+            <path d="M596.06,97.59 C614.34,97.59 621.92,97.59 641.47,97.59" style="stroke:#181818;stroke-width:1;"
+                  fill="none" id="NetzgrafikConverter-backto-NetzgrafikConverterConfig" codeLine="80"/>
+            <polygon points="584.06,97.59,590.06,101.59,596.06,97.59,590.06,93.59,584.06,97.59" fill="#181818"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text x="601.71" y="90.657" fill="#000" font-size="13" textLength="22.979">has</text>
         </g><!--reverse link NetzgrafikConverter to NetworkGraphicSource-->
-        <g id="link_NetzgrafikConverter_NetworkGraphicSource">
-            <path codeLine="76" d="M522.5512,139.2947 C553.5612,179.3047 599.65,238.77 630.7,278.84 " fill="none"
-                  id="NetzgrafikConverter-backto-NetworkGraphicSource" style="stroke:#181818;stroke-width:1;"/>
-            <polygon fill="#181818"
-                     points="515.2,129.81,515.714,137.0028,522.5512,139.2947,522.0372,132.102,515.2,129.81"
-                     style="stroke:#181818;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="22.9785"
-                  x="598" y="214.7569">has
-            </text>
+        <g class="link" data-entity-1="ent0002" data-entity-2="ent0004" id="lnk20" data-source-line="81"
+           data-link-type="composition">
+            <path d="M522.551,139.295 C553.561,179.305 599.65,238.77 630.7,278.84"
+                  style="stroke:#181818;stroke-width:1;" fill="none"
+                  id="NetzgrafikConverter-backto-NetworkGraphicSource" codeLine="81"/>
+            <polygon points="515.2,129.81,515.714,137.003,522.551,139.295,522.037,132.102,515.2,129.81" fill="#181818"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text x="598" y="214.757" fill="#000" font-size="13" textLength="22.979">has</text>
         </g><!--reverse link NetzgrafikConverter to SupplyBuilder-->
-        <g id="link_NetzgrafikConverter_SupplyBuilder">
-            <path codeLine="77" d="M491.1938,142.2099 C491.5138,213.5699 492.24,376.65 492.68,476.11 " fill="none"
-                  id="NetzgrafikConverter-backto-SupplyBuilder" style="stroke:#181818;stroke-width:1;"/>
-            <polygon fill="#181818"
-                     points="491.14,130.21,487.1669,136.2279,491.1938,142.2099,495.1669,136.192,491.14,130.21"
-                     style="stroke:#181818;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="22.9785"
-                  x="493" y="315.7569">has
-            </text>
+        <g class="link" data-entity-1="ent0002" data-entity-2="ent0007" id="lnk21" data-source-line="82"
+           data-link-type="composition">
+            <path d="M489.81,142.055 C487.9,211.445 483.61,367.95 480.65,475.88" style="stroke:#181818;stroke-width:1;"
+                  fill="none" id="NetzgrafikConverter-backto-SupplyBuilder" codeLine="82"/>
+            <polygon points="490.14,130.06,485.976,135.948,489.81,142.055,493.973,136.168,490.14,130.06" fill="#181818"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text x="487" y="315.757" fill="#000" font-size="13" textLength="22.979">has</text>
         </g><!--reverse link NetzgrafikConverter to ConverterSink-->
-        <g id="link_NetzgrafikConverter_ConverterSink">
-            <path codeLine="78"
-                  d="M552.0305,136.3606 C578.1105,152.5206 600.17,166.22 629,184.19 C665.94,207.21 671.1,221.28 712,236.19 C736.03,244.95 745.16,234.92 769,244.19 C790.11,252.4 811.13,266.06 828.09,278.82 "
-                  fill="none" id="NetzgrafikConverter-backto-ConverterSink" style="stroke:#181818;stroke-width:1;"/>
-            <polygon fill="#181818"
-                     points="541.83,130.04,544.8234,136.6005,552.0305,136.3606,549.0371,129.8001,541.83,130.04"
-                     style="stroke:#181818;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="22.9785"
-                  x="713" y="214.7569">has
-            </text>
+        <g class="link" data-entity-1="ent0002" data-entity-2="ent0005" id="lnk22" data-source-line="83"
+           data-link-type="composition">
+            <path d="M552.031,136.361 C578.111,152.521 600.17,166.21 629,184.19 C665.94,207.21 671.1,221.28 712,236.19 C736.03,244.95 745.16,234.91 769,244.19 C790.11,252.4 811.13,266.05 828.09,278.82"
+                  style="stroke:#181818;stroke-width:1;" fill="none" id="NetzgrafikConverter-backto-ConverterSink"
+                  codeLine="83"/>
+            <polygon points="541.83,130.04,544.823,136.6,552.031,136.361,549.037,129.8,541.83,130.04" fill="#181818"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text x="713" y="214.757" fill="#000" font-size="13" textLength="22.979">has</text>
         </g><!--link BaseSupplyBuilder to SupplyBuilder-->
-        <g id="link_BaseSupplyBuilder_SupplyBuilder">
-            <path codeLine="80" d="M701.38,549.23 C660.47,549.23 630.14,549.23 590.32,549.23 " fill="none"
-                  id="BaseSupplyBuilder-to-SupplyBuilder"
-                  style="stroke:#181818;stroke-width:1;stroke-dasharray:7.0,7.0;"/>
-            <polygon fill="none" points="572.32,549.23,590.32,555.23,590.32,543.23,572.32,549.23"
-                     style="stroke:#181818;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="92.8154"
-                  x="590.9" y="542.2969">&#171;implements&#187;
-            </text>
+        <g class="link" data-entity-1="ent0008" data-entity-2="ent0007" id="lnk23" data-source-line="85"
+           data-link-type="extension">
+            <path d="M689.6,573.67 C647.7,573.67 618.6,573.67 579.5,573.67"
+                  style="stroke:#181818;stroke-width:1;stroke-dasharray:7,7;" fill="none"
+                  id="BaseSupplyBuilder-to-SupplyBuilder" codeLine="85"/>
+            <polygon points="561.5,573.67,579.5,579.67,579.5,567.67,561.5,573.67" fill="none"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text x="579.5" y="566.737" fill="#000" font-size="13" textLength="92.815">«implements»</text>
         </g><!--reverse link BaseSupplyBuilder to InfrastructureRepository-->
-        <g id="link_BaseSupplyBuilder_InfrastructureRepository">
-            <path codeLine="81"
-                  d="M690.0145,587.5239 C655.5145,600.1839 626.71,610.27 590,622.12 C500.1,651.13 397.88,680.26 318.24,702.11 "
-                  fill="none" id="BaseSupplyBuilder-backto-InfrastructureRepository"
-                  style="stroke:#181818;stroke-width:1;"/>
-            <polygon fill="#181818"
-                     points="701.28,583.39,694.2693,581.7018,690.0145,587.5239,697.0252,589.2121,701.28,583.39"
-                     style="stroke:#181818;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="22.9785"
-                  x="490" y="665.1869">has
-            </text>
+        <g class="link" data-entity-1="ent0008" data-entity-2="ent0009" id="lnk24" data-source-line="86"
+           data-link-type="composition">
+            <path d="M678.636,630.716 C643.676,646.186 615.54,657.72 579,671.01 C493.62,702.06 395.68,730.82 318.44,751.97"
+                  style="stroke:#181818;stroke-width:1;" fill="none"
+                  id="BaseSupplyBuilder-backto-InfrastructureRepository" codeLine="86"/>
+            <polygon points="689.61,625.86,682.505,624.63,678.636,630.716,685.742,631.946,689.61,625.86" fill="#181818"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text x="483" y="714.077" fill="#000" font-size="13" textLength="22.979">has</text>
         </g><!--reverse link BaseSupplyBuilder to RollingStockRepository-->
-        <g id="link_BaseSupplyBuilder_RollingStockRepository">
-            <path codeLine="82" d="M703.7932,604.398 C650.0132,638.588 589.24,677.23 542.44,706.98 " fill="none"
-                  id="BaseSupplyBuilder-backto-RollingStockRepository" style="stroke:#181818;stroke-width:1;"/>
-            <polygon fill="#181818"
-                     points="713.92,597.96,706.7106,597.8034,703.7932,604.398,711.0026,604.5546,713.92,597.96"
-                     style="stroke:#181818;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="22.9785"
-                  x="624" y="665.1869">has
-            </text>
+        <g class="link" data-entity-1="ent0008" data-entity-2="ent0010" id="lnk25" data-source-line="87"
+           data-link-type="composition">
+            <path d="M696.916,645.608 C641.136,684.368 582.34,725.23 538.13,755.94"
+                  style="stroke:#181818;stroke-width:1;" fill="none"
+                  id="BaseSupplyBuilder-backto-RollingStockRepository" codeLine="87"/>
+            <polygon points="706.77,638.76,699.56,638.899,696.916,645.608,704.125,645.469,706.77,638.76" fill="#181818"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text x="610" y="714.077" fill="#000" font-size="13" textLength="22.979">has</text>
         </g><!--reverse link BaseSupplyBuilder to VehicleCircuitsPlanner-->
-        <g id="link_BaseSupplyBuilder_VehicleCircuitsPlanner">
-            <path codeLine="83" d="M789.3153,609.7098 C789.4853,640.9598 789.63,669.39 789.79,698.88 " fill="none"
-                  id="BaseSupplyBuilder-backto-VehicleCircuitsPlanner" style="stroke:#181818;stroke-width:1;"/>
-            <polygon fill="#181818"
-                     points="789.25,597.71,785.2827,603.7317,789.3153,609.7098,793.2826,603.6882,789.25,597.71"
-                     style="stroke:#181818;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="22.9785"
-                  x="790" y="665.1869">has
-            </text>
+        <g class="link" data-entity-1="ent0008" data-entity-2="ent0011" id="lnk26" data-source-line="88"
+           data-link-type="composition">
+            <path d="M795.783,650.749 C794.283,686.209 792.97,717.16 791.67,747.74"
+                  style="stroke:#181818;stroke-width:1;" fill="none"
+                  id="BaseSupplyBuilder-backto-VehicleCircuitsPlanner" codeLine="88"/>
+            <polygon points="796.29,638.76,792.04,644.586,795.783,650.749,800.033,644.924,796.29,638.76" fill="#181818"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text x="794" y="714.077" fill="#000" font-size="13" textLength="22.979">has</text>
         </g><!--link MatsimSupplyBuilder to BaseSupplyBuilder-->
-        <g id="link_MatsimSupplyBuilder_BaseSupplyBuilder">
-            <path codeLine="85" d="M1052.83,335.68 C1005.36,373.93 924.4472,439.1076 862.3572,489.1276 " fill="none"
-                  id="MatsimSupplyBuilder-to-BaseSupplyBuilder" style="stroke:#181818;stroke-width:1;"/>
-            <polygon fill="none" points="848.34,500.42,866.1214,493.8001,858.5931,484.4552,848.34,500.42"
-                     style="stroke:#181818;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="67.958"
-                  x="1026.3267" y="386.3969">&#171;extends&#187;
-            </text>
-            <path d="M1008,395.4628 L1008,420.4628 L1112,420.4628 L1112,405.4628 L1102,395.4628 L1008,395.4628 "
-                  fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/>
-            <path d="M1102,395.4628 L1102,405.4628 L1112,405.4628 L1102,395.4628 " fill="#FEFFDD"
-                  style="stroke:#181818;stroke-width:0.5;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="83.6113"
-                  x="1014" y="412.5297">T = Scenario
-            </text>
+        <g class="link" data-entity-1="ent0013" data-entity-2="ent0008" id="lnk27" data-source-line="90"
+           data-link-type="extension">
+            <path d="M1056.89,335.3 C1015.09,373.78 943.054,440.08 882.004,496.27"
+                  style="stroke:#181818;stroke-width:1;" fill="none" id="MatsimSupplyBuilder-to-BaseSupplyBuilder"
+                  codeLine="90"/>
+            <polygon points="868.76,508.46,886.067,500.685,877.941,491.855,868.76,508.46" fill="none"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text x="1036.327" y="386.397" fill="#000" font-size="13" textLength="67.958">«extends»</text>
+            <path d="M1018,395.463 L1018,420.463 L1122,420.463 L1122,405.463 L1112,395.463 L1018,395.463"
+                  style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD"/>
+            <path d="M1112,395.463 L1112,405.463 L1122,405.463 L1112,395.463" style="stroke:#181818;stroke-width:0.5;"
+                  fill="#FEFFDD"/>
+            <text x="1024" y="412.53" fill="#000" font-size="13" textLength="83.611">T = Scenario</text>
         </g><!--link GtfsSupplyBuilder to BaseSupplyBuilder-->
-        <g id="link_GtfsSupplyBuilder_BaseSupplyBuilder">
-            <path codeLine="87"
-                  d="M1257.8,335.47 C1226.76,360.25 1174.66,399.38 1125,425.33 C1044.36,467.48 963.174,496.3141 893.764,517.8141 "
-                  fill="none" id="GtfsSupplyBuilder-to-BaseSupplyBuilder" style="stroke:#181818;stroke-width:1;"/>
-            <polygon fill="none" points="876.57,523.14,895.5393,523.5454,891.9887,512.0827,876.57,523.14"
-                     style="stroke:#181818;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="67.958"
-                  x="1244.1992" y="386.3969">&#171;extends&#187;
-            </text>
-            <path d="M1211,395.4628 L1211,420.4628 L1345,420.4628 L1345,405.4628 L1335,395.4628 L1211,395.4628 "
-                  fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/>
-            <path d="M1335,395.4628 L1335,405.4628 L1345,405.4628 L1335,395.4628 " fill="#FEFFDD"
-                  style="stroke:#181818;stroke-width:0.5;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="113.3564"
-                  x="1217" y="412.5297">T = GtfsSchedule
-            </text>
+        <g class="link" data-entity-1="ent0014" data-entity-2="ent0008" id="lnk28" data-source-line="92"
+           data-link-type="extension">
+            <path d="M1258.95,335.48 C1229.73,359.91 1181.12,398.43 1135,425.33 C1062.52,467.62 992.378,498.764 925.128,525.484"
+                  style="stroke:#181818;stroke-width:1;" fill="none" id="GtfsSupplyBuilder-to-BaseSupplyBuilder"
+                  codeLine="92"/>
+            <polygon points="908.4,532.13,927.343,531.06,922.913,519.908,908.4,532.13" fill="none"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text x="1245.199" y="386.397" fill="#000" font-size="13" textLength="67.958">«extends»</text>
+            <path d="M1212,395.463 L1212,420.463 L1346,420.463 L1346,405.463 L1336,395.463 L1212,395.463"
+                  style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD"/>
+            <path d="M1336,395.463 L1336,405.463 L1346,405.463 L1336,395.463" style="stroke:#181818;stroke-width:0.5;"
+                  fill="#FEFFDD"/>
+            <text x="1218" y="412.53" fill="#000" font-size="13" textLength="113.356">T = GtfsSchedule</text>
         </g><!--link GtfsScheduleWriter to ConverterSink-->
-        <g id="link_GtfsScheduleWriter_ConverterSink">
-            <path codeLine="90"
-                  d="M1455.72,122.09 C1437.31,132.31 1415.26,144.2 1395,154.19 C1314.34,193.96 1297.66,216.06 1210,236.19 C1159.29,247.83 1025.93,229.54 976,244.19 C951.37,251.41 941.5473,255.4111 921.6573,268.6411 "
-                  fill="none" id="GtfsScheduleWriter-to-ConverterSink"
-                  style="stroke:#181818;stroke-width:1;stroke-dasharray:7.0,7.0;"/>
-            <polygon fill="none" points="906.67,278.61,924.9803,273.6368,918.3343,263.6453,906.67,278.61"
-                     style="stroke:#181818;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="92.8154"
-                  x="1361.7705" y="197.2569">&#171;implements&#187;
-            </text>
-            <path d="M1341,206.3228 L1341,231.3228 L1475,231.3228 L1475,216.3228 L1465,206.3228 L1341,206.3228 "
-                  fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/>
-            <path d="M1465,206.3228 L1465,216.3228 L1475,216.3228 L1465,206.3228 " fill="#FEFFDD"
-                  style="stroke:#181818;stroke-width:0.5;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="113.3564"
-                  x="1347" y="223.3897">T = GtfsSchedule
-            </text>
+        <g class="link" data-entity-1="ent0016" data-entity-2="ent0005" id="lnk29" data-source-line="95"
+           data-link-type="extension">
+            <path d="M1455.72,122.09 C1437.31,132.31 1415.26,144.2 1395,154.19 C1314.34,193.96 1297.66,216.06 1210,236.19 C1159.29,247.83 1025.93,229.54 976,244.19 C951.37,251.41 941.547,255.411 921.657,268.641"
+                  style="stroke:#181818;stroke-width:1;stroke-dasharray:7,7;" fill="none"
+                  id="GtfsScheduleWriter-to-ConverterSink" codeLine="95"/>
+            <polygon points="906.67,278.61,924.98,273.637,918.334,263.645,906.67,278.61" fill="none"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text x="1361.771" y="197.257" fill="#000" font-size="13" textLength="92.815">«implements»</text>
+            <path d="M1341,206.323 L1341,231.323 L1475,231.323 L1475,216.323 L1465,206.323 L1341,206.323"
+                  style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD"/>
+            <path d="M1465,206.323 L1465,216.323 L1475,216.323 L1465,206.323" style="stroke:#181818;stroke-width:0.5;"
+                  fill="#FEFFDD"/>
+            <text x="1347" y="223.39" fill="#000" font-size="13" textLength="113.356">T = GtfsSchedule</text>
         </g><!--link TransitScheduleXmlWriter to ConverterSink-->
-        <g id="link_TransitScheduleXmlWriter_ConverterSink">
-            <path codeLine="92"
-                  d="M1219.73,122.05 C1160.71,149.91 1060.19,198.4 976,244.19 C956.21,254.95 950.2849,258.1791 931.6349,269.3691 "
-                  fill="none" id="TransitScheduleXmlWriter-to-ConverterSink"
-                  style="stroke:#181818;stroke-width:1;stroke-dasharray:7.0,7.0;"/>
-            <polygon fill="none" points="916.2,278.63,934.7218,274.514,928.5479,264.2241,916.2,278.63"
-                     style="stroke:#181818;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="92.8154"
-                  x="1098.8979" y="197.2569">&#171;implements&#187;
-            </text>
-            <path d="M1093,206.3228 L1093,231.3228 L1197,231.3228 L1197,216.3228 L1187,206.3228 L1093,206.3228 "
-                  fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/>
-            <path d="M1187,206.3228 L1187,216.3228 L1197,216.3228 L1187,206.3228 " fill="#FEFFDD"
-                  style="stroke:#181818;stroke-width:0.5;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="83.6113"
-                  x="1099" y="223.3897">T = Scenario
-            </text>
+        <g class="link" data-entity-1="ent0017" data-entity-2="ent0005" id="lnk30" data-source-line="97"
+           data-link-type="extension">
+            <path d="M1219.73,122.05 C1160.71,149.91 1060.19,198.4 976,244.19 C956.21,254.95 950.285,258.179 931.635,269.369"
+                  style="stroke:#181818;stroke-width:1;stroke-dasharray:7,7;" fill="none"
+                  id="TransitScheduleXmlWriter-to-ConverterSink" codeLine="97"/>
+            <polygon points="916.2,278.63,934.722,274.514,928.548,264.224,916.2,278.63" fill="none"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text x="1098.898" y="197.257" fill="#000" font-size="13" textLength="92.815">«implements»</text>
+            <path d="M1093,206.323 L1093,231.323 L1197,231.323 L1197,216.323 L1187,206.323 L1093,206.323"
+                  style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD"/>
+            <path d="M1187,206.323 L1187,216.323 L1197,216.323 L1187,206.323" style="stroke:#181818;stroke-width:0.5;"
+                  fill="#FEFFDD"/>
+            <text x="1099" y="223.39" fill="#000" font-size="13" textLength="83.611">T = Scenario</text>
         </g><!--link JsonFileReader to NetworkGraphicSource-->
-        <g id="link_JsonFileReader_NetworkGraphicSource">
-            <path codeLine="94"
-                  d="M1015.23,122.03 C995.86,132.07 972.88,143.84 952,154.19 C924.21,167.95 916.7,170.24 889,184.19 C838.21,209.75 826.07,217.24 776,244.19 C755.25,255.36 748.3479,259.0729 728.2779,270.0329 "
-                  fill="none" id="JsonFileReader-to-NetworkGraphicSource"
-                  style="stroke:#181818;stroke-width:1;stroke-dasharray:7.0,7.0;"/>
-            <polygon fill="none" points="712.48,278.66,731.1536,275.2989,725.4022,264.767,712.48,278.66"
-                     style="stroke:#181818;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="92.8154"
-                  x="890" y="214.7569">&#171;implements&#187;
-            </text>
-        </g><!--SRC=[dLJBRjim4BphAmZquhImFq1m3JH94xH8Wo0oqbutr5fPY285adBhfldtahPilIWP20-6JCxCxf136hHCGe6c18u9bg31AisaaXXPLJAhsBEoLXKi9OtSaf9HvB0vPCWash-PXWtbc9AZBRYIMzGM_PT6zXenDxW0OzZz2Njr12tNgnhYnoTToTd5_kzRD4rq7nlAMjnvPN2jWUIzjnAxbfL0aCtw5WIbuBjFh7E8sIvcJuEv1czGRudZDUmI2zh6x4vn46igC8JvAjC-ehP0qhMxSLlhRVnMEh_LKBuGJrIbERRT2mLfrtx3FHbFIEQzNJEmnTbYiUXGZmTagh8KknQyqKpsIvSLYRH_4djTIDF41U06E0cokwP46-7sN1goToGn37XKbKMlCx7yu4uvl7pjysWh7H9_zftFBcAsFitNvls0P-FEbDiwGvTWy8pX3wz7pjjUUjfy7rrlnDxFUVI8hrR_pJbzaniDZbnnJtZ4KXb_rNRzyyhG3bgEMNlAAQa1npNEynfyHyOkznC9PWLAkvfkxL49GJ9pDNW-sTWJkiWBNEzAh4krPZfj1UlKu2lIl29h7WH8YRfVHsFc-aSTo4hf6BEZmLhjYn3kmlhRttPv-7rhdZX8eRIdOeSq_G1hgEZagLu_2BIWjtPZmi1M3L8T-Js7ls1Q2VofoRP8BLITk2FmLo76iT-DaZSaN7gWrqBWSMKVvnDlRinUm8pGvk57Rf8oxpv4P_Gx3s6DZGQNcot-hRgoCLikgIW5-bIRrIh0yVAZT-rGAKmQkGLJb950rtv2yPhFdQMXcFU5VopAr9kIoY9JahbsSlSkiiyiuIX1aug6ENoVO3kRKHH8wiBlVUUO1dj_HdKqsEzHFcr0xmfuhL1O-vB_0G00]-->
+        <g class="link" data-entity-1="ent0018" data-entity-2="ent0004" id="lnk31" data-source-line="99"
+           data-link-type="extension">
+            <path d="M1015.23,122.03 C995.86,132.07 972.88,143.84 952,154.19 C924.21,167.95 916.7,170.24 889,184.19 C838.21,209.75 826.07,217.24 776,244.19 C755.25,255.36 748.348,259.073 728.278,270.033"
+                  style="stroke:#181818;stroke-width:1;stroke-dasharray:7,7;" fill="none"
+                  id="JsonFileReader-to-NetworkGraphicSource" codeLine="99"/>
+            <polygon points="712.48,278.66,731.154,275.299,725.402,264.767,712.48,278.66" fill="none"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text x="890" y="214.757" fill="#000" font-size="13" textLength="92.815">«implements»</text>
+        </g>
+        <?plantuml-src dLNHRfim57tdAopj9TsKV03A8gtjMctggYf4tLvlp0szmjZ8Djcohly-cv04Y25IUOY8VSwvznuEng1b4Weq9N1Ci0GDLcacbSJ8gf9PnTRAMbMmb3HoIqf6aSFca26JQFzc6ZQKOqgEDkDARb5Rz7SQsMl4tCK56CCUZzYR0sY-MZGGVttIbPnSrN_Ved6YkzbGrk9EAuCh3IGV_IYnQra917dQtuAW57ptYNKJOhQBsVFPsWblK6-9uoti4WlQnkn1SH0hAZ24-IhJFg8PWQHhT-EizMFyLZg_rr2-44zKfJcsfnSAqkxu9-vny8HatdFDm1OdizciGpqy85ELfTYru2VDfDwwhaYa_ITHwqAQ9Yu0Ty19aDsTIhGHpdDfo3wGn570KbLs055l-KeZsqyk1-7jMvzOM-a1SMUSt8SsiBzHUatx3ZUeGmNMtft9LSnMn_N6O7_1shZSSDlaz1eCNZ3rm-k1yrPBZnlSHuzxsKUFEDE7ZhaKRCBPjKItIW5Iow1JsBx9ZGP7gBZlQ8cbClwysFL3bw4zyoHcxIMdfCuuhYcUD-07CdPUBoIO5IZjOhorfHA2PEPgy7oqiMTqxwt0rQx4fbHhfTDMi4u3lY7DAxBcIO0pNVVhQCnS_wW3OImTOt8Oi57x8eGxTVn3Q4-v_tqxdTEGGccFnVPn_G7MKD49RBE_5sX1x-t6X86j6gGwyZM7ls1Q2VofoRP8BLGJwGFmLo66iT-DadSaN7gWrqBW2y4-JaS-735x0JD0cuPFwb7Aj7kQNj3ldEODDZexFTZitw8h6xFvd8fIe4-rMIm272y_-AxjAuL90s_166KWqCqyeNXDfswaSp4_5_wnA5C_b5GMcPBCjPExWvTzPWb72PfKT9x3zmcsinb5WQJElFUTntJc_GNLmM2_H_beGEyLy5gXiFOb_mC0?>
     </g>
 </svg>

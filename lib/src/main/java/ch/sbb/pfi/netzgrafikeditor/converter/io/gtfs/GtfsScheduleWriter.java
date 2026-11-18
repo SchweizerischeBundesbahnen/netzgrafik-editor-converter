@@ -8,6 +8,8 @@ import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Route;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.RouteType;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Stop;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.StopTime;
+import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Transfer;
+import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.TransferType;
 import ch.sbb.pfi.netzgrafikeditor.converter.adapter.gtfs.model.Trip;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.ConverterSink;
 import lombok.AccessLevel;
@@ -94,6 +96,8 @@ public class GtfsScheduleWriter implements ConverterSink<GtfsSchedule> {
                     return casted == Calendar.Type.AVAILABLE ? "1" : "0";
                 } else if (value instanceof RouteType casted) {
                     return String.valueOf(casted.getValue());
+                } else if (value instanceof TransferType casted) {
+                    return String.valueOf(casted.getValue());
                 } else if (value != null) {
                     return escapeCsv(value.toString());
                 } else {
@@ -141,6 +145,13 @@ public class GtfsScheduleWriter implements ConverterSink<GtfsSchedule> {
         return result.toString();
     }
 
+    /**
+     * An optional file of the feed is written only if it has rows.
+     */
+    private static boolean isOmitted(List<?> list, GtfsFile gtfsFile) {
+        return gtfsFile.isOptional() && (list == null || list.isEmpty());
+    }
+
     @Override
     public void save(GtfsSchedule result) throws IOException {
         Files.createDirectories(directory);
@@ -156,6 +167,7 @@ public class GtfsScheduleWriter implements ConverterSink<GtfsSchedule> {
                 writeToZip(result.getTrips(), zipOutputStream, GtfsFile.TRIPS);
                 writeToZip(result.getStopTimes(), zipOutputStream, GtfsFile.STOP_TIMES);
                 writeToZip(result.getCalendars(), zipOutputStream, GtfsFile.CALENDAR);
+                writeToZip(result.getTransfers(), zipOutputStream, GtfsFile.TRANSFERS);
             }
         } else {
             writeToFile(List.of(result.getFeedInfo()), GtfsFile.FEED_INFO);
@@ -165,10 +177,15 @@ public class GtfsScheduleWriter implements ConverterSink<GtfsSchedule> {
             writeToFile(result.getTrips(), GtfsFile.TRIPS);
             writeToFile(result.getStopTimes(), GtfsFile.STOP_TIMES);
             writeToFile(result.getCalendars(), GtfsFile.CALENDAR);
+            writeToFile(result.getTransfers(), GtfsFile.TRANSFERS);
         }
     }
 
     private <T> void writeToZip(List<T> list, ZipOutputStream zipOutputStream, GtfsFile gtfsFile) throws IOException {
+        if (isOmitted(list, gtfsFile)) {
+            return;
+        }
+
         ZipEntry zipEntry = new ZipEntry(gtfsFile.fileName);
         zipOutputStream.putNextEntry(zipEntry);
 
@@ -178,6 +195,10 @@ public class GtfsScheduleWriter implements ConverterSink<GtfsSchedule> {
     }
 
     private <T> void writeToFile(List<T> list, GtfsFile gtfsFile) throws IOException {
+        if (isOmitted(list, gtfsFile)) {
+            return;
+        }
+
         Path filePath = directory.resolve(gtfsFile.fileName);
 
         try (OutputStream writer = Files.newOutputStream(filePath, StandardOpenOption.CREATE)) {
@@ -188,15 +209,17 @@ public class GtfsScheduleWriter implements ConverterSink<GtfsSchedule> {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     @Getter
     enum GtfsFile {
-        AGENCY("agency.txt", Agency.class),
-        STOPS("stops.txt", Stop.class),
-        ROUTES("routes.txt", Route.class),
-        TRIPS("trips.txt", Trip.class),
-        STOP_TIMES("stop_times.txt", StopTime.class),
-        CALENDAR("calendar.txt", Calendar.class),
-        FEED_INFO("feed_info.txt", FeedInfo.class);
+        AGENCY("agency.txt", Agency.class, false),
+        STOPS("stops.txt", Stop.class, false),
+        ROUTES("routes.txt", Route.class, false),
+        TRIPS("trips.txt", Trip.class, false),
+        STOP_TIMES("stop_times.txt", StopTime.class, false),
+        CALENDAR("calendar.txt", Calendar.class, false),
+        TRANSFERS("transfers.txt", Transfer.class, true),
+        FEED_INFO("feed_info.txt", FeedInfo.class, false);
 
         private final String fileName;
         private final Class<?> clazz;
+        private final boolean optional;
     }
 }

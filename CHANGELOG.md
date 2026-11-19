@@ -1,5 +1,17 @@
 # Changelog
 
+## [5.0.0](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/compare/v4.1.0...v5.0.0) (2026-11-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* **matsim:** TrackSegmentInfo takes a from and a to TrackNodeInfo instead of two coordinates, and InfrastructureRepository#getTrack must return segments that start at the node of the from stop, end at the node of the to stop and share the node ids where they meet.
+
+### Bug Fixes
+
+* **matsim:** connect the segments of a track through named junctions ([#235](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/issues/235)) ([635114c](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/commit/635114c866e6b7c79300aeb8859ff7a2b81c7961))
+* sum up travel times unrounded and round each stop time once ([#236](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/issues/236)) ([07ca644](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/commit/07ca644657b5473570e692a25f93ca899ca530d9)), closes [#233](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/issues/233)
+
 ## [4.1.0](https://github.com/SchweizerischeBundesbahnen/netzgrafik-editor-converter/compare/v4.0.0...v4.1.0) (2026-10-19)
 
 

@@ -129,7 +129,10 @@ public class NetworkGraphicConverter<T> {
             SectionSequenceBuilder sequence = entry.getValue();
 
             log.debug("Adding train {}", train.getName());
-            createAndAddTransitLine(train, sequence.build(train.getDirection()));
+            for (EnumMap<RouteDirection, List<TrainrunSection>> component : sequence.buildComponents(
+                    train.getDirection())) {
+                createAndAddTransitLine(train, component);
+            }
         }
     }
 

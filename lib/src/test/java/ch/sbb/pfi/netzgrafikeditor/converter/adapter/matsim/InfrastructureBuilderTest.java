@@ -3,6 +3,7 @@ package ch.sbb.pfi.netzgrafikeditor.converter.adapter.matsim;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.InfrastructureRepository;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteElement;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.RouteStop;
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopAccess;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopFacilityInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TrackNodeInfo;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.TrackSegmentInfo;
@@ -113,7 +114,8 @@ class InfrastructureBuilderTest {
         stops.values().forEach(builder::buildTransitStopFacility);
         for (String route : routes) {
             List<RouteElement> routeElements = Arrays.stream(route.split(">"))
-                    .map(stopId -> (RouteElement) new RouteStop(stops.get(stopId), Duration.ZERO, Duration.ZERO))
+                    .map(stopId -> (RouteElement) new RouteStop(stops.get(stopId), Duration.ZERO, Duration.ZERO,
+                            StopAccess.BOARDING_AND_ALIGHTING))
                     .toList();
             builder.buildTransitRoute(new TransitRouteInfo(route, LINE), routeElements);
         }

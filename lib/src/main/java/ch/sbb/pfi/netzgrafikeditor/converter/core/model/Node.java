@@ -10,7 +10,7 @@ import java.util.Map;
 
 
 @Value
-@Builder
+@Builder(toBuilder = true)
 @Jacksonized
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Node implements Identifiable {
@@ -32,6 +32,9 @@ public class Node implements Identifiable {
     List<Port> ports;
 
     List<Transition> transitions;
+
+    @Builder.Default
+    List<Connection> connections = List.of();
 
     Map<String, TrainrunCategoryHaltezeit> trainrunCategoryHaltezeiten;
 

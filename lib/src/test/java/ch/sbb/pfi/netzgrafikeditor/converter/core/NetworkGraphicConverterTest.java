@@ -1,5 +1,6 @@
 package ch.sbb.pfi.netzgrafikeditor.converter.core;
 
+import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.StopAccess;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.supply.SupplyBuilder;
 import ch.sbb.pfi.netzgrafikeditor.converter.core.validation.ValidationStrategy;
 import ch.sbb.pfi.netzgrafikeditor.converter.io.netzgrafik.JsonDeserializer;
@@ -47,8 +48,8 @@ class NetworkGraphicConverterTest {
         when(config.isUseTrainNamesAsIds()).thenReturn(false);
         when(config.getValidationStrategy()).thenReturn(ValidationStrategy.WARN_ON_ISSUES);
         when(builder.addStopFacility(anyString(), anyString(), anyDouble(), anyDouble())).thenReturn(builder);
-        when(builder.addTransitRoute(anyString(), anyString(), anyString(), any())).thenReturn(builder);
-        when(builder.addRouteStop(anyString(), anyString(), any(), any())).thenReturn(builder);
+        when(builder.addTransitRoute(anyString(), anyString(), anyString(), any(), any())).thenReturn(builder);
+        when(builder.addRouteStop(anyString(), anyString(), any(), any(), any())).thenReturn(builder);
         when(builder.addDeparture(anyString(), any())).thenReturn(builder);
     }
 
@@ -68,8 +69,8 @@ class NetworkGraphicConverterTest {
         converter.run();
 
         // section A-B takes 15 minutes forward, but 18 minutes backward
-        verify(builder).addRouteStop(eq("IC_A_D_FORWARD"), eq("B"), eq(Duration.ofMinutes(15)), any());
-        verify(builder).addRouteStop(eq("IC_A_D_REVERSE"), eq("A"), eq(Duration.ofMinutes(18)), any());
+        verify(builder).addRouteStop(eq("IC_A_D_FORWARD"), eq("B"), eq(Duration.ofMinutes(15)), any(), any());
+        verify(builder).addRouteStop(eq("IC_A_D_REVERSE"), eq("A"), eq(Duration.ofMinutes(18)), any(), any());
     }
 
     @Test
@@ -80,13 +81,15 @@ class NetworkGraphicConverterTest {
 
         // forward, 1.5 minutes per section, B passed: rounded per section, C would be reached after 4 instead of 3
         // minutes and D 2 instead of 1.5 minutes after leaving C
-        verify(builder).addRouteStop("IC_A_D_FORWARD", "C", Duration.ofSeconds(180), Duration.ofSeconds(30));
-        verify(builder).addRouteStop(eq("IC_A_D_FORWARD"), eq("D"), eq(Duration.ofSeconds(90)), any());
+        verify(builder).addRouteStop("IC_A_D_FORWARD", "C", Duration.ofSeconds(180), Duration.ofSeconds(30),
+                StopAccess.BOARDING_AND_ALIGHTING);
+        verify(builder).addRouteStop(eq("IC_A_D_FORWARD"), eq("D"), eq(Duration.ofSeconds(90)), any(), any());
 
         // backward, 1.4 minutes per section, B passed: rounded per section, C would be reached after 1 instead of 1.4
         // minutes and A 2 instead of 2.8 minutes after leaving C
-        verify(builder).addRouteStop("IC_A_D_REVERSE", "C", Duration.ofSeconds(84), Duration.ofSeconds(30));
-        verify(builder).addRouteStop(eq("IC_A_D_REVERSE"), eq("A"), eq(Duration.ofSeconds(168)), any());
+        verify(builder).addRouteStop("IC_A_D_REVERSE", "C", Duration.ofSeconds(84), Duration.ofSeconds(30),
+                StopAccess.BOARDING_AND_ALIGHTING);
+        verify(builder).addRouteStop(eq("IC_A_D_REVERSE"), eq("A"), eq(Duration.ofSeconds(168)), any(), any());
     }
 
     @Test
@@ -101,8 +104,10 @@ class NetworkGraphicConverterTest {
         verify(builder).addDeparture("S_A_A_FORWARD_F_A_5_8", ServiceDayTime.of(6, 0, 0));
         verify(builder).addDeparture("S_A_A_FORWARD_H_A_7_8", ServiceDayTime.of(6, 1, 0));
         verify(builder).addDeparture("S_A_A_FORWARD", ServiceDayTime.of(6, 5, 0));
-        verify(builder).addTransitRoute("S_A_A_FORWARD_H_A_7_8", "S_A_A", "H", Duration.ofMinutes(1));
-        verify(builder).addRouteStop("S_A_A_FORWARD_H_A_7_8", "A", Duration.ofMinutes(3), Duration.ofMinutes(1));
+        verify(builder).addTransitRoute("S_A_A_FORWARD_H_A_7_8", "S_A_A", "H", Duration.ofMinutes(1),
+                StopAccess.BOARDING_AND_ALIGHTING);
+        verify(builder).addRouteStop("S_A_A_FORWARD_H_A_7_8", "A", Duration.ofMinutes(3), Duration.ofMinutes(1),
+                StopAccess.BOARDING_AND_ALIGHTING);
         verify(builder, never()).addDeparture(anyString(),
                 argThat(time -> time.compareTo(ServiceDayTime.of(6, 0, 0)) < 0));
     }
@@ -116,7 +121,8 @@ class NetworkGraphicConverterTest {
         // the trip at 07:05 arrives in B (07:20) before, but in C (07:42) after the end of the service day
         verify(builder).addDeparture("IC_A_D_FORWARD", ServiceDayTime.of(6, 5, 0));
         verify(builder).addDeparture("IC_A_D_FORWARD_A_B_0_1", ServiceDayTime.of(7, 5, 0));
-        verify(builder).addRouteStop("IC_A_D_FORWARD_A_B_0_1", "B", Duration.ofMinutes(15), Duration.ofMinutes(2));
+        verify(builder).addRouteStop("IC_A_D_FORWARD_A_B_0_1", "B", Duration.ofMinutes(15), Duration.ofMinutes(2),
+                StopAccess.BOARDING_AND_ALIGHTING);
         verify(builder, never()).addDeparture("IC_A_D_FORWARD", ServiceDayTime.of(7, 5, 0));
     }
 
@@ -128,7 +134,7 @@ class NetworkGraphicConverterTest {
         converter.run();
 
         // trips clipped to C, E, F and H start at the first depot D after them, if any
-        verify(builder).addTransitRoute(eq("S_A_A_FORWARD_D_A_3_8"), eq("S_A_A"), eq("D"), any());
+        verify(builder).addTransitRoute(eq("S_A_A_FORWARD_D_A_3_8"), eq("S_A_A"), eq("D"), any(), any());
         verify(builder).addDeparture("S_A_A_FORWARD_D_A_3_8", ServiceDayTime.of(6, 14, 0));
         verify(builder).addDeparture("S_A_A_FORWARD", ServiceDayTime.of(6, 5, 0));
         verify(builder, never()).addDeparture(anyString(),
@@ -144,7 +150,7 @@ class NetworkGraphicConverterTest {
 
         // the trip clipped to C ends at the depot B before it
         verify(builder).addDeparture("IC_A_D_FORWARD_A_B_0_1", ServiceDayTime.of(7, 5, 0));
-        verify(builder, never()).addTransitRoute(eq("IC_A_D_FORWARD_A_C_0_2"), anyString(), anyString(), any());
+        verify(builder, never()).addTransitRoute(eq("IC_A_D_FORWARD_A_C_0_2"), anyString(), anyString(), any(), any());
     }
 
     @Test

@@ -9,9 +9,10 @@ import lombok.extern.slf4j.Slf4j;
  * <p>
  * The strategy applies to invalid IDs of nodes and trainruns and, with the service day boundary
  * {@link ServiceDayBoundary#DEPOT}, to lines without a stop labelled as depot, whose trips then only start and end at
- * the line termini. With the MATSim output, it also applies to tracks of the infrastructure repository that do not form
- * a continuous path between their stops (see {@link InfrastructureRepository#getTrack}). Missing depots and broken
- * tracks cannot be repaired, so the repairing strategies only warn about them.
+ * the line termini. It applies to the connections drawn in the network graphic that cannot be converted as drawn, and,
+ * with the MATSim output, to tracks of the infrastructure repository that do not form a continuous path between their
+ * stops (see {@link InfrastructureRepository#getTrack}). Missing depots, connections and broken tracks cannot be
+ * repaired, so the repairing strategies only warn about them.
  */
 @Slf4j
 public enum ValidationStrategy {
@@ -68,22 +69,6 @@ public enum ValidationStrategy {
         public boolean apply(NetworkGraphicValidator validator) {
             if (!validator.isValid()) {
                 validator.removeSpecialCharacters();
-            }
-            return true;
-        }
-    },
-
-    /**
-     * @deprecated This option is deprecated because specialized treatment of the IDs should ideally be performed
-     * upstream of the converter. This option is provided only to ensure backward compatibility with the old default
-     * behavior. Users are encouraged to perform ID manipulations before invoking the converter, preferably directly in
-     * the Network Graphic Editor (NGE).
-     */
-    @Deprecated REMOVE_DOTS_AND_REPLACE_WHITESPACE {
-        @Override
-        public boolean apply(NetworkGraphicValidator validator) {
-            if (!validator.isValid()) {
-                validator.removeDotsReplaceWhitespace();
             }
             return true;
         }

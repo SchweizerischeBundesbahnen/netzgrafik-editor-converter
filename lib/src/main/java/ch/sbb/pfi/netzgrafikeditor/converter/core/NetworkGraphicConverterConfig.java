@@ -5,6 +5,8 @@ import ch.sbb.pfi.netzgrafikeditor.converter.util.time.ServiceDayTime;
 import lombok.Builder;
 import lombok.Value;
 
+import java.util.Set;
+
 @Value
 @Builder
 public class NetworkGraphicConverterConfig {
@@ -20,18 +22,19 @@ public class NetworkGraphicConverterConfig {
     boolean useTrainNamesAsIds = false;
 
     /**
-     * Strategy for the validation of the network graphic: SKIP_VALIDATION, WARN_ON_ISSUES, FAIL_ON_ISSUES, FIX_ISSUES.
-     * The converter uses the node `betriebsPunktName` and the trainrun `name` attributes as IDs to pass to the supply
-     * builder. Since these fields are not mandatory in the NGE (as it uses internal integers as IDs), it is important
-     * to validate them if they are applicable as IDs. Depending on the chosen supply builder, invalid IDs can lead to
-     * downstream issues, as some target formats do not support special characters in the IDs.
+     * Strategy for the validation of the network graphic, see {@link ValidationStrategy}. The converter uses the node
+     * `betriebsPunktName` and the trainrun `name` attributes as IDs to pass to the supply builder. Since these fields
+     * are not mandatory in the NGE (as it uses internal integers as IDs), it is important to validate them if they are
+     * applicable as IDs. Depending on the chosen supply builder, invalid IDs can lead to downstream issues, as some
+     * target formats do not support special characters in the IDs.
      * <p>
      * Note: If the parameter {@link #useTrainNamesAsIds} is set to false, the trainrun names are not considered in
      * validation, since they are not used in this case.
      * <p>
-     * With the service day boundary {@link ServiceDayBoundary#DEPOT}, the strategy also handles lines without a stop
-     * labelled as depot, see {@link ValidationStrategy}. The MATSim supply builder takes a strategy of its own for the
-     * tracks of the infrastructure repository; the command line application passes this one.
+     * The strategy also handles the connections that cannot be converted as drawn and, with the service day boundary
+     * {@link ServiceDayBoundary#DEPOT}, the lines without a stop labelled as depot. The MATSim supply builder takes a
+     * strategy of its own for the tracks of the infrastructure repository; the command line application passes this
+     * one.
      */
     @Builder.Default
     ValidationStrategy validationStrategy = ValidationStrategy.WARN_ON_ISSUES;
@@ -60,5 +63,23 @@ public class NetworkGraphicConverterConfig {
      */
     @Builder.Default
     String depotLabel = "Depot";
+
+    /**
+     * Trainrun categories (short names, e.g. "G") without passenger service, such as freight trains, empty runs,
+     * construction, rescue or shunting trains. Their trains run, but nobody boards them, unless
+     * {@link #nonPassengerNetwork} is set. Default is none.
+     */
+    @Builder.Default
+    Set<String> nonPassengerCategories = Set.of();
+
+    /**
+     * Convert the trainruns without passenger service as a network of their own, in which they can be boarded and a
+     * train changes to another trainrun only at a connection drawn in the network graphic, in no time; trainruns with
+     * passenger service are left out. Default is false.
+     * <p>
+     * Only formats that can restrict transfers to particular trips support it, e.g. GTFS.
+     */
+    @Builder.Default
+    boolean nonPassengerNetwork = false;
 
 }

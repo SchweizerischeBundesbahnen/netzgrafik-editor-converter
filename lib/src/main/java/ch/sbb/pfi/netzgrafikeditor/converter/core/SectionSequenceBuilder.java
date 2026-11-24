@@ -8,11 +8,15 @@ import ch.sbb.pfi.netzgrafikeditor.converter.core.model.Transition;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -34,69 +38,60 @@ class SectionSequenceBuilder {
     }
 
     /**
-     * Traverse the sections and build an ordered, directed section sequences.
-     * <p>
-     * One-way trainruns only get a forward sequence, which follows the NGE section chain from source to target.
+     * Build a separate route for each connected part of a trainrun.
+     * The editor retains disconnected parts, for example after a partial cancellation.
      */
-    EnumMap<RouteDirection, List<TrainrunSection>> build(Trainrun.Direction direction) {
-        List<TrainrunSection> orderedSections = new LinkedList<>(); // append to start of list
+    List<EnumMap<RouteDirection, List<TrainrunSection>>> buildComponents(Trainrun.Direction direction) {
+        Map<Integer, TrainrunSection> remaining = new LinkedHashMap<>(sections);
+        List<EnumMap<RouteDirection, List<TrainrunSection>>> components = new ArrayList<>();
 
-        // find first section of the chain
-        TrainrunSection randomSection = sections.values().iterator().next();
-        AtomicReference<TrainrunSection> firstSection = new AtomicReference<>();
-        traverse(randomSection, firstSection::set);
+        while (!remaining.isEmpty()) {
+            List<TrainrunSection> orderedSections = new LinkedList<>();
 
-        // traverse from first section and collect sections
-        traverse(firstSection.get(), orderedSections::addFirst);
+            // find one end of this connected part
+            TrainrunSection randomSection = remaining.values().iterator().next();
+            AtomicReference<TrainrunSection> firstSection = new AtomicReference<>();
+            traverse(randomSection, firstSection::set, remaining);
 
-        // align sections: e.g. A-B, C-B becomes A-B, B-C
-        SectionAligner.align(orderedSections);
+            // collect only this part and remove its sections from the remaining ones
+            traverse(firstSection.get(), section -> {
+                orderedSections.addFirst(section);
+                remaining.remove(section.getId());
+            }, remaining);
 
-        // check if the aligned sections still follow the NGE section chain, or were swapped against it
-        TrainrunSection first = orderedSections.getFirst();
-        boolean drawnDirection = first.getSourceNodeId() == sections.get(first.getId()).getSourceNodeId();
+            SectionAligner.align(orderedSections);
+            TrainrunSection first = orderedSections.getFirst();
+            boolean drawnDirection = first.getSourceNodeId() == sections.get(first.getId()).getSourceNodeId();
 
-        // create directed sequences
-        return switch (direction) {
-            case ROUND_TRIP -> new EnumMap<>(Map.of(RouteDirection.FORWARD, orderedSections, RouteDirection.REVERSE,
-                    SectionAligner.reverse(orderedSections)));
-            case ONE_WAY -> new EnumMap<>(Map.of(RouteDirection.FORWARD,
-                    drawnDirection ? orderedSections : SectionAligner.reverse(orderedSections)));
-        };
+            components.add(switch (direction) {
+                case ROUND_TRIP -> new EnumMap<>(Map.of(RouteDirection.FORWARD, orderedSections,
+                        RouteDirection.REVERSE, SectionAligner.reverse(orderedSections)));
+                case ONE_WAY -> new EnumMap<>(Map.of(RouteDirection.FORWARD,
+                        drawnDirection ? orderedSections : SectionAligner.reverse(orderedSections)));
+            });
+        }
+
+        return components;
     }
 
-    private void traverse(TrainrunSection root, Consumer<TrainrunSection> action) {
-        Map<Integer, TrainrunSection> sectionsToVisit = new HashMap<>(sections);
+    private void traverse(TrainrunSection root, Consumer<TrainrunSection> action,
+                          Map<Integer, TrainrunSection> remaining) {
+        Set<Integer> visited = new HashSet<>();
         TrainrunSection current = root;
-        TrainrunSection next;
 
-        while (true) {
-
-            // apply action on current section
+        while (current != null) {
             action.accept(current);
-
-            // mark as visited; remove from sections to visit
-            sectionsToVisit.remove(current.getId());
-
-            // normal case; search on the target side
-            next = getNextSection(current, TraversalMode.TARGET, sectionsToVisit);
-
-            // swapped case; search on source side
+            visited.add(current.getId());
+            TrainrunSection next = getNextSection(current, TraversalMode.TARGET, remaining, visited);
             if (next == null) {
-                next = getNextSection(current, TraversalMode.SOURCE, sectionsToVisit);
+                next = getNextSection(current, TraversalMode.SOURCE, remaining, visited);
             }
-
-            // nothing found; end of section sequence
-            if (next == null) {
-                break;
-            }
-
-            // advance one section
             current = next;
         }
     }
 
-    private TrainrunSection getNextSection(TrainrunSection section, TraversalMode traversalMode, Map<Integer, TrainrunSection> sectionsToVisit) {
+    private TrainrunSection getNextSection(TrainrunSection section, TraversalMode traversalMode,
+                                           Map<Integer, TrainrunSection> sectionsToVisit, Set<Integer> visited) {
 
         // get node to search on
         Node node = switch (traversalMode) {
@@ -115,12 +110,14 @@ class SectionSequenceBuilder {
 
                     // transition connects on port 1, return next section on port 2
                     if (transition.getPort1Id() == port.getId()) {
-                        return sectionsToVisit.get(ports.get(transition.getPort2Id()).getTrainrunSectionId());
+                        int nextId = ports.get(transition.getPort2Id()).getTrainrunSectionId();
+                        return visited.contains(nextId) ? null : sectionsToVisit.get(nextId);
                     }
 
                     // transition connects on port 2, return next section on port 1
                     if (transition.getPort2Id() == port.getId()) {
-                        return sectionsToVisit.get(ports.get(transition.getPort1Id()).getTrainrunSectionId());
+                        int nextId = ports.get(transition.getPort1Id()).getTrainrunSectionId();
+                        return visited.contains(nextId) ? null : sectionsToVisit.get(nextId);
                     }
                 }
             }
